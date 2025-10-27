@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Trabalhista | Conferência dos Cálculos da Rescisão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .aside-bg {
+            background-color: #005a62;
+            /* Azul-turquesa mais escuro */
+        }
+
+        .nav-link {
+            color: #d1d5db;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .nav-link:hover {
+            background-color: #007380;
+        }
+
+        .active-link {
+            background-color: #0284c7;
+            /* Azul ciano para link ativo */
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* Estilos da Calculadora */
+        .resultado {
+            margin-top: 30px;
+            border-top: 2px solid #0056b3;
+            padding-top: 20px;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .total.bruto {
+            background-color: #e6f7ff;
+        }
+
+        .total.liquido {
+            background-color: #ccffcc;
+        }
+
+        .coluna-valor {
+            text-align: right;
+        }
+
+        /* Estilos de Conferência */
+        .divergencia {
+            background-color: #fecaca;
+            /* Red 200 */
+            color: #b91c1c;
+            /* Red 700 */
+        }
+
+        .conforme {
+            background-color: #d1fae5;
+            /* Green 100 */
+            color: #065f46;
+            /* Green 700 */
+        }
+
+        .input-trct {
+            text-align: right;
+            border: 1px solid #ccc;
+            padding: 4px;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        /* Novo estilo para inputs: maior padding, foco mais visível */
+        .modern-input {
+            padding: 12px;
+            /* p-3 */
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            /* shadow-sm */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            width: 100%;
+            /* Garantindo 100% de largura dentro do container */
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: #0284c7;
+            /* Azul ciano */
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+            /* focus:ring-4 */
+        }
+
+        /* NOVO ESTILO: Garante que o label exiba todo o conteúdo e que o input-group seja flexível */
+        .input-group label {
+            white-space: normal;
+            /* Permite que o texto do label quebre a linha */
+        }
+
+        /* NOVO ESTILO: Garante que os containers de input ocupem o espaço necessário para exibir o conteúdo */
+        .input-group {
+            min-width: 0;
+            /* Permite que o grid funcione corretamente */
+        }
+
+        /* Novo estilo para títulos de seção */
+        .section-header {
+            border-bottom: 2px solid #007380;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilos do Acordeão (CORRIGIDOS) */
+        .accordion-button {
+            width: 100%;
+            text-align: left;
+            padding: 16px 12px;
+            /* p-4 p-3 */
+            border-radius: 0.375rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .accordion-button:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Classe de conteúdo que controla a altura e oculta o overflow */
+        .accordion-content {
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            /* Adiciona transição também para o padding para evitar o "salto" */
+            padding: 1rem;
+            /* Padding padrão visível quando expandido */
+        }
+
+        /* Estado Inicial/Fechado (Obrigatório) */
+        .accordion-content.collapsed {
+            max-height: 0 !important;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col h-full p-4 md:p-8">
+
+        <main class="flex-1">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-gray-200">
+                <div class="flex justify-center mb-6">
+                    <a href="https://www.trt19.jus.br/" target="_blank" rel="noopener noreferrer">
+                        <img src="https://site.trt19.jus.br/sites/default/files/logo-trt19.png"
+                            alt="Logotipo da Justiça do Trabalho, Tribunal Regional do Trabalho da 19ª Região"
+                            class="w-40 md:w-56 h-auto">
+                    </a>
+                </div>
+                <h1 class="text-3xl md:text-4xl text-center mb-6 text-[#007380]">Conferência dos Cálculos da Rescisão
+                    Trabalhista
+                </h1>
+                <p class="text-center text-gray-600 mb-8">Compare os valores estimados da sua rescisão com o Termo de
+                    Rescisão de Contrato de Trabalho (TRCT) fornecido pela empresa.</p>
+
+                <div id="resultadoCalculo" style="display:none;" class="resultado">
+                </div>
+                <section id="dominio" class="content-section">
+                    <h2 class="text-2xl text-[#007380] section-header mb-4">CONFERÊNCIA DOS CÁLCULOS DA RESCISÃO
+                        (TRCT)</h2>
+
+                    <div class="space-y-8">
+
+                        <div class="border rounded-lg shadow-md">
+                            <button type="button"
+                                class="accordion-button flex justify-between items-center text-xl font-semibold text-gray-800 bg-gray-100"
+                                onclick="toggleSection('passo1Content')">
+                                <span>Passo 1: Importação dos Cálculos Próprios (Estimativa)</span>
+                                <svg id="icon-passo1Content" class="w-5 h-5 transition-transform duration-300 transform"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
+                            <div id="passo1Content" class="p-4 accordion-content collapsed">
+                                <p class="text-sm text-gray-600 mb-4">Clique no botão abaixo para carregar os valores
+                                    estimados da sua rescisão e iniciar a comparação.</p>
+                                <button id="btnImportarCalculos"
+                                    class="bg-[#007380] text-white px-6 py-3 rounded-lg shadow-md hover:bg-[#005a62] transition duration-150 ease-in-out font-bold">
+                                    Importar Cálculos Próprios
+                                </button>
+                                <div id="resumoCalculosProprios" class="mt-4 p-4 border rounded-md bg-gray-50 text-sm">
+                                    Valores a serem comparados: <span class="font-bold text-red-600">Nenhum cálculo
+                                        importado.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border rounded-lg shadow-md">
+                            <button type="button"
+                                class="accordion-button flex justify-between items-center text-xl font-semibold text-gray-800 bg-gray-100"
+                                onclick="toggleSection('passo2Content')">
+                                <span>Passo 2: Digitação dos Dados do TRCT da Empresa</span>
+                                <svg id="icon-passo2Content" class="w-5 h-5 transition-transform duration-300 transform"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
+                            <div id="passo2Content" class="p-4 accordion-content collapsed">
+                                <p class="text-sm text-gray-600 mb-6">Preencha os campos abaixo com os valores contidos no
+                                    Termo de Rescisão de Contrato de Trabalho (TRCT) fornecido pela empresa. Use o modelo
+                                    anexo para referência.</p>
+
+                                <h4 class="font-semibold text-lg text-gray-700 mb-3">2.1. Dados do Contrato (Campos 21 a
+                                    32)
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                    <div class="input-group">
+                                        <label for="trct_tipoContrato" class="block text-sm font-medium text-gray-700">21.
+                                            Tipo de Contrato:</label>
+                                        <select id="trct_tipoContrato" class="mt-1 block w-full modern-input bg-white">
+                                            <option value="">Selecione...</option>
+                                            <option value="1">1. Indeterminado</option>
+                                            <option value="2">2. Determinado c/ Cláusula Assec.</option>
+                                            <option value="3">3. Determinado s/ Cláusula Assec.</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_causaAfastamento"
+                                            class="block text-sm font-medium text-gray-700">22.
+                                            Causa do Afastamento:</label>
+                                        <input type="text" id="trct_causaAfastamento"
+                                            class="mt-1 block w-full modern-input" placeholder="Ex: I-1 (SJC)">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_remuneracaoMesAnt"
+                                            class="block text-sm font-medium text-gray-700">23.
+                                            Remuneração Mês Anterior (R$):</label>
+                                        <input type="number" id="trct_remuneracaoMesAnt"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_dataAdmissao" class="block text-sm font-medium text-gray-700">24.
+                                            Data de Admissão:</label>
+                                        <input type="date" id="trct_dataAdmissao" class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_dataAvisoPrevio"
+                                            class="block text-sm font-medium text-gray-700">25.
+                                            Data do Aviso Prévio:</label>
+                                        <input type="date" id="trct_dataAvisoPrevio"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_dataAfastamento"
+                                            class="block text-sm font-medium text-gray-700">26.
+                                            Data de Afastamento:</label>
+                                        <input type="date" id="trct_dataAfastamento"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_codAfastamento" class="block text-sm font-medium text-gray-700">27.
+                                            Cód. Afastamento:</label>
+                                        <input type="text" id="trct_codAfastamento"
+                                            class="mt-1 block w-full modern-input" placeholder="Ex: 01 (SJC)">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_pensaoTRCT" class="block text-sm font-medium text-gray-700">28.
+                                            Pens. Alim. (%) (TRCT):</label>
+                                        <input type="number" id="trct_pensaoTRCT"
+                                            class="mt-1 block w-full modern-input input-trct" value="0" min="0" max="100">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_pensaoFGTS" class="block text-sm font-medium text-gray-700">29.
+                                            Pens. Alim. (%) (FGTS):</label>
+                                        <input type="number" id="trct_pensaoFGTS"
+                                            class="mt-1 block w-full modern-input input-trct" value="0" min="0" max="100">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_categoriaTrabalhador"
+                                            class="block text-sm font-medium text-gray-700">30.
+                                            Categoria do Trabalhador:</label>
+                                        <input type="text" id="trct_categoriaTrabalhador"
+                                            class="mt-1 block w-full modern-input" placeholder="Ex: 01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_codigoSindical" class="block text-sm font-medium text-gray-700">31.
+                                            Código Sindical:</label>
+                                        <input type="text" id="trct_codigoSindical"
+                                            class="mt-1 block w-full modern-input"
+                                            placeholder="Ex: 999.000.000.00000-3">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_sindicato" class="block text-sm font-medium text-gray-700">32.
+                                            CNPJ e Nome da Entidade Sindical:</label>
+                                        <input type="text" id="trct_sindicato" class="mt-1 block w-full modern-input"
+                                            placeholder="Ex: CNPJ/Nome">
+                                    </div>
+                                </div>
+
+                                <h4 class="font-semibold text-lg text-gray-700 mb-3 mt-8">2.2. Proventos - Verbas
+                                    Rescisórias
+                                    (Campos 50 a 99)</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                    <div class="input-group">
+                                        <label for="trct_saldoSalario" class="block text-sm font-medium text-gray-700">50.
+                                            Saldo de Salário (R$):</label>
+                                        <input type="number" id="trct_saldoSalario"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_comissoes" class="block text-sm font-medium text-gray-700">51.
+                                            Comissões (R$):</label>
+                                        <input type="number" id="trct_comissoes"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_horasExtras" class="block text-sm font-medium text-gray-700">56.1.
+                                            Horas Extras (R$):</label>
+                                        <input type="number" id="trct_horasExtras"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_decimoTerceiro"
+                                            class="block text-sm font-medium text-gray-700">63.
+                                            13º Salário Proporcional (R$):</label>
+                                        <input type="number" id="trct_decimoTerceiro"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_feriasProporcionais"
+                                            class="block text-sm font-medium text-gray-700">65. Férias Proporcionais + 1/3
+                                            (R$):</label>
+                                        <input type="number" id="trct_feriasProporcionais"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_feriasVencidas" class="block text-sm font-medium text-gray-700">66.
+                                            Férias Vencidas + 1/3 (R$):</label>
+                                        <input type="number" id="trct_feriasVencidas"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label for="trct_avisoPrevio" class="block text-sm font-medium text-gray-700">69.
+                                            Aviso Prévio Indenizado (R$):</label>
+                                        <input type="number" id="trct_avisoPrevio"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_decimoTerceiroIndenizado"
+                                            class="block text-sm font-medium text-gray-700">70.
+                                            13º Salário (Aviso Prévio Indenizado) (R$):</label>
+                                        <input type="number" id="trct_decimoTerceiroIndenizado"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_feriasIndenizadasIndenizadas"
+                                            class="block text-sm font-medium text-gray-700">71.
+                                            Férias (Aviso Prévio Indenizado) + 1/3 (R$):</label>
+                                        <input type="number" id="trct_feriasIndenizadasIndenizadas"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_outrasVerbas" class="block text-sm font-medium text-gray-700">95.
+                                            Outras Verbas (R$):</label>
+                                        <input type="number" id="trct_outrasVerbas"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                </div>
+
+                                <h4 class="font-semibold text-lg text-gray-700 mb-3 mt-8">2.3. Deduções (Campos 100 a
+                                    114.2)
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                    <div class="input-group">
+                                        <label for="trct_pensaoAlimenticia"
+                                            class="block text-sm font-medium text-gray-700">100. Pensão Alimentícia
+                                            (R$):</label>
+                                        <input type="number" id="trct_pensaoAlimenticia"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_adiantamento"
+                                            class="block text-sm font-medium text-gray-700">101.
+                                            Adiantamento Salarial (R$):</label>
+                                        <input type="number" id="trct_adiantamento"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label for="trct_adiantamento13"
+                                            class="block text-sm font-medium text-gray-700">102.
+                                            Adiantamento 13º Salário (R$):</label>
+                                        <input type="number" id="trct_adiantamento13"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_avisoPrevioDesconto"
+                                            class="block text-sm font-medium text-gray-700">103. Desconto Aviso Prévio Não
+                                            Cumprido (R$):</label>
+                                        <input type="number" id="trct_avisoPrevioDesconto"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_inss" class="block text-sm font-medium text-gray-700">112.1
+                                            Previdência Social (INSS) (R$):</label>
+                                        <input type="number" id="trct_inss"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_inss13" class="block text-sm font-medium text-gray-700">112.2
+                                            Previdência Social (INSS 13º) (R$):</label>
+                                        <input type="number" id="trct_inss13"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_irrf" class="block text-sm font-medium text-gray-700">114.1
+                                            Imposto
+                                            de Renda (IRRF) (R$):</label>
+                                        <input type="number" id="trct_irrf"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_irrf13" class="block text-sm font-medium text-gray-700">114.2
+                                            IRRF
+                                            sobre 13º Salário (R$):</label>
+                                        <input type="number" id="trct_irrf13"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="trct_outrosDescontos"
+                                            class="block text-sm font-medium text-gray-700">115.
+                                            Outros Descontos (R$):</label>
+                                        <input type="number" id="trct_outrosDescontos"
+                                            class="mt-1 block w-full modern-input input-trct" value="0.00" step="0.01">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                                    <button type="button" id="btnLimparTRCT"
+                                        class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-red-600 transition duration-150 ease-in-out font-bold sm:w-1/3">
+                                        Apagar Dados do TRCT
+                                    </button>
+                                    <button type="button" id="btnCalcularTRCT"
+                                        class="bg-[#0284c7] text-white px-6 py-3 rounded-lg shadow-md hover:bg-[#005a62] transition duration-150 ease-in-out font-bold sm:w-2/3">
+                                        Calcular Totais do TRCT e Iniciar Conciliação (Passo 3)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border rounded-lg shadow-md">
+                            <button type="button"
+                                class="accordion-button flex justify-between items-center text-xl font-semibold text-gray-800 bg-gray-100"
+                                onclick="toggleSection('passo3Content')">
+                                <span>3. Resultados da Conciliação</span>
+                                <svg id="icon-passo3Content" class="w-5 h-5 transition-transform duration-300 transform"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
+                            <div id="passo3Content" class="p-4 accordion-content collapsed" style="display:none;">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-3 border-b pb-1">Passo 3: Conciliação
+                                    entre
+                                    as Informações</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Verba (Rubrica TRCT)</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Cálculo Próprio (R$)</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    TRCT Empresa (R$)</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Diferença (R$)</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaConciliacao" class="bg-white divide-y divide-gray-200">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mt-6 p-4 border rounded-md" id="resumoFinalConciliacao">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <script>
+
+                    /* -------------------------------------------------------------------------- */
+                    /* FUNÇÕES DE CONTROLE E ACORDEÃO */
+                    /* -------------------------------------------------------------------------- */
+
+                    function formatarMoeda(valor) {
+                        if (isNaN(valor)) return 'R$ 0,00';
+                        return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    }
+
+                    function toggleSection(sectionId) {
+                        const content = document.getElementById(sectionId);
+                        const icon = document.getElementById('icon-' + sectionId);
+                        const isCollapsed = content.classList.contains('collapsed');
+
+                        if (isCollapsed) {
+                            // Expandir
+                            content.style.display = 'block';
+                            content.classList.remove('collapsed');
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            icon.classList.add('rotate-90');
+
+                        } else {
+                            // Recolher
+                            content.style.maxHeight = '0';
+
+                            setTimeout(() => {
+                                content.classList.add('collapsed');
+                                content.style.maxHeight = '';
+                                if (sectionId === 'passo3Content') {
+                                    content.style.display = 'none';
+                                }
+                            }, 500);
+                            icon.classList.remove('rotate-90');
+                        }
+                    }
+
+                    function expandSection(sectionId) {
+                        const content = document.getElementById(sectionId);
+                        const icon = document.getElementById('icon-' + sectionId);
+
+                        if (content.classList.contains('collapsed')) {
+                            content.style.display = 'block';
+                            content.classList.remove('collapsed');
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            icon.classList.add('rotate-90');
+                        }
+                    }
+
+
+                    /* -------------------------------------------------------------------------- */
+                    /* FUNÇÕES DE LIMPEZA DE TRCT */
+                    /* -------------------------------------------------------------------------- */
+
+                    /**
+                     * NOVO: Limpa todos os campos do TRCT e o resultado da conciliação
+                     */
+                    function clearTrctData() {
+                        const passo2Content = document.getElementById('passo2Content');
+                        // Seleciona todos os inputs, selects e textareas dentro do Passo 2
+                        const inputs = passo2Content.querySelectorAll('input, select, textarea');
+
+                        inputs.forEach(input => {
+                            if (input.type === 'number') {
+                                input.value = '0.00';
+                            } else if (input.type === 'text' || input.type === 'date') {
+                                input.value = '';
+                            } else if (input.tagName === 'SELECT') {
+                                input.selectedIndex = 0; // Reset select
+                            }
+                        });
+
+                        // Limpa os resultados da conciliação (Passo 3)
+                        document.getElementById('tabelaConciliacao').innerHTML = '';
+                        document.getElementById('resumoFinalConciliacao').innerHTML = '';
+
+                        // Oculta o Passo 3
+                        const passo3Content = document.getElementById('passo3Content');
+                        if (passo3Content) {
+                            passo3Content.style.display = 'none';
+                            // Garante que o acordeão volte para o estado fechado
+                            passo3Content.classList.add('collapsed');
+                            passo3Content.style.maxHeight = '';
+                            document.getElementById('icon-passo3Content').classList.remove('rotate-90');
+                        }
+
+                        alert("Dados do TRCT apagados com sucesso.");
+                    }
+
+
+                    /* -------------------------------------------------------------------------- */
+                    /* FUNÇÕES DE CONFERÊNCIA (MANTIDAS) */
+                    /* -------------------------------------------------------------------------- */
+
+                    let calculosProprios = {
+                        proventosBrutos: 0.00,
+                        deducoes: 0.00,
+                        liquido: 0.00,
+                        saldoSalario: 0.00,
+                        avisoPrevio: 0.00,
+                        decimoTerceiro: 0.00,
+                        feriasVencidas: 0.00,
+                        feriasProporcionais: 0.00,
+                        comissoes: 0.00,
+                        horasExtras: 0.00,
+                        outrasVerbas: 0.00,
+                        decimoTerceiroIndenizado: 0.00,
+                        feriasIndenizadasIndenizadas: 0.00,
+                        inss: 0.00,
+                        inss13: 0.00,
+                        irrf: 0.00,
+                        irrf13: 0.00,
+                        avisoPrevioDesconto: 0.00,
+                        pensaoAlimenticia: 0.00,
+                        adiantamento: 0.00,
+                        adiantamento13: 0.00,
+                        outrosDescontos: 0.00
+                    };
+
+                    const tolerancia = 0.01;
+
+                    function isNearZero(value) {
+                        return Math.abs(value) < tolerancia;
+                    }
+
+                    function getCalculatedValues() {
+                        const resultadosSimulados = {
+                            saldoSalario: 1000.00,
+                            avisoPrevio: 1500.00,
+                            decimoTerceiro: 500.00,
+                            feriasVencidas: 1000.00,
+                            feriasProporcionais: 500.00,
+                            comissoes: 100.00,
+                            horasExtras: 200.00,
+                            outrasVerbas: 200.00,
+                            decimoTerceiroIndenizado: 50.00,
+                            feriasIndenizadasIndenizadas: 50.00,
+                            inss: 100.00,
+                            inss13: 50.00,
+                            irrf: 100.00,
+                            irrf13: 50.00,
+                            avisoPrevioDesconto: 0.00,
+                            pensaoAlimenticia: 1000.00,
+                            adiantamento: 100.00,
+                            adiantamento13: 50.00,
+                            outrosDescontos: 100.00
+                        };
+
+                        resultadosSimulados.proventosBrutos = resultadosSimulados.saldoSalario + resultadosSimulados.avisoPrevio + resultadosSimulados.decimoTerceiro + resultadosSimulados.feriasVencidas + resultadosSimulados.feriasProporcionais + resultadosSimulados.comissoes + resultadosSimulados.horasExtras + resultadosSimulados.outrasVerbas + resultadosSimulados.decimoTerceiroIndenizado + resultadosSimulados.feriasIndenizadasIndenizadas;
+
+                        resultadosSimulados.deducoes = resultadosSimulados.inss + resultadosSimulados.inss13 + resultadosSimulados.irrf + resultadosSimulados.irrf13 + resultadosSimulados.avisoPrevioDesconto + resultadosSimulados.pensaoAlimenticia + resultadosSimulados.adiantamento + resultadosSimulados.outrosDescontos + resultadosSimulados.adiantamento13;
+
+                        resultadosSimulados.liquido = resultadosSimulados.proventosBrutos - resultadosSimulados.deducoes;
+
+                        calculosProprios = { ...calculosProprios, ...resultadosSimulados };
+
+                        return resultadosSimulados;
+                    }
+
+                    // PASSO 1: IMPORTAÇÃO
+                    function importarCalculos() {
+                        getCalculatedValues();
+
+                        if (calculosProprios.proventosBrutos === 0.00) {
+                            alert("Atenção: A simulação de cálculo próprio retornou R$ 0,00. Ajuste a função getCalculatedValues() ou os inputs de cálculo.");
+                            document.getElementById('resumoCalculosProprios').innerHTML = 'Valores a serem comparados: <span class="font-bold text-red-600">Nenhum cálculo importado.</span>';
+                            return;
+                        }
+
+                        document.getElementById('resumoCalculosProprios').innerHTML = `
+                            <p class="font-bold text-[#007380]">Cálculos Próprios Importados com Sucesso (Valores de Referência):</p>
+                            <p>Proventos Brutos: ${formatarMoeda(calculosProprios.proventosBrutos)}</p>
+                            <p>Total de Deduções: ${formatarMoeda(calculosProprios.deducoes)}</p>
+                            <p>Total Líquido Estimado: <span class="font-bold text-[#0284c7]">${formatarMoeda(calculosProprios.liquido)}</span></p>
+                        `;
+
+                        const passo3Content = document.getElementById('passo3Content');
+                        if (passo3Content) {
+                            passo3Content.style.display = 'block';
+                            expandSection('passo3Content');
+                        }
+                    }
+
+                    // PASSO 2: CÁLCULO E VALIDAÇÃO DO TRCT DIGITADO
+                    function calcularTotaisTRCT() {
+                        const proventosTRCT = parseFloat(document.getElementById('trct_saldoSalario').value) +
+                            parseFloat(document.getElementById('trct_avisoPrevio').value) +
+                            parseFloat(document.getElementById('trct_decimoTerceiro').value) +
+                            parseFloat(document.getElementById('trct_feriasVencidas').value) +
+                            parseFloat(document.getElementById('trct_feriasProporcionais').value) +
+                            parseFloat(document.getElementById('trct_comissoes').value) +
+                            parseFloat(document.getElementById('trct_horasExtras').value) +
+                            parseFloat(document.getElementById('trct_outrasVerbas').value) +
+                            parseFloat(document.getElementById('trct_decimoTerceiroIndenizado').value) +
+                            parseFloat(document.getElementById('trct_feriasIndenizadasIndenizadas').value);
+
+
+                        const deducoesTRCT = parseFloat(document.getElementById('trct_inss').value) +
+                            parseFloat(document.getElementById('trct_inss13').value) +
+                            parseFloat(document.getElementById('trct_irrf').value) +
+                            parseFloat(document.getElementById('trct_irrf13').value) +
+                            parseFloat(document.getElementById('trct_avisoPrevioDesconto').value) +
+                            parseFloat(document.getElementById('trct_pensaoAlimenticia').value) +
+                            parseFloat(document.getElementById('trct_adiantamento').value) +
+                            parseFloat(document.getElementById('trct_outrosDescontos').value) +
+                            parseFloat(document.getElementById('trct_adiantamento13').value);
+
+                        const liquidoTRCT = proventosTRCT - deducoesTRCT;
+
+                        return { proventosTRCT, deducoesTRCT, liquidoTRCT };
+                    }
+
+                    // PASSO 3: CONCILIAÇÃO
+                    function realizarConciliacao() {
+                        if (calculosProprios.proventosBrutos === 0.00) {
+                            alert("Erro: Importe os cálculos próprios (Passo 1) antes de conciliar.");
+                            return;
+                        }
+
+                        // Colapsa o Passo 2 ao calcular/conciliar
+                        toggleSection('passo2Content');
+                        expandSection('passo3Content');
+
+
+                        const { proventosTRCT, deducoesTRCT, liquidoTRCT } = calcularTotaisTRCT();
+
+                        const verbasComparacao = [
+                            { nome: 'Saldo de Salário', rubrica: '50', proprio: calculosProprios.saldoSalario, trctInputId: 'trct_saldoSalario' },
+                            { nome: 'Comissões', rubrica: '51', proprio: calculosProprios.comissoes, trctInputId: 'trct_comissoes' },
+                            { nome: 'Horas Extras', rubrica: '56.1', proprio: calculosProprios.horasExtras, trctInputId: 'trct_horasExtras' },
+                            { nome: '13º Salário Proporcional', rubrica: '63', proprio: calculosProprios.decimoTerceiro, trctInputId: 'trct_decimoTerceiro' },
+                            { nome: 'Férias Proporcionais + 1/3', rubrica: '65', proprio: calculosProprios.feriasProporcionais, trctInputId: 'trct_feriasProporcionais' },
+                            { nome: 'Férias Vencidas + 1/3', rubrica: '66', proprio: calculosProprios.feriasVencidas, trctInputId: 'trct_feriasVencidas' },
+                            { nome: 'Aviso Prévio Indenizado', rubrica: '69', proprio: calculosProprios.avisoPrevio, trctInputId: 'trct_avisoPrevio' },
+                            { nome: '13º Salário (Aviso Prévio Indenizado)', rubrica: '70', proprio: calculosProprios.decimoTerceiroIndenizado, trctInputId: 'trct_decimoTerceiroIndenizado' },
+                            { nome: 'Férias (Aviso Prévio Indenizado) + 1/3', rubrica: '71', proprio: calculosProprios.feriasIndenizadasIndenizadas, trctInputId: 'trct_feriasIndenizadasIndenizadas' },
+                            { nome: 'Outras Verbas (Proventos)', rubrica: '95', proprio: calculosProprios.outrasVerbas, trctInputId: 'trct_outrasVerbas' },
+                            { nome: 'Pensão Alimentícia (R$)', rubrica: '100', proprio: calculosProprios.pensaoAlimenticia, trctInputId: 'trct_pensaoAlimenticia', isDeduction: true },
+                            { nome: 'Adiantamento Salarial', rubrica: '101', proprio: calculosProprios.adiantamento, trctInputId: 'trct_adiantamento', isDeduction: true },
+                            { nome: 'Adiantamento 13º Salário', rubrica: '102', proprio: calculosProprios.adiantamento13, trctInputId: 'trct_adiantamento13', isDeduction: true },
+                            { nome: 'Desc. Aviso Prévio (Falta)', rubrica: '103', proprio: calculosProprios.avisoPrevioDesconto, trctInputId: 'trct_avisoPrevioDesconto', isDeduction: true },
+                            { nome: 'INSS', rubrica: '112.1', proprio: calculosProprios.inss, trctInputId: 'trct_inss', isDeduction: true },
+                            { nome: 'INSS 13º Salário', rubrica: '112.2', proprio: calculosProprios.inss13

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal | Calculadora Trabalhista TRT19</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Estilos de Botão/Acesso Rápido */
+        .card-acesso {
+            border-left: 5px solid #005a62;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-acesso:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            border-left-color: #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col h-screen p-4 md:p-8">
+
+        <main class="flex-1 flex items-center justify-center">
+            <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-gray-200">
+                <div class="flex justify-center mb-6">
+                    <a href="https://www.trt19.jus.br/" target="_blank" rel="noopener noreferrer">
+                        <img src="https://site.trt19.jus.br/sites/default/files/logo-trt19.png"
+                            alt="Logotipo da Justiça do Trabalho, Tribunal Regional do Trabalho da 19ª Região"
+                            class="w-40 md:w-56 h-auto">
+                    </a>
+                </div>
+                <h1 class="text-3xl md:text-4xl text-center mb-4 text-[#007380] font-bold">
+                    Calculadora Trabalhista TRT19
+                </h1>
+                <p class="text-center text-gray-600 mb-10 text-lg">
+                    Selecione uma das opções para simular ou conferir suas verbas trabalhistas.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="calculorescisao_separado.html" class="block card-acesso bg-blue-50 hover:bg-blue-100 p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold text-[#005a62] mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[#0284c7]" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            1. Calcular Minha Rescisão
+                        </h2>
+                        <p class="text-gray-600 text-sm">Simule uma estimativa das verbas rescisórias devidas, como saldo de salário, férias e 13º salário. Inicie o cálculo.</p>
+                    </a>
+
+                    <a href="conferenciadoscalculos.html" class="block card-acesso bg-yellow-50 hover:bg-yellow-100 p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold text-[#005a62] mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[#0284c7]" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            2. Conferir com o TRCT da Empresa
+                        </h2>
+                        <p class="text-gray-600 text-sm">Compare o cálculo estimado com o Termo de Rescisão (TRCT) fornecido pela empresa e identifique possíveis divergências.</p>
+                    </a>
+                </div>
+
+                <div class="text-center mt-10 p-4 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        Esta é uma ferramenta orientativa da Justiça do Trabalho, Tribunal Regional do Trabalho da 19ª Região.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

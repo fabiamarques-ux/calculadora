@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Trabalhista | Rescisão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* -------------------------------------------------------------------------- */
+        /* 1. ESTILOS GERAIS E TIPOGRAFIA */
+        /* -------------------------------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .section-header {
+            border-bottom: 2px solid #007380;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* 2. ESTILOS DE NAVEGAÇÃO E ASIDE */
+        /* -------------------------------------------------------------------------- */
+        .aside-bg {
+            background-color: #005a62;
+            /* Azul-turquesa mais escuro */
+        }
+
+        .nav-link {
+            color: #d1d5db;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .nav-link:hover {
+            background-color: #007380;
+        }
+
+        .active-link {
+            background-color: #0284c7;
+            /* Azul ciano para link ativo */
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* 3. ESTILOS DE INPUTS E FORMULÁRIO */
+        /* -------------------------------------------------------------------------- */
+        .modern-input {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: #0284c7;
+            /* Azul ciano */
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* 4. ESTILOS DE RESULTADO E RELATÓRIO */
+        /* -------------------------------------------------------------------------- */
+        .resultado {
+            margin-top: 30px;
+            border-top: 2px solid #0056b3;
+            padding-top: 20px;
+        }
+
+        .total.bruto {
+            background-color: #e6f7ff;
+        }
+
+        .total.liquido {
+            background-color: #ccffcc;
+        }
+
+        /* Classe para forçar a transição de altura da gaveta */
+        .accordion-content {
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* 5. ESTILOS DE IMPRESSÃO */
+        /* -------------------------------------------------------------------------- */
+        @media print {
+
+            /* Ocultar elementos não essenciais para o relatório impresso */
+            .aside-bg,
+            .accordion-item,
+            button,
+            .input-group,
+            .aviso-importante-global,
+            .resultado>.flex.justify-center.gap-4 {
+                /* Oculta os botões de ação do resultado */
+                display: none !important;
+            }
+
+            /* Garantir que o relatório e seus pais fiquem visíveis e sem fundo/sombra */
+            body,
+            main,
+            .content-section,
+            .max-w-4xl {
+                background: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: none !important;
+                padding: 0 !important;
+            }
+
+            /* Garantir que o div de resultado seja o foco */
+            #resultadoCalculo {
+                display: block !important;
+                margin-top: 0 !important;
+                border-top: none !important;
+                padding-top: 0 !important;
+            }
+
+            /* Configurações da tabela para impressão */
+            .resultado table {
+                page-break-inside: avoid;
+                font-size: 10pt;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col h-full p-4 md:p-8">
+
+        <main class="flex-1">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-gray-200">
+                <div class="flex justify-center mb-6">
+                    <a href="https://www.trt19.jus.br/" target="_blank" rel="noopener noreferrer">
+                        <img src="https://site.trt19.jus.br/sites/default/files/logo-trt19.png"
+                            alt="Logotipo da Justiça do Trabalho, Tribunal Regional do Trabalho da 19ª Região"
+                            class="w-40 md:w-56 h-auto">
+                    </a>
+                </div>
+                <h1 class="text-3xl md:text-4xl text-center mb-6 text-[#007380]">Calculadora de Rescisão Trabalhista
+                </h1>
+                <p class="text-center text-gray-600 mb-8">Simule agora a estimativa das suas verbas trabalhistas. Uma
+                    ferramenta orientativa para acesso à informação e compreensão inicial dos seus direitos."</p>
+
+                <section id="proposito" class="content-section">
+                    <h2 class="text-2xl text-[#007380] section-header mb-4">1. CÁLCULO DA RESCISÃO</h2>
+
+                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
+                        <button id="header-1"
+                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
+                            data-target="content-1" aria-expanded="false">
+                            <h3 class="text-xl font-semibold text-gray-800">1. Dados Contratuais e Prazos</h3>
+                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="content-1"
+                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0">
+                                <div class="flex flex-col md:flex-row gap-4 mb-8">
+                                    <div class="flex-1">
+
+                                        <div class="input-group mb-4">
+                                            <label for="tipoRescisaoNew"
+                                                class="block text-sm font-medium text-gray-700">Tipo de
+                                                Rescisão:</label>
+                                            <select id="tipoRescisaoNew" onchange="atualizarCampos()"
+                                                class="mt-1 block w-full modern-input bg-white" required>
+                                                <option value="" selected disabled>Selecione...</option>
+                                                <option value="SJC">Demissão Sem Justa Causa</option>
+                                                <option value="CJC">Demissão Com Justa Causa</option>
+                                                <option value="PEDIDO">Pedido de Demissão</option>
+                                                <option value="ACORDO">Comum Acordo</option>
+                                                <option value="CULPA_RECIPROCA">Culpa Recíproca (empregador e empregado)
+                                                </option>
+                                                <option value="RESCISAO_INDIRETA">Culpa do Empregador (Indireta do
+                                                    Contrato de Trabalho)</option>
+                                                <option value="ANTEC_EMPREGADOR">Antecipada do Contrato de Experiência
+                                                    (iniciativa do empregador)</option>
+                                                <option value="ANTEC_EMPREGADO">Antecipada do Contrato de Experiência
+                                                    (iniciativa do empregado)</option>
+                                                <option value="PDV_PDI">PDV / PDI (Plano de Demissão)</option>
+                                                <option value="DISP_COLETIVA">Dispensa Coletiva</option>
+                                                <option value="APOSENTADORIA">Aposentadoria do Empregado</option>
+                                                <option value="FALECIMENTO">Falecimento do Empregado</option>
+
+                                            </select>
+                                        </div>
+
+                                        <div class="input-group mb-4">
+                                            <label for="avisoPrevioIndenizado"
+                                                class="block text-sm font-medium text-gray-700">Aviso Prévio Indenizado
+                                                (pela Empresa):</label>
+                                            <select id="avisoPrevioIndenizado"
+                                                class="mt-1 block w-full modern-input bg-white" required>
+                                                <option value="" selected disabled>Selecione...</option>
+                                                <option value="NAO">Não (Aviso Trabalhado)</option>
+                                                <option value="SIM">Sim (Aviso Indenizado)</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="input-group mb-4">
+                                            <label for="avisoPrevioDescontado"
+                                                class="block text-sm font-medium text-gray-700">Aviso Prévio Descontado
+                                                (Não Cumprido):</label>
+                                            <select id="avisoPrevioDescontado"
+                                                class="mt-1 block w-full modern-input bg-white" required>
+                                                <option value="" selected disabled>Selecione...</option>
+                                                <option value="NAO">Não (Aviso Trabalhado)</option>
+                                                <option value="SIM">Sim (Desconto de Aviso)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1">
+                                        <div class="input-group mb-4">
+                                            <label for="dataAdmissao"
+                                                class="block text-sm font-medium text-gray-700">Data de
+                                                Admissão:</label>
+                                            <input type="date" id="dataAdmissao" value=""
+                                                class="mt-1 block w-full modern-input">
+                                        </div>
+                                        <div class="input-group mb-4">
+                                            <label for="dataDemissao"
+                                                class="block text-sm font-medium text-gray-700">Data de
+                                                Demissão (Afastamento):</label>
+                                            <input type="date" id="dataDemissao" value=""
+                                                class="mt-1 block w-full modern-input">
+                                        </div>
+                                        <div class="input-group mb-4">
+                                            <label for="dataPagamento"
+                                                class="block text-sm font-medium text-gray-700">Data de
+                                                Pagamento da Rescisão (Homologação):</label>
+                                            <input type="date" id="dataPagamento" value=""
+                                                class="mt-1 block w-full modern-input">
+                                        </div>
+                                        <div class="input-group mb-4" id="grupoDataTerminoContrato"
+                                            style="display:none;">
+                                            <label for="dataTerminoContrato"
+                                                class="block text-sm font-medium text-gray-700">Data de
+                                                Término Prevista (Contrato a Termo):</label>
+                                            <input type="date" id="dataTerminoContrato" value=""
+                                                class="mt-1 block w-full modern-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border border-yellow-300 bg-yellow-50 rounded-lg p-3 mt-6">
+                                    <h4
+                                        class="font-semibold text-sm text-gray-700 mb-3 border-b border-yellow-200 pb-1">
+                                        Contagem Proporcional</h4>
+
+                                    <div class="flex flex-col md:flex-row gap-4">
+                                        <div class="flex-1 input-group mb-4 md:mb-0">
+                                            <label for="feriasVencidasNew"
+                                                class="block text-sm font-medium text-gray-700">Períodos
+                                                de Férias Vencidas (Qtd):</label>
+                                            <input type="number" id="feriasVencidasNew" value="0" placeholder="0"
+                                                min="0" step="1" class="mt-1 block w-full modern-input">
+                                            <small class="text-xs text-gray-500">*Cada período é 12 meses
+                                                completos.</small>
+                                        </div>
+
+                                        <div class="flex-1 input-group mb-0">
+                                            <label for="faltasInjustificadas"
+                                                class="block text-sm font-medium text-gray-700">Faltas
+                                                Injustificadas no Período (Qtd):</label>
+                                            <input type="number" id="faltasInjustificadas" value="0" placeholder="0"
+                                                min="0" step="1" class="mt-1 block w-full modern-input">
+                                            <small class="text-xs text-gray-500">*Afeta a contagem de avos de 13º e
+                                                Férias. Inclua
+                                                as faltas de todo o último período.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
+                        <button id="header-2"
+                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
+                            data-target="content-2" aria-expanded="false">
+                            <h3 class="text-xl font-semibold text-gray-800">2. Componentes da Remuneração</h3>
+                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="content-2"
+                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0">
+                                <div class="flex flex-col md:flex-row gap-4 mb-8">
+                                    <div class="flex-1">
+                                        <div class="input-group mb-4">
+                                            <label for="salarioBruto"
+                                                class="block text-sm font-medium text-gray-700">Salário Base
+                                                Mensal Bruto (R$):</label>
+                                            <input type="number" id="salarioBruto" value="" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="input-group mb-4">
+                                            <label for="comissoesMedia"
+                                                class="block text-sm font-medium text-gray-700">Média Mensal
+                                                de Comissões (R$):</label>
+                                            <input type="number" id="comissoesMedia" value="0.00" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="input-group mb-4">
+                                            <label for="outrosAdicionais"
+                                                class="block text-sm font-medium text-gray-700">Média Mensal de Gorjetas
+                                                (R$):</label>
+                                            <input type="number" id="outrosAdicionais" value="0.00"
+                                                placeholder="R$ 0,00" min="0" step="0.01"
+                                                class="mt-1 block w-full modern-input">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="input-group mb-4">
+                                            <label for="horasExtrasMedia"
+                                                class="block text-sm font-medium text-gray-700">Média Mensal
+                                                de Horas Extras (R$):</label>
+                                            <input type="number" id="horasExtrasMedia" value="0.00"
+                                                placeholder="R$ 0,00" min="0" step="0.01"
+                                                class="mt-1 block w-full modern-input">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
+                        <button id="header-3"
+                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
+                            data-target="content-3" aria-expanded="false">
+                            <h3 class="text-xl font-semibold text-gray-800">3. Gratificações, Adicionais e Estabilidades
+                            </h3>
+                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="content-3"
+                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0">
+                                <p class="text-sm text-gray-600 mb-4">*Marque e informe o valor das verbas que devem ser
+                                    reintegradas/incluídas na base de cálculo:</p>
+                                <div class="flex flex-col lg:flex-row gap-6 mb-8">
+
+                                    <div class="flex-1 border border-blue-200 bg-blue-50 rounded-lg p-4">
+                                        <h4
+                                            class="font-semibold text-sm text-blue-700 mb-3 border-b border-blue-200 pb-1">
+                                            1. Adicionais Padrão (Percentuais)</h4>
+
+                                        <div class="input-group mb-4">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Adicional de
+                                                Insalubridade (SM):</label>
+                                            <div id="insalubridade-options" class="space-y-2">
+                                                <div class="flex items-center">
+                                                    <input type="checkbox" id="insalubridade_10"
+                                                        name="insalubridade_nivel" value="0.10"
+                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
+                                                        onclick="handleInsalubridadeChange(this)">
+                                                    <label for="insalubridade_10"
+                                                        class="text-sm font-medium text-gray-700">Baixo
+                                                        (10% SM)</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input type="checkbox" id="insalubridade_20"
+                                                        name="insalubridade_nivel" value="0.20"
+                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
+                                                        onclick="handleInsalubridadeChange(this)">
+                                                    <label for="insalubridade_20"
+                                                        class="text-sm font-medium text-gray-700">Médio
+                                                        (20% SM)</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input type="checkbox" id="insalubridade_40"
+                                                        name="insalubridade_nivel" value="0.40"
+                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
+                                                        onclick="handleInsalubridadeChange(this)">
+                                                    <label for="insalubridade_40"
+                                                        class="text-sm font-medium text-gray-700">Alto
+                                                        (40% SM)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-4 flex items-center">
+                                            <input type="checkbox" id="periculosidade"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="periculosidade"
+                                                class="text-sm font-medium text-gray-700">Periculosidade
+                                                (30% Salário Base)</label>
+                                        </div>
+                                        <div class="input-group mb-4 flex items-center">
+                                            <input type="checkbox" id="transferencia"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="transferencia"
+                                                class="text-sm font-medium text-gray-700">Transferência
+                                                (25% Salário Base)</label>
+                                        </div>
+                                        <div class="input-group mb-4 flex items-center">
+                                            <input type="checkbox" id="adicionalNoturno"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="adicionalNoturno"
+                                                class="text-sm font-medium text-gray-700">Adicional Noturno
+                                                (20% Salário Base)</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 border border-green-200 bg-green-50 rounded-lg p-4">
+                                        <h4
+                                            class="font-semibold text-sm text-green-700 mb-3 border-b border-green-200 pb-1">
+                                            2. Gratificações (Valores Fixos)</h4>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintGratFuncao" data-input-id="valorGratFuncao"
+                                                data-container-id="container-valorGratFuncao"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintGratFuncao"
+                                                class="text-sm font-medium text-gray-700">Função</label>
+                                        </div>
+                                        <div id="container-valorGratFuncao" class="input-group mb-4 ml-5 hidden">
+                                            <label for="valorGratFuncao"
+                                                class="block text-xs font-medium text-gray-500">Valor
+                                                Mensal (R$):</label>
+                                            <input type="number" id="valorGratFuncao" value="0.00" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintQuebraCaixa"
+                                                data-input-id="valorQuebraCaixa"
+                                                data-container-id="container-valorQuebraCaixa"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintQuebraCaixa"
+                                                class="text-sm font-medium text-gray-700">Tempo de Serviço
+                                            </label>
+                                        </div>
+                                        <div id="container-valorQuebraCaixa" class="input-group mb-4 ml-5 hidden">
+                                            <label for="valorQuebraCaixa"
+                                                class="block text-xs font-medium text-gray-500">Valor
+                                                Mensal (R$):</label>
+                                            <input type="number" id="valorQuebraCaixa" value="0.00"
+                                                placeholder="R$ 0,00" min="0" step="0.01"
+                                                class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintPremio" data-input-id="valorPremio"
+                                                data-container-id="container-valorPremio"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintPremio"
+                                                class="text-sm font-medium text-gray-700">Produtividade</label>
+                                        </div>
+                                        <div id="container-valorPremio" class="input-group mb-4 ml-5 hidden">
+                                            <label for="valorPremio"
+                                                class="block text-xs font-medium text-gray-500">Valor Médio
+                                                Mensal (R$):</label>
+                                            <input type="number" id="valorPremio" value="0.00" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintAjudaCusto" data-input-id="valorAjudaCusto"
+                                                data-container-id="container-valorAjudaCusto"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintAjudaCusto"
+                                                class="text-sm font-medium text-gray-700">Assiduidade</label>
+                                        </div>
+                                        <div id="container-valorAjudaCusto" class="input-group mb-4 ml-5 hidden">
+                                            <label for="valorAjudaCusto"
+                                                class="block text-xs font-medium text-gray-500">Valor Médio
+                                                Mensal (R$):</label>
+                                            <input type="number" id="valorAjudaCusto" value="0.00" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintBonus" data-input-id="valorBonus"
+                                                data-container-id="container-valorBonus"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintBonus" class="text-sm font-medium text-gray-700">Quebra de
+                                                Caixa</label>
+                                        </div>
+                                        <div id="container-valorBonus" class="input-group mb-4 ml-5 hidden">
+                                            <label for="valorBonus"
+                                                class="block text-xs font-medium text-gray-500">Valor Médio
+                                                Mensal (R$):</label>
+                                            <input type="number" id="valorBonus" value="0.00" placeholder="R$ 0,00"
+                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 border border-red-200 bg-red-50 rounded-lg p-4">
+                                        <h4
+                                            class="font-semibold text-sm text-red-700 mb-3 border-b border-red-200 pb-1">
+                                            3. Estabilidades (Indenização/Reintegração)</h4>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="estabilidadeGestante"
+                                                data-input-id="mesesGestante"
+                                                data-container-id="container-mesesGestante"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
+                                            <label for="estabilidadeGestante"
+                                                class="text-sm font-medium text-gray-700">Gestante (Até 5 meses após
+                                                parto)</label>
+                                        </div>
+                                        <div id="container-mesesGestante" class="input-group mb-4 ml-5 hidden">
+                                            <label for="mesesGestante"
+                                                class="block text-xs font-medium text-gray-500">Meses Remanescentes
+                                                (Qtd):</label>
+                                            <input type="number" id="mesesGestante" value="0" placeholder="0" min="0"
+                                                step="1" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="estabilidadeCipa" data-input-id="mesesCipa"
+                                                data-container-id="container-mesesCipa"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
+                                            <label for="estabilidadeCipa"
+                                                class="text-sm font-medium text-gray-700">Cipeiro (Mandato + 1
+                                                ano)</label>
+                                        </div>
+                                        <div id="container-mesesCipa" class="input-group mb-4 ml-5 hidden">
+                                            <label for="mesesCipa" class="block text-xs font-medium text-gray-500">Meses
+                                                Remanescentes
+                                                (Qtd):</label>
+                                            <input type="number" id="mesesCipa" value="0" placeholder="0" min="0"
+                                                step="1" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="estabilidadeAcidente"
+                                                data-input-id="mesesAcidente"
+                                                data-container-id="container-mesesAcidente"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
+                                            <label for="estabilidadeAcidente"
+                                                class="text-sm font-medium text-gray-700">Acidente de Trabalho/Doença
+                                                Ocupacional (12 meses)</label>
+                                        </div>
+                                        <div id="container-mesesAcidente" class="input-group mb-4 ml-5 hidden">
+                                            <label for="mesesAcidente"
+                                                class="block text-xs font-medium text-gray-500">Meses Remanescentes
+                                                (Qtd):</label>
+                                            <input type="number" id="mesesAcidente" value="0" placeholder="0" min="0"
+                                                step="1" class="mt-1 block w-full modern-input bg-white">
+                                        </div>
+
+                                        <div class="input-group mb-4 flex items-center">
+                                            <input type="checkbox" id="estabilidadeDirigenteSindical"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="estabilidadeDirigenteSindical"
+                                                class="text-sm font-medium text-gray-700">Dirigente Sindical (Omissão:
+                                                Não
+                                                calculado)</label>
+                                        </div>
+
+                                        <div class="input-group mb-4 flex items-center">
+                                            <input type="checkbox" id="estabilidadeDataBase"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="estabilidadeDataBase"
+                                                class="text-sm font-medium text-gray-700">Véspera da Data Base (30
+                                                dias / 1 Mês)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
+                        <button id="header-4"
+                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
+                            data-target="content-4" aria-expanded="false">
+                            <h3 class="text-xl font-semibold text-gray-800">4. Descontos e Adiantamentos
+                            </h3>
+                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="content-4"
+                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0">
+                                <p class="text-sm text-gray-600 mb-4">*Informe abaixo os valores de descontos a serem
+                                    abatidos do total líquido:</p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="input-group mb-4">
+                                        <label for="descontoAdiantamentoSalario"
+                                            class="block text-sm font-medium text-gray-700">Adiantamento de Salário
+                                            (R$):</label>
+                                        <input type="number" id="descontoAdiantamentoSalario" value="0.00"
+                                            placeholder="R$ 0,00" min="0" step="0.01"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group mb-4">
+                                        <label for="descontoAdiantamentoFerias"
+                                            class="block text-sm font-medium text-gray-700">Adiantamento de Férias
+                                            (R$):</label>
+                                        <input type="number" id="descontoAdiantamentoFerias" value="0.00"
+                                            placeholder="R$ 0,00" min="0" step="0.01"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group mb-4">
+                                        <label for="descontoAdiantamento13"
+                                            class="block text-sm font-medium text-gray-700">Adiantamento de 13º
+                                            (R$):</label>
+                                        <input type="number" id="descontoAdiantamento13" value="0.00"
+                                            placeholder="R$ 0,00" min="0" step="0.01"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group mb-4">
+                                        <label for="descontoValeTransporte"
+                                            class="block text-sm font-medium text-gray-700">Vale Transporte
+                                            (R$):</label>
+                                        <input type="number" id="descontoValeTransporte" value="0.00"
+                                            placeholder="R$ 0,00" min="0" step="0.01"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group mb-4">
+                                        <label for="descontoPensaoAlimenticia"
+                                            class="block text-sm font-medium text-gray-700">Pensão Alimentícia
+                                            (R$):</label>
+                                        <input type="number" id="descontoPensaoAlimenticia" value="0.00"
+                                            placeholder="R$ 0,00" min="0" step="0.01"
+                                            class="mt-1 block w-full modern-input">
+                                    </div>
+                                    <div class="input-group mb-4">
+                                        <label for="descontoOutros"
+                                            class="block text-sm font-medium text-gray-700">Outros Descontos
+                                            (R$):</label>
+                                        <input type="number" id="descontoOutros" value="0.00" placeholder="R$ 0,00"
+                                            min="0" step="0.01" class="mt-1 block w-full modern-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
+                        <button id="header-5"
+                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
+                            data-target="content-5" aria-expanded="false">
+                            <h3 class="text-xl font-semibold text-gray-800">5. FGTS - Fundo de Garantia</h3>
+                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="content-5"
+                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0">
+                                <p class="text-sm text-gray-600 mb-4">*Informe o saldo total depositado para que a multa
+                                    rescisória seja calculada e o saldo seja informado no relatório:</p>
+                                <div class="border border-blue-300 bg-blue-50 rounded-lg p-3 mt-6">
+                                    <div class="input-group mb-0">
+                                        <label for="fgtsSaldoTotal"
+                                            class="block text-sm font-medium text-gray-700">Saldo Total do FGTS para
+                                            Cálculo da Multa (R$):</label>
+                                        <input type="number" id="fgtsSaldoTotal" value="0.00" placeholder="R$ 0,00"
+                                            min="0" step="0.01" class="mt-1 block w-full modern-input">
+                                        <small class="text-xs text-gray-500">*Informe o valor do saldo da conta
+                                            vinculada (sem a multa e sem o depósito rescisório) para cálculo da multa de
+                                            40%.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnCalcular" type="button"
+                        class="w-full bg-[#007380] text-white px-8 py-4 rounded-lg shadow-xl hover:bg-[#005a62] transition duration-150 ease-in-out font-bold text-xl mb-4"
+                        onclick="integrarCalculoRescisao()">
+                        CALCULAR RESCISÃO TRABALHISTA
+                    </button>
+
+                    <div id="resultadoCalculo" style="display:none;" class="resultado">
+                    </div>
+
+                    <div
+                        class="text-center font-bold mb-8 p-4 border-2 border-red-600 rounded-lg bg-red-100 text-red-700 aviso-importante-global">
+                        AVISO IMPORTANTE: Este cálculo gera apenas uma ESTIMATIVA. O valor final pode ser alterado por
+                        variáveis específicas não consideradas nesta ferramenta, como: verbas reflexas, médias,
+                        descontos específicos, ou outras particularidades do seu caso. A consulta a um Advogado é
+                        indispensável para a apuração do valor exato e para melhor compreensão dos seus direitos.
+                    </div>
+                </section>
+            </div>
+        </main>
+        <div id="relatorioRescisao">
+            <!-- Tabela de rubricas geradas pelo cálculo -->
+        </div>
+        <script>
+            // Substitui a função de exibição do resultado para garantir que todas as rubricas apareçam
+            function exibirRelatorioRescisao(rubricas) {
+                let html = '<h2 class="text-xl font-bold mb-4 text-[#007380]">Relatório Detalhado da Rescisão</h2>';
+                html += '<table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">';
+                html += '<thead><tr class="bg-gray-100">';
+                html += '<th class="px-4 py-2 border-b text-left">Rubrica</th>';
+                html += '<th class="px-4 py-2 border-b text-right">Valor (R$)</th>';
+                html += '</tr></thead><tbody>';
+                rubricas.forEach(r => {
+                    html += `<tr><td class="px-4 py-2 border-b">${r.nome}</td><td class="px-4 py-2 border-b text-right">${r.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('relatorioRescisao').innerHTML = html;
+            }
+            // Exemplo de integração: após calcular, chame exibirRelatorioRescisao(rubricas)
+            // window.calcularRescisao = function() { ... exibirRelatorioRescisao(rubricas) ... }
+        </script>
+    </div>
+    <script src="calculorescisao.js"></script>
+
+    <script>
+        // Garante que o botão funcione mesmo se calculorescisao.js registrar a função depois
+        function integrarCalculoRescisao() {
+            if (typeof window.calcularRescisao === 'function') {
+                document.getElementById('btnCalcular').onclick = function () {
+                    const resultado = window.calcularRescisao();
+                    if (resultado && resultado.rubricas) {
+                        exibirRelatorioRescisao(resultado.rubricas);
+                    }
+                };
+            } else {
+                // Tenta novamente após um pequeno atraso
+                setTimeout(integrarCalculoRescisao, 200);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', integrarCalculoRescisao);
+    </script>
+</body>
+
+</html>
