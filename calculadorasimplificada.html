@@ -676,7 +676,7 @@
 
             // 14. Saque FGTS (Apenas para exibição - não afeta o valor líquido)
             // REGRA: Saque FGTS
-            const podeSacarFgts = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ACORDO', 'FALECIMENTO', 'ANTEC_EMPREGADOR', 'APOSENTADORIA', 'PDV_PDI'].includes(tipoRescisao);
+            const podeSacarFgts = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ACORDO', 'FALECIMENTO', 'ANTEC_EMPREGADOR', 'APOSENTADORIA', 'PDV_PDI', 'CULPA_RECIPROCA'].includes(tipoRescisao);
 
             // Ajuste para Acordo Comum: 80% do Saldo (usamos o fgtsTotalEstimado como base do saldo)
             if (tipoRescisao === 'ACORDO') {
@@ -821,9 +821,11 @@
             // ----------------------------------------------------------------------
 
             // Lógica para exibição do saque do FGTS
+            // Lógica para exibição do saque do FGTS
             let saqueFgtsStatusHtml;
             if (calculosProprios.saqueFgtsElegivel) {
-                if (document.getElementById('tipoRescisaoNew').value === 'ACORDO') {
+                const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
+                if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
                     saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (80% do Saldo)</p>`;
                 } else {
                     saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
@@ -831,7 +833,6 @@
             } else {
                 saqueFgtsStatusHtml = `<p class="text-md font-bold text-red-700 mt-4">Status de Saque: NÃO PERMITIDO</p>`;
             }
-
 
             let fgtsDetalhesHtml = `
         <p class="text-sm font-medium">FGTS de Todo o Período Estimado (${totalMesesTrabalhados} meses x Salário Base):</p>
