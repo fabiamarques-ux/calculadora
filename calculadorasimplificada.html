@@ -303,7 +303,7 @@
             liquido: 0.00,
             // Verbas Principais
             saldoSalario: 0.00,
-            avisoPrevio: 0.00, // Provento (AP Indenizado ou Multa Contrato Empregador)
+            avisoPrevio: 0.00, // Provento (AP Indenizado)
             decimoTerceiro: 0.00,
             feriasVencidas: 0.00,
             feriasProporcionais: 0.00,
@@ -322,8 +322,12 @@
             inss13: 0.00,
             irrf: 0.00,
             irrf13: 0.00,
-            avisoPrevioDesconto: 0.00, // Desconto (AP Não Cumprido ou Multa Contrato Empregado)
+            avisoPrevioDesconto: 0.00, // Desconto (AP Não Cumprido)
             multaAtraso477: 0.00, // NOVO: Multa por Atraso de Pagamento (Art. 477, § 8º)
+            // NOVOS CAMPOS ADICIONADOS
+            multaContratoProvento: 0.00, // Provento Art. 479 (Antecipação Empregador)
+            multaContratoDesconto: 0.00, // Desconto Art. 480 (Antecipação Empregado)
+            avisoPrevioDias: 0, // Dias de Aviso Prévio (Indenizado, Trabalhado ou Descontado)
             // Informações de Prazo
             dataLimiteAcaoTrabalhista: null,
         };
@@ -437,6 +441,9 @@
         function calcularRescisao() {
             // 1. Limpa o resultado anterior e redefine as variáveis globais
             Object.keys(calculosProprios).forEach(key => calculosProprios[key] = 0.00);
+            calculosProprios.avisoPrevioDias = 0; // Garantir que os dias sejam resetados
+            calculosProprios.seguroDesempregoElegivel = false; // Resetar booleanos
+            calculosProprios.saqueFgtsElegivel = false; // Resetar booleanos
 
             // 2. Obter Dados de Entrada
             const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
@@ -550,6 +557,7 @@
 
 
             // 11. Aviso Prévio Indenizado/Descontado ou Multa de Contrato a Termo
+            // --- INÍCIO DA MODIFICAÇÃO ---
             const isContratoTermo = ['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO'].includes(tipoRescisao);
 
             if (isContratoTermo && dataTerminoContrato && !isNaN(dataTerminoContrato)) {
@@ -562,40 +570,49 @@
                     const multaContratoExperiencia = valorDiasFaltantes * 0.50; // Multa de 50% (Art. 479/480)
 
                     if (tipoRescisao === 'ANTEC_EMPREGADOR') {
-                        calculosProprios.avisoPrevio = multaContratoExperiencia; // Provento (Multa)
-                        totalProventos += calculosProprios.avisoPrevio;
+                        // MUDANÇA: Salva na variável de multa, não de AP
+                        calculosProprios.multaContratoProvento = multaContratoExperiencia; // Provento (Multa Art. 479)
+                        totalProventos += calculosProprios.multaContratoProvento;
                     } else if (tipoRescisao === 'ANTEC_EMPREGADO') {
-                        calculosProprios.avisoPrevioDesconto = multaContratoExperiencia; // Desconto (Multa)
-                        totalDeducoes += calculosProprios.avisoPrevioDesconto;
+                        // MUDANÇA: Salva na variável de multa, não de AP
+                        calculosProprios.multaContratoDesconto = multaContratoExperiencia; // Desconto (Multa Art. 480)
+                        totalDeducoes += calculosProprios.multaContratoDesconto;
                     }
                 }
-            } else if (avisoPrevioTipo === 'INDENIZADO') {
-                // Lógica de Aviso Prévio Padrão Indenizado (Contrato Indeterminado)
+            } else {
+                // Lógica de Aviso Prévio Padrão (Contrato Indeterminado)
 
-                // 11.2.1 Valor Integral do AP (30 dias + Proporcionais Lei 12.506/11)
-                let valorAPIntegral = baseAmpliada;
+                // Calcular os dias totais de AP (base 30 + proporcional)
                 const anosServico = (dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
                 const diasAdicionais = Math.floor(anosServico) * DIAS_ADICIONAIS_AP;
-                valorAPIntegral += (baseAmpliada / 30) * diasAdicionais;
+                const diasTotaisAP = 30 + diasAdicionais;
 
-                // Fator de Redução já calculado na seção 6: fatorReducaoAP (1.0 ou 0.5)
+                if (avisoPrevioTipo === 'INDENIZADO') {
+                    // 11.2.1 Valor Integral do AP
+                    calculosProprios.avisoPrevioDias = diasTotaisAP; // Salva os dias
+                    let valorAPIntegral = (baseAmpliada / 30) * diasTotaisAP; // Recalcula com base nos dias totais
 
-                calculosProprios.avisoPrevio = valorAPIntegral * fatorReducaoAP;
-                totalProventos += calculosProprios.avisoPrevio;
+                    // Fator de Redução já calculado na seção 6: fatorReducaoAP (1.0 ou 0.5)
+                    calculosProprios.avisoPrevio = valorAPIntegral * fatorReducaoAP;
+                    totalProventos += calculosProprios.avisoPrevio;
 
-                // AP Indenizado Padrão entra na base de FGTS e INSS/IRRF
-                baseAP = calculosProprios.avisoPrevio;
+                    // AP Indenizado Padrão entra na base de FGTS e INSS/IRRF
+                    baseAP = calculosProprios.avisoPrevio;
 
-            } else if (avisoPrevioTipo === 'NAO_CUMPRIDO') {
-                // Lógica de Aviso Prévio Padrão Descontado (Contrato Indeterminado - Usado em Pedido de Demissão)
-
-                // REGRA: AP não pode ser descontado se for SJC, Rescisão Indireta, Contrato a Termo, Falecimento ou Aposentadoria (Já filtrado no JS anterior)
-                if (tipoRescisao === 'PEDIDO') { // Apenas Pedido de Demissão e similares
-                    calculosProprios.avisoPrevioDesconto = baseAmpliada;
-                    totalDeducoes += calculosProprios.avisoPrevioDesconto;
+                } else if (avisoPrevioTipo === 'NAO_CUMPRIDO') {
+                    // Lógica de Aviso Prévio Padrão Descontado (Usado em Pedido de Demissão)
+                    if (tipoRescisao === 'PEDIDO') { // Apenas Pedido de Demissão e similares
+                        calculosProprios.avisoPrevioDias = 30; // Desconto é apenas sobre 30 dias
+                        calculosProprios.avisoPrevioDesconto = baseAmpliada;
+                        totalDeducoes += calculosProprios.avisoPrevioDesconto;
+                    }
+                } else if (avisoPrevioTipo === 'TRABALHADO') {
+                    // Apenas salva os dias para fins de exibição
+                    calculosProprios.avisoPrevioDias = diasTotaisAP;
                 }
             }
-            // Aviso Prévio Trabalhado (TRABALHADO) e NAO_APLICAVEL não geram provento/desconto nesta seção, a menos que sejam Multas Contratuais (já tratadas).
+            // Aviso Prévio Trabalhado (TRABALHADO) e NAO_APLICAVEL agora tratados acima ou não geram verba.
+            // --- FIM DA MODIFICAÇÃO ---
 
 
             // 12. CÁLCULO FGTS (Depósito e Multa)
@@ -724,14 +741,14 @@
             calculosProprios.liquido = totalProventos - totalDeducoes;
 
             // 19. Exibir Resultado
-            exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados);
+            exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados, tipoRescisao);
         }
 
         /* -------------------------------------------------------------------------- */
         /* FUNÇÃO PARA EXIBIR O RESULTADO */
         /* -------------------------------------------------------------------------- */
         // OBS: Ajuste na exibição do FGTS e Seguro Desemprego para refletir as novas regras
-        function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados) {
+        function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados, tipoRescisao) {
             const resultadoDiv = document.getElementById('resultadoCalculo');
 
             if (calculosProprios.proventosBrutos === 0 && calculosProprios.deducoes === 0) {
@@ -745,15 +762,49 @@
             // ----------------------------------------------------------------------
             // SEÇÃO 1: VERBAS PRINCIPAIS E ADICIONAIS
             // ----------------------------------------------------------------------
+            // --- INÍCIO DA MODIFICAÇÃO ---
+
+            // Lógica de exibição do Aviso Prévio
+            let apHtml = '';
+            const tipoAviso = document.getElementById('avisoPrevioTipo').value;
+
+            if (calculosProprios.avisoPrevio > 0) {
+                // Provento - AP Indenizado
+                // MODIFICAÇÃO INICIA AQUI
+                let apLabel = `Aviso Prévio Indenizado (${calculosProprios.avisoPrevioDias} dias)`;
+                if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
+                    apLabel += ' (50%)'; // Adiciona o marcador
+                }
+                apHtml += gerarLinhaProvento(apLabel, calculosProprios.avisoPrevio);
+                // MODIFICAÇÃO TERMINA AQUI
+            } else if (calculosProprios.avisoPrevioDesconto > 0) {
+                // Desconto - AP Não Cumprido
+                apHtml += gerarLinhaProvento(`Desconto de Aviso Prévio (${calculosProprios.avisoPrevioDias} dias)`, -calculosProprios.avisoPrevioDesconto);
+            } else if (tipoAviso === 'TRABALHADO' && calculosProprios.avisoPrevioDias > 0) {
+                // Informativo - AP Trabalhado
+                apHtml += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Aviso Prévio Trabalhado (${calculosProprios.avisoPrevioDias} dias)</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-500">${formatarMoeda(0)}</td>
+                </tr>`;
+            }
+
+            // Adiciona as multas de contrato (que agora estão separadas)
+            apHtml += gerarLinhaProvento('Multa Contrato a Termo (Art. 479 CLT - Provento)', calculosProprios.multaContratoProvento);
+            apHtml += gerarLinhaProvento('Multa Contrato a Termo (Art. 480 CLT - Desconto)', -calculosProprios.multaContratoDesconto);
+
+
             let verbasPrincipaisHtml = `
         ${gerarLinhaProvento(`Saldo de Salário (${diasSaldo} dias)`, calculosProprios.saldoSalario)}
-        ${gerarLinhaProvento('Aviso Prévio Indenizado / Multa Contrato (Provento)', calculosProprios.avisoPrevio)}
-        ${gerarLinhaProvento('Desconto de Aviso Prévio / Multa Contrato', -calculosProprios.avisoPrevioDesconto)}
-        ${gerarLinhaProvento(`13º Salário Proporcional (${avos13}/12 avos)`, calculosProprios.decimoTerceiro)}
-        ${gerarLinhaProvento(`Férias Proporcionais + 1/3 (${avosFerias}/12 avos)`, calculosProprios.feriasProporcionais)}
-        ${gerarLinhaProvento(`Férias Vencidas + 1/3 (${feriasVencidasQtd} período(s))`, calculosProprios.feriasVencidas)}
+        ${apHtml}
+        
+        ${gerarLinhaProvento(`13º Salário Proporcional (${avos13}/12 avos)${tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''}`, calculosProprios.decimoTerceiro)}
+        ${gerarLinhaProvento(`Férias Proporcionais + 1/3 (${avosFerias}/12 avos)${tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''}`, calculosProprios.feriasProporcionais)}
+        ${gerarLinhaProvento(`Férias Vencidas + 1/3 (${feriasVencidasQtd} período(s))${tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''}`, calculosProprios.feriasVencidas)}
         ${gerarLinhaProvento('Multa por Atraso de Pagamento (Art. 477, CLT)', calculosProprios.multaAtraso477)}
     `;
+            // --- FIM DA MODIFICAÇÃO ---
+
 
             // ----------------------------------------------------------------------
             // SEÇÃO 2: TRIBUTOS
