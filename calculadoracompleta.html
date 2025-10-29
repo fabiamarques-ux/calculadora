@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Trabalhista | Rescisão</title>
+    <title>Calculadora Trabalhista | Rescisão Simplificada</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -18,34 +18,12 @@
             background-color: #f8fafc;
         }
 
-        .section-header {
-            border-bottom: 2px solid #007380;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
         /* -------------------------------------------------------------------------- */
-        /* 2. ESTILOS DE NAVEGAÇÃO E ASIDE */
+        /* 2. ESTILOS DE NAVEGAÇÃO E ASIDE (REMOVIDO, MAS MANTENDO ALGUMAS CLASSES) */
         /* -------------------------------------------------------------------------- */
         .aside-bg {
             background-color: #005a62;
             /* Azul-turquesa mais escuro */
-        }
-
-        .nav-link {
-            color: #d1d5db;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        .nav-link:hover {
-            background-color: #007380;
-        }
-
-        .active-link {
-            background-color: #0284c7;
-            /* Azul ciano para link ativo */
-            color: #ffffff;
-            font-weight: 600;
         }
 
         /* -------------------------------------------------------------------------- */
@@ -83,11 +61,6 @@
             background-color: #ccffcc;
         }
 
-        /* Classe para forçar a transição de altura da gaveta */
-        .accordion-content {
-            transition: max-height 0.5s ease-in-out;
-        }
-
         /* -------------------------------------------------------------------------- */
         /* 5. ESTILOS DE IMPRESSÃO */
         /* -------------------------------------------------------------------------- */
@@ -95,7 +68,6 @@
 
             /* Ocultar elementos não essenciais para o relatório impresso */
             .aside-bg,
-            .accordion-item,
             button,
             .input-group,
             .aviso-importante-global,
@@ -146,612 +118,972 @@
                     </a>
                 </div>
                 <h1 class="text-3xl md:text-4xl text-center mb-6 text-[#007380]">Calculadora de Rescisão Trabalhista
+                    (Simplificada)
                 </h1>
                 <p class="text-center text-gray-600 mb-8">Simule agora a estimativa das suas verbas trabalhistas. Uma
                     ferramenta orientativa para acesso à informação e compreensão inicial dos seus direitos."</p>
 
                 <section id="proposito" class="content-section">
-                    <h2 class="text-2xl text-[#007380] section-header mb-4">1. CÁLCULO DA RESCISÃO</h2>
 
-                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
-                        <button id="header-1"
-                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
-                            data-target="content-1" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">1. Dados Contratuais e Prazos</h3>
-                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-                        <div id="content-1"
-                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                            <div class="p-4 pt-0">
-                                <div class="flex flex-col md:flex-row gap-4 mb-8">
-                                    <div class="flex-1">
+                    <div class="p-6 mb-8 border border-gray-200 rounded-lg shadow-md bg-gray-50">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                                        <div class="input-group mb-4">
-                                            <label for="tipoRescisaoNew"
-                                                class="block text-sm font-medium text-gray-700">Tipo de
-                                                Rescisão:</label>
-                                            <select id="tipoRescisaoNew" onchange="atualizarCampos()"
-                                                class="mt-1 block w-full modern-input bg-white" required>
-                                                <option value="" selected disabled>Selecione...</option>
-                                                <option value="SJC">Demissão Sem Justa Causa</option>
-                                                <option value="CJC">Demissão Com Justa Causa</option>
-                                                <option value="PEDIDO">Pedido de Demissão</option>
-                                                <option value="ACORDO">Comum Acordo</option>
-                                                <option value="CULPA_RECIPROCA">Culpa Recíproca (empregador e empregado)
-                                                </option>
-                                                <option value="RESCISAO_INDIRETA">Culpa do Empregador (Indireta do
-                                                    Contrato de Trabalho)</option>
-                                                <option value="ANTEC_EMPREGADOR">Antecipada do Contrato de Experiência
-                                                    (iniciativa do empregador)</option>
-                                                <option value="ANTEC_EMPREGADO">Antecipada do Contrato de Experiência
-                                                    (iniciativa do empregado)</option>
-                                                <option value="PDV_PDI">PDV / PDI (Plano de Demissão)</option>
-                                                <option value="DISP_COLETIVA">Dispensa Coletiva</option>
-                                                <option value="APOSENTADORIA">Aposentadoria do Empregado</option>
-                                                <option value="FALECIMENTO">Falecimento do Empregado</option>
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-bold text-[#005a62] border-b pb-2">Rescisão e Aviso</h3>
 
-                                            </select>
-                                        </div>
+                                <div class="input-group">
+                                    <label for="tipoRescisaoNew"
+                                        class="block text-sm font-medium text-gray-700">Tipo de
+                                        Rescisão:</label>
+                                    <select id="tipoRescisaoNew" onchange="atualizarCampos()"
+                                        class="mt-1 block w-full modern-input bg-white" required>
+                                        <option value="" selected disabled>Selecione...</option>
+                                        <option value="SJC">Demissão Sem Justa Causa</option>
+                                        <option value="CJC">Demissão Com Justa Causa</option>
+                                        <option value="PEDIDO">Pedido de Demissão</option>
+                                        <option value="ACORDO">Comum Acordo</option>
+                                        <option value="CULPA_RECIPROCA">Culpa Recíproca (empregador e empregado)</option>
+                                        <option value="RESCISAO_INDIRETA">Culpa do Empregador (Indireta do Contrato de
+                                            Trabalho)</option>
+                                        <option value="ANTEC_EMPREGADOR">Antecipada do Contrato de Experiência
+                                            (iniciativa
+                                            do empregador)</option>
+                                        <option value="ANTEC_EMPREGADO">Antecipada do Contrato de Experiência
+                                            (iniciativa
+                                            do empregado)</option>
+                                        <option value="PDV_PDI">PDV / PDI (Plano de Demissão)</option>
+                                        <option value="DISP_COLETIVA">Dispensa Coletiva</option>
+                                        <option value="APOSENTADORIA">Aposentadoria do Empregado</option>
+                                        <option value="FALECIMENTO">Falecimento do Empregado</option>
 
-                                        <div class="input-group mb-4">
-                                            <label for="avisoPrevioIndenizado"
-                                                class="block text-sm font-medium text-gray-700">Aviso Prévio Indenizado
-                                                (pela Empresa):</label>
-                                            <select id="avisoPrevioIndenizado"
-                                                class="mt-1 block w-full modern-input bg-white" required>
-                                                <option value="" selected disabled>Selecione...</option>
-                                                <option value="NAO">Não (Aviso Trabalhado)</option>
-                                                <option value="SIM">Sim (Aviso Indenizado)</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="input-group mb-4">
-                                            <label for="avisoPrevioDescontado"
-                                                class="block text-sm font-medium text-gray-700">Aviso Prévio Descontado
-                                                (Não Cumprido):</label>
-                                            <select id="avisoPrevioDescontado"
-                                                class="mt-1 block w-full modern-input bg-white" required>
-                                                <option value="" selected disabled>Selecione...</option>
-                                                <option value="NAO">Não (Aviso Trabalhado)</option>
-                                                <option value="SIM">Sim (Desconto de Aviso)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex-1">
-                                        <div class="input-group mb-4">
-                                            <label for="dataAdmissao"
-                                                class="block text-sm font-medium text-gray-700">Data de
-                                                Admissão:</label>
-                                            <input type="date" id="dataAdmissao" value=""
-                                                class="mt-1 block w-full modern-input">
-                                        </div>
-                                        <div class="input-group mb-4">
-                                            <label for="dataDemissao"
-                                                class="block text-sm font-medium text-gray-700">Data de
-                                                Demissão (Afastamento):</label>
-                                            <input type="date" id="dataDemissao" value=""
-                                                class="mt-1 block w-full modern-input">
-                                        </div>
-                                        <div class="input-group mb-4">
-                                            <label for="dataPagamento"
-                                                class="block text-sm font-medium text-gray-700">Data de
-                                                Pagamento da Rescisão (Homologação):</label>
-                                            <input type="date" id="dataPagamento" value=""
-                                                class="mt-1 block w-full modern-input">
-                                        </div>
-                                        <div class="input-group mb-4" id="grupoDataTerminoContrato"
-                                            style="display:none;">
-                                            <label for="dataTerminoContrato"
-                                                class="block text-sm font-medium text-gray-700">Data de
-                                                Término Prevista (Contrato a Termo):</label>
-                                            <input type="date" id="dataTerminoContrato" value=""
-                                                class="mt-1 block w-full modern-input">
-                                        </div>
-                                    </div>
+                                    </select>
                                 </div>
-                                <div class="border border-yellow-300 bg-yellow-50 rounded-lg p-3 mt-6">
-                                    <h4
-                                        class="font-semibold text-sm text-gray-700 mb-3 border-b border-yellow-200 pb-1">
-                                        Contagem Proporcional</h4>
-
-                                    <div class="flex flex-col md:flex-row gap-4">
-                                        <div class="flex-1 input-group mb-4 md:mb-0">
-                                            <label for="feriasVencidasNew"
-                                                class="block text-sm font-medium text-gray-700">Períodos
-                                                de Férias Vencidas (Qtd):</label>
-                                            <input type="number" id="feriasVencidasNew" value="0" placeholder="0"
-                                                min="0" step="1" class="mt-1 block w-full modern-input">
-                                            <small class="text-xs text-gray-500">*Cada período é 12 meses
-                                                completos.</small>
-                                        </div>
-
-                                        <div class="flex-1 input-group mb-0">
-                                            <label for="faltasInjustificadas"
-                                                class="block text-sm font-medium text-gray-700">Faltas
-                                                Injustificadas no Período (Qtd):</label>
-                                            <input type="number" id="faltasInjustificadas" value="0" placeholder="0"
-                                                min="0" step="1" class="mt-1 block w-full modern-input">
-                                            <small class="text-xs text-gray-500">*Afeta a contagem de avos de 13º e
-                                                Férias. Inclua
-                                                as faltas de todo o último período.</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
-                        <button id="header-2"
-                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
-                            data-target="content-2" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">2. Componentes da Remuneração</h3>
-                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-                        <div id="content-2"
-                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                            <div class="p-4 pt-0">
-                                <div class="flex flex-col md:flex-row gap-4 mb-8">
-                                    <div class="flex-1">
-                                        <div class="input-group mb-4">
-                                            <label for="salarioBruto"
-                                                class="block text-sm font-medium text-gray-700">Salário Base
-                                                Mensal Bruto (R$):</label>
-                                            <input type="number" id="salarioBruto" value="" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input">
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="input-group mb-4">
-                                            <label for="comissoesMedia"
-                                                class="block text-sm font-medium text-gray-700">Média Mensal
-                                                de Comissões (R$):</label>
-                                            <input type="number" id="comissoesMedia" value="0.00" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input">
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="input-group mb-4">
-                                            <label for="outrosAdicionais"
-                                                class="block text-sm font-medium text-gray-700">Média Mensal de Gorjetas
-                                                (R$):</label>
-                                            <input type="number" id="outrosAdicionais" value="0.00"
-                                                placeholder="R$ 0,00" min="0" step="0.01"
-                                                class="mt-1 block w-full modern-input">
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="input-group mb-4">
-                                            <label for="horasExtrasMedia"
-                                                class="block text-sm font-medium text-gray-700">Média Mensal
-                                                de Horas Extras (R$):</label>
-                                            <input type="number" id="horasExtrasMedia" value="0.00"
-                                                placeholder="R$ 0,00" min="0" step="0.01"
-                                                class="mt-1 block w-full modern-input">
-
-                                        </div>
-                                    </div>
+                                <div class="input-group">
+                                    <label for="avisoPrevioTipo"
+                                        class="block text-sm font-medium text-gray-700">Situação do
+                                        Aviso Prévio:</label>
+                                    <select id="avisoPrevioTipo" class="mt-1 block w-full modern-input bg-white"
+                                        required>
+                                        <option value="" selected disabled>Selecione...</option>
+                                        <option value="INDENIZADO">Indenizado (pela Empresa)</option>
+                                        <option value="TRABALHADO">Trabalhado</option>
+                                        <option value="NAO_CUMPRIDO">Não Cumprido (Desconto)</option>
+                                        <option value="NAO_APLICAVEL">Não Aplicável (Não Devido / Não Descontado)</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
-                        <button id="header-3"
-                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
-                            data-target="content-3" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">3. Gratificações, Adicionais e Estabilidades
-                            </h3>
-                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-                        <div id="content-3"
-                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                            <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">*Marque e informe o valor das verbas que devem ser
-                                    reintegradas/incluídas na base de cálculo:</p>
-                                <div class="flex flex-col lg:flex-row gap-6 mb-8">
 
-                                    <div class="flex-1 border border-blue-200 bg-blue-50 rounded-lg p-4">
-                                        <h4
-                                            class="font-semibold text-sm text-blue-700 mb-3 border-b border-blue-200 pb-1">
-                                            1. Adicionais Padrão (Percentuais)</h4>
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-bold text-[#005a62] border-b pb-2">Datas e Prazos</h3>
 
-                                        <div class="input-group mb-4">
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Adicional de
-                                                Insalubridade (SM):</label>
-                                            <div id="insalubridade-options" class="space-y-2">
-                                                <div class="flex items-center">
-                                                    <input type="checkbox" id="insalubridade_10"
-                                                        name="insalubridade_nivel" value="0.10"
-                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
-                                                        onclick="handleInsalubridadeChange(this)">
-                                                    <label for="insalubridade_10"
-                                                        class="text-sm font-medium text-gray-700">Baixo
-                                                        (10% SM)</label>
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <input type="checkbox" id="insalubridade_20"
-                                                        name="insalubridade_nivel" value="0.20"
-                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
-                                                        onclick="handleInsalubridadeChange(this)">
-                                                    <label for="insalubridade_20"
-                                                        class="text-sm font-medium text-gray-700">Médio
-                                                        (20% SM)</label>
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <input type="checkbox" id="insalubridade_40"
-                                                        name="insalubridade_nivel" value="0.40"
-                                                        class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 insalubridade-checkbox"
-                                                        onclick="handleInsalubridadeChange(this)">
-                                                    <label for="insalubridade_40"
-                                                        class="text-sm font-medium text-gray-700">Alto
-                                                        (40% SM)</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="input-group mb-4 flex items-center">
-                                            <input type="checkbox" id="periculosidade"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="periculosidade"
-                                                class="text-sm font-medium text-gray-700">Periculosidade
-                                                (30% Salário Base)</label>
-                                        </div>
-                                        <div class="input-group mb-4 flex items-center">
-                                            <input type="checkbox" id="transferencia"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="transferencia"
-                                                class="text-sm font-medium text-gray-700">Transferência
-                                                (25% Salário Base)</label>
-                                        </div>
-                                        <div class="input-group mb-4 flex items-center">
-                                            <input type="checkbox" id="adicionalNoturno"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="adicionalNoturno"
-                                                class="text-sm font-medium text-gray-700">Adicional Noturno
-                                                (20% Salário Base)</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex-1 border border-green-200 bg-green-50 rounded-lg p-4">
-                                        <h4
-                                            class="font-semibold text-sm text-green-700 mb-3 border-b border-green-200 pb-1">
-                                            2. Gratificações (Valores Fixos)</h4>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="reintGratFuncao" data-input-id="valorGratFuncao"
-                                                data-container-id="container-valorGratFuncao"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="reintGratFuncao"
-                                                class="text-sm font-medium text-gray-700">Função</label>
-                                        </div>
-                                        <div id="container-valorGratFuncao" class="input-group mb-4 ml-5 hidden">
-                                            <label for="valorGratFuncao"
-                                                class="block text-xs font-medium text-gray-500">Valor
-                                                Mensal (R$):</label>
-                                            <input type="number" id="valorGratFuncao" value="0.00" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="reintQuebraCaixa"
-                                                data-input-id="valorQuebraCaixa"
-                                                data-container-id="container-valorQuebraCaixa"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="reintQuebraCaixa"
-                                                class="text-sm font-medium text-gray-700">Tempo de Serviço
-                                            </label>
-                                        </div>
-                                        <div id="container-valorQuebraCaixa" class="input-group mb-4 ml-5 hidden">
-                                            <label for="valorQuebraCaixa"
-                                                class="block text-xs font-medium text-gray-500">Valor
-                                                Mensal (R$):</label>
-                                            <input type="number" id="valorQuebraCaixa" value="0.00"
-                                                placeholder="R$ 0,00" min="0" step="0.01"
-                                                class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="reintPremio" data-input-id="valorPremio"
-                                                data-container-id="container-valorPremio"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="reintPremio"
-                                                class="text-sm font-medium text-gray-700">Produtividade</label>
-                                        </div>
-                                        <div id="container-valorPremio" class="input-group mb-4 ml-5 hidden">
-                                            <label for="valorPremio"
-                                                class="block text-xs font-medium text-gray-500">Valor Médio
-                                                Mensal (R$):</label>
-                                            <input type="number" id="valorPremio" value="0.00" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="reintAjudaCusto" data-input-id="valorAjudaCusto"
-                                                data-container-id="container-valorAjudaCusto"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="reintAjudaCusto"
-                                                class="text-sm font-medium text-gray-700">Assiduidade</label>
-                                        </div>
-                                        <div id="container-valorAjudaCusto" class="input-group mb-4 ml-5 hidden">
-                                            <label for="valorAjudaCusto"
-                                                class="block text-xs font-medium text-gray-500">Valor Médio
-                                                Mensal (R$):</label>
-                                            <input type="number" id="valorAjudaCusto" value="0.00" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="reintBonus" data-input-id="valorBonus"
-                                                data-container-id="container-valorBonus"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="reintBonus" class="text-sm font-medium text-gray-700">Quebra de
-                                                Caixa</label>
-                                        </div>
-                                        <div id="container-valorBonus" class="input-group mb-4 ml-5 hidden">
-                                            <label for="valorBonus"
-                                                class="block text-xs font-medium text-gray-500">Valor Médio
-                                                Mensal (R$):</label>
-                                            <input type="number" id="valorBonus" value="0.00" placeholder="R$ 0,00"
-                                                min="0" step="0.01" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-                                    </div>
-
-                                    <div class="flex-1 border border-red-200 bg-red-50 rounded-lg p-4">
-                                        <h4
-                                            class="font-semibold text-sm text-red-700 mb-3 border-b border-red-200 pb-1">
-                                            3. Estabilidades (Indenização/Reintegração)</h4>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="estabilidadeGestante"
-                                                data-input-id="mesesGestante"
-                                                data-container-id="container-mesesGestante"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
-                                            <label for="estabilidadeGestante"
-                                                class="text-sm font-medium text-gray-700">Gestante (Até 5 meses após
-                                                parto)</label>
-                                        </div>
-                                        <div id="container-mesesGestante" class="input-group mb-4 ml-5 hidden">
-                                            <label for="mesesGestante"
-                                                class="block text-xs font-medium text-gray-500">Meses Remanescentes
-                                                (Qtd):</label>
-                                            <input type="number" id="mesesGestante" value="0" placeholder="0" min="0"
-                                                step="1" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="estabilidadeCipa" data-input-id="mesesCipa"
-                                                data-container-id="container-mesesCipa"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
-                                            <label for="estabilidadeCipa"
-                                                class="text-sm font-medium text-gray-700">Cipeiro (Mandato + 1
-                                                ano)</label>
-                                        </div>
-                                        <div id="container-mesesCipa" class="input-group mb-4 ml-5 hidden">
-                                            <label for="mesesCipa" class="block text-xs font-medium text-gray-500">Meses
-                                                Remanescentes
-                                                (Qtd):</label>
-                                            <input type="number" id="mesesCipa" value="0" placeholder="0" min="0"
-                                                step="1" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-2 flex items-center">
-                                            <input type="checkbox" id="estabilidadeAcidente"
-                                                data-input-id="mesesAcidente"
-                                                data-container-id="container-mesesAcidente"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2 estabilidade-checkbox">
-                                            <label for="estabilidadeAcidente"
-                                                class="text-sm font-medium text-gray-700">Acidente de Trabalho/Doença
-                                                Ocupacional (12 meses)</label>
-                                        </div>
-                                        <div id="container-mesesAcidente" class="input-group mb-4 ml-5 hidden">
-                                            <label for="mesesAcidente"
-                                                class="block text-xs font-medium text-gray-500">Meses Remanescentes
-                                                (Qtd):</label>
-                                            <input type="number" id="mesesAcidente" value="0" placeholder="0" min="0"
-                                                step="1" class="mt-1 block w-full modern-input bg-white">
-                                        </div>
-
-                                        <div class="input-group mb-4 flex items-center">
-                                            <input type="checkbox" id="estabilidadeDirigenteSindical"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="estabilidadeDirigenteSindical"
-                                                class="text-sm font-medium text-gray-700">Dirigente Sindical (Omissão:
-                                                Não
-                                                calculado)</label>
-                                        </div>
-
-                                        <div class="input-group mb-4 flex items-center">
-                                            <input type="checkbox" id="estabilidadeDataBase"
-                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
-                                            <label for="estabilidadeDataBase"
-                                                class="text-sm font-medium text-gray-700">Véspera da Data Base (30
-                                                dias / 1 Mês)</label>
-                                        </div>
-                                    </div>
+                                <div class="input-group">
+                                    <label for="dataAdmissao"
+                                        class="block text-sm font-medium text-gray-700">Data de
+                                        Admissão:</label>
+                                    <input type="date" id="dataAdmissao" value=""
+                                        class="mt-1 block w-full modern-input">
+                                </div>
+                                <div class="input-group">
+                                    <label for="dataDemissao"
+                                        class="block text-sm font-medium text-gray-700">Data de
+                                        Demissão (Afastamento):</label>
+                                    <input type="date" id="dataDemissao" value=""
+                                        class="mt-1 block w-full modern-input">
+                                </div>
+                                <div class="input-group">
+                                    <label for="dataPagamento"
+                                        class="block text-sm font-medium text-gray-700">Data de
+                                        Pagamento da Rescisão (Homologação):</label>
+                                    <input type="date" id="dataPagamento" value=""
+                                        class="mt-1 block w-full modern-input">
+                                </div>
+                                <div class="input-group" id="grupoDataTerminoContrato" style="display:none;">
+                                    <label for="dataTerminoContrato"
+                                        class="block text-sm font-medium text-gray-700">Data de
+                                        Término Prevista (Contrato a Termo):</label>
+                                    <input type="date" id="dataTerminoContrato" value=""
+                                        class="mt-1 block w-full modern-input">
+                                    <small class="text-xs text-gray-500">*Necessário para calcular a multa de 50% pela antecipação.</small>
                                 </div>
                             </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-bold text-[#005a62] border-b pb-2">Valores e Quantidades</h3>
+
+                                <div class="input-group">
+                                    <label for="salarioBruto" class="block text-sm font-medium text-gray-700">Salário
+                                        Base Mensal Bruto (R$):</label>
+                                    <input type="text" id="salarioBruto" value="0.00" placeholder="R$ 0,00"
+                                        class="mt-1 block w-full modern-input">
+                                </div>
+                                <div class="input-group">
+                                    <label for="feriasVencidasNew"
+                                        class="block text-sm font-medium text-gray-700">Períodos
+                                        de Férias Vencidas (Qtd):</label>
+                                    <input type="number" id="feriasVencidasNew" value="0" placeholder="0" min="0"
+                                        step="1" class="mt-1 block w-full modern-input">
+                                    <small class="text-xs text-gray-500">*Cada período é 12 meses
+                                        completos.</small>
+                                </div>
+                                <div class="input-group">
+                                    <label for="numDependentes"
+                                        class="block text-sm font-medium text-gray-700">Número de Dependentes (IRRF):</label>
+                                    <input type="number" id="numDependentes" value="0" placeholder="0" min="0"
+                                        step="1" class="mt-1 block w-full modern-input">
+                                    <small class="text-xs text-gray-500">*Para fins de dedução do Imposto de Renda (R$ 189,59/mês).</small>
+                                </div>
+                                </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
-                        <button id="header-4"
-                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
-                            data-target="content-4" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">4. Descontos e Adiantamentos
-                            </h3>
-                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-                        <div id="content-4"
-                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                            <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">*Informe abaixo os valores de descontos a serem
-                                    abatidos do total líquido:</p>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    <div class="input-group mb-4">
-                                        <label for="descontoAdiantamentoSalario"
-                                            class="block text-sm font-medium text-gray-700">Adiantamento de Salário
-                                            (R$):</label>
-                                        <input type="number" id="descontoAdiantamentoSalario" value="0.00"
-                                            placeholder="R$ 0,00" min="0" step="0.01"
-                                            class="mt-1 block w-full modern-input">
-                                    </div>
-                                    <div class="input-group mb-4">
-                                        <label for="descontoAdiantamentoFerias"
-                                            class="block text-sm font-medium text-gray-700">Adiantamento de Férias
-                                            (R$):</label>
-                                        <input type="number" id="descontoAdiantamentoFerias" value="0.00"
-                                            placeholder="R$ 0,00" min="0" step="0.01"
-                                            class="mt-1 block w-full modern-input">
-                                    </div>
-                                    <div class="input-group mb-4">
-                                        <label for="descontoAdiantamento13"
-                                            class="block text-sm font-medium text-gray-700">Adiantamento de 13º
-                                            (R$):</label>
-                                        <input type="number" id="descontoAdiantamento13" value="0.00"
-                                            placeholder="R$ 0,00" min="0" step="0.01"
-                                            class="mt-1 block w-full modern-input">
-                                    </div>
-                                    <div class="input-group mb-4">
-                                        <label for="descontoValeTransporte"
-                                            class="block text-sm font-medium text-gray-700">Vale Transporte
-                                            (R$):</label>
-                                        <input type="number" id="descontoValeTransporte" value="0.00"
-                                            placeholder="R$ 0,00" min="0" step="0.01"
-                                            class="mt-1 block w-full modern-input">
-                                    </div>
-                                    <div class="input-group mb-4">
-                                        <label for="descontoPensaoAlimenticia"
-                                            class="block text-sm font-medium text-gray-700">Pensão Alimentícia
-                                            (R$):</label>
-                                        <input type="number" id="descontoPensaoAlimenticia" value="0.00"
-                                            placeholder="R$ 0,00" min="0" step="0.01"
-                                            class="mt-1 block w-full modern-input">
-                                    </div>
-                                    <div class="input-group mb-4">
-                                        <label for="descontoOutros"
-                                            class="block text-sm font-medium text-gray-700">Outros Descontos
-                                            (R$):</label>
-                                        <input type="number" id="descontoOutros" value="0.00" placeholder="R$ 0,00"
-                                            min="0" step="0.01" class="mt-1 block w-full modern-input">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
-                        <button id="header-5"
-                            class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
-                            data-target="content-5" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">5. FGTS - Fundo de Garantia</h3>
-                            <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-                        <div id="content-5"
-                            class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                            <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">*Informe o saldo total depositado para que a multa
-                                    rescisória seja calculada e o saldo seja informado no relatório:</p>
-                                <div class="border border-blue-300 bg-blue-50 rounded-lg p-3 mt-6">
-                                    <div class="input-group mb-0">
-                                        <label for="fgtsSaldoTotal"
-                                            class="block text-sm font-medium text-gray-700">Saldo Total do FGTS para
-                                            Cálculo da Multa (R$):</label>
-                                        <input type="number" id="fgtsSaldoTotal" value="0.00" placeholder="R$ 0,00"
-                                            min="0" step="0.01" class="mt-1 block w-full modern-input">
-                                        <small class="text-xs text-gray-500">*Informe o valor do saldo da conta
-                                            vinculada (sem a multa e sem o depósito rescisório) para cálculo da multa de
-                                            40%.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button id="btnCalcular" type="button"
-                        class="w-full bg-[#007380] text-white px-8 py-4 rounded-lg shadow-xl hover:bg-[#005a62] transition duration-150 ease-in-out font-bold text-xl mb-4"
-                        onclick="integrarCalculoRescisao()">
+                    <button onclick="calcularRescisao()"
+                        class="bg-[#0284c7] text-white px-8 py-4 rounded-lg shadow-xl hover:bg-[#005a62] transition duration-150 ease-in-out font-bold w-full text-lg mb-8">
                         CALCULAR RESCISÃO TRABALHISTA
                     </button>
 
                     <div id="resultadoCalculo" style="display:none;" class="resultado">
                     </div>
 
-                    <div
-                        class="text-center font-bold mb-8 p-4 border-2 border-red-600 rounded-lg bg-red-100 text-red-700 aviso-importante-global">
-                        AVISO IMPORTANTE: Este cálculo gera apenas uma ESTIMATIVA. O valor final pode ser alterado por
-                        variáveis específicas não consideradas nesta ferramenta, como: verbas reflexas, médias,
-                        descontos específicos, ou outras particularidades do seu caso. A consulta a um Advogado é
-                        indispensável para a apuração do valor exato e para melhor compreensão dos seus direitos.
-                    </div>
-                </section>
+                    </section>
             </div>
         </main>
-        <div id="relatorioRescisao">
-            <!-- Tabela de rubricas geradas pelo cálculo -->
-        </div>
-        <script>
-            // Substitui a função de exibição do resultado para garantir que todas as rubricas apareçam
-            function exibirRelatorioRescisao(rubricas) {
-                let html = '<h2 class="text-xl font-bold mb-4 text-[#007380]">Relatório Detalhado da Rescisão</h2>';
-                html += '<table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">';
-                html += '<thead><tr class="bg-gray-100">';
-                html += '<th class="px-4 py-2 border-b text-left">Rubrica</th>';
-                html += '<th class="px-4 py-2 border-b text-right">Valor (R$)</th>';
-                html += '</tr></thead><tbody>';
-                rubricas.forEach(r => {
-                    html += `<tr><td class="px-4 py-2 border-b">${r.nome}</td><td class="px-4 py-2 border-b text-right">${r.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>`;
-                });
-                html += '</tbody></table>';
-                document.getElementById('relatorioRescisao').innerHTML = html;
-            }
-            // Exemplo de integração: após calcular, chame exibirRelatorioRescisao(rubricas)
-            // window.calcularRescisao = function() { ... exibirRelatorioRescisao(rubricas) ... }
-        </script>
     </div>
-    <script src="calculorescisao.js"></script>
 
     <script>
-        // Garante que o botão funcione mesmo se calculorescisao.js registrar a função depois
-        function integrarCalculoRescisao() {
-            if (typeof window.calcularRescisao === 'function') {
-                document.getElementById('btnCalcular').onclick = function () {
-                    const resultado = window.calcularRescisao();
-                    if (resultado && resultado.rubricas) {
-                        exibirRelatorioRescisao(resultado.rubricas);
-                    }
-                };
-            } else {
-                // Tenta novamente após um pequeno atraso
-                setTimeout(integrarCalculoRescisao, 200);
+        /* -------------------------------------------------------------------------- */
+        /* TABELAS E CONSTANTES TRIBUTÁRIAS E LEGAIS */
+        /* -------------------------------------------------------------------------- */
+        const TERCO_CONSTITUCIONAL = 1 / 3;
+        const DIAS_ADICIONAIS_AP = 3; // 3 dias por ano completo de serviço (Lei 12.506/11)
+        const ALIQUOTA_FGTS = 0.08; // 8% de depósito
+        
+        // Exemplo de Tabela IRRF (2024 - Simplificado)
+        const TABELA_IRRF = [ // limite inferior, limite superior, alíquota, dedução
+            [0.00, 2428.80, 0.00, 0.00], 
+            [2428.81, 2826.65, 0.075, 182.16],
+            [2826.66, 3751.05, 0.15, 394.16],
+            [3751.06, 4664.68, 0.225, 675.49],
+            [4664.69, Infinity, 0.275, 908.73],
+        ];
+
+        // Tabela INSS (2024 - Simplificado)
+        const TETO_INSS = 8157.41;
+        const TABELA_INSS = [ 
+            {
+                limite: 1558.50,
+                aliquota: 0.075
+            },
+            {
+                limite: 2597.51,
+                aliquota: 0.09
+            },
+            {
+                limite: 3896.25,
+                aliquota: 0.12
+            },
+            {
+                limite: TETO_INSS,
+                aliquota: 0.14
+            }
+        ];
+
+        // Referências para Seguro Desemprego (2024 - SIMPLIFICADO)
+        const MINIMO_NACIONAL_SD = 1412.00; // Valor de referência para piso
+        const TETO_SEGURO_SD = 2779.20; // Valor de referência para teto
+
+        /* -------------------------------------------------------------------------- */
+        /* VARIÁVEIS GLOBAIS DE RESULTADO */
+        /* -------------------------------------------------------------------------- */
+        let calculosProprios = {
+            proventosBrutos: 0.00,
+            deducoes: 0.00,
+            liquido: 0.00,
+            // Verbas Principais
+            saldoSalario: 0.00,
+            avisoPrevio: 0.00, // Provento (AP Indenizado ou Multa Contrato Empregador)
+            decimoTerceiro: 0.00,
+            feriasVencidas: 0.00,
+            feriasProporcionais: 0.00,
+            // FGTS e Multa
+            fgtsDepositado: 0.00,
+            fgtsTotalEstimado: 0.00, // NOVO: Total estimado do depósito do FGTS do período
+            fgtsTotalBase: 0.00,
+            multaFGTS: 0.00,
+            fgtsTotalRecolher: 0.00, // EDITADO: Total Depósito + Multa
+            // Seguro Desemprego
+            seguroDesempregoElegivel: false,
+            seguroDesempregoParcelas: 0,
+            seguroDesempregoValorParcela: 0.00,
+            // Deduções Obrigatórias
+            inss: 0.00,
+            inss13: 0.00,
+            irrf: 0.00,
+            irrf13: 0.00,
+            avisoPrevioDesconto: 0.00, // Desconto (AP Não Cumprido ou Multa Contrato Empregado)
+            // Informações de Prazo
+            dataLimiteAcaoTrabalhista: null, 
+        };
+
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÕES AUXILIARES E DE INPUT */
+        /* -------------------------------------------------------------------------- */
+
+        function formatarMoeda(valor) {
+            if (isNaN(valor) || valor === null) return 'R$ 0,00';
+            // Usa Math.abs para remover o sinal de menos se o valor for negativo, já que a formatação é feita na exibição.
+            const valorAbsoluto = Math.abs(parseFloat(valor));
+            let formatado = valorAbsoluto.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+            // Adiciona o sinal de menos antes do R$ se o valor original for negativo
+            if (valor < 0) {
+                formatado = '-' + formatado;
+            }
+            return formatado;
+        }
+        
+        function formatarData(date) {
+            if (isNaN(date.getTime())) return 'Data Inválida';
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function parseInput(id) {
+            const element = document.getElementById(id);
+            if (!element) {
+                return 0.00;
+            }
+            // Converte vírgula para ponto (permite R$ 1.500,50 ou 1500.50)
+            return parseFloat(String(element.value).replace('.', '').replace(',', '.')) || 0.00;
+        }
+
+        function parseInputInt(id) {
+            const element = document.getElementById(id);
+            if (!element) {
+                return 0;
+            }
+            return parseInt(element.value) || 0;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÕES ESSENCIAIS DE CÁLCULO DE IMPOSTOS */
+        /* -------------------------------------------------------------------------- */
+
+        function calcularInss(base) {
+            if (base <= 0) return 0.0;
+            let inss = 0.0;
+            let baseCalculada = Math.min(base, TETO_INSS);
+
+            const faixas = TABELA_INSS;
+            let baseAnterior = 0.0;
+
+            for (const faixa of faixas) {
+                if (baseCalculada > baseAnterior) {
+                    const limiteFaixa = Math.min(baseCalculada, faixa.limite);
+                    const valorNaFaixa = limiteFaixa - baseAnterior;
+
+                    inss += valorNaFaixa * faixa.aliquota;
+                    baseAnterior = faixa.limite;
+                } else {
+                    break;
+                }
+            }
+            return Math.min(inss, TETO_INSS * 0.14);
+        }
+
+        function calcularIrrf(base, numDependentes = 0) {
+            if (base <= 0) return 0.0;
+
+            const DEDUCAO_DEPENDENTE = 189.59;
+            const deducaoDependentesTotal = numDependentes * DEDUCAO_DEPENDENTE;
+
+            const baseIrrf = base - deducaoDependentesTotal;
+
+            if (baseIrrf <= 0) return 0.0;
+
+            for (const [limiteInferior, limiteSuperior, aliquota, deducao] of TABELA_IRRF) {
+                if (baseIrrf >= limiteInferior && (baseIrrf <= limiteSuperior || limiteSuperior === Infinity)) {
+                    const irrf = (baseIrrf * aliquota) - deducao;
+                    return Math.max(0, irrf);
+                }
+            }
+            return 0.0;
+        }
+
+
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO AUXILIAR: Cálculo de Meses de Trabalho (Simplificada para FGTS) */
+        /* -------------------------------------------------------------------------- */
+        const calcularTotalMesesParaFGTS = (dataInicio, dataFim) => {
+            // Calcula a diferença em dias e divide pela média de dias no mês
+            const totalDaysApprox = (dataFim.getTime() - dataInicio.getTime()) / (1000 * 60 * 60 * 24);
+            const totalMonthsRounded = Math.ceil(totalDaysApprox / 30.4375); // Média de 30.4375 dias por mês
+
+            // Retorna o número de meses, garantindo que não seja negativo e que seja pelo menos 1, se houver trabalho.
+            return Math.max(0, totalMonthsRounded); 
+        }
+
+        /* -------------------------------------------------------------------------- */
+     /* -------------------------------------------------------------------------- */
+/* FUNÇÃO PRINCIPAL: CALCULAR RESCISÃO (SIMPLIFICADA) */
+/* -------------------------------------------------------------------------- */
+function calcularRescisao() {
+    // 1. Limpa o resultado anterior e redefine as variáveis globais
+    Object.keys(calculosProprios).forEach(key => calculosProprios[key] = 0.00);
+
+    // 2. Obter Dados de Entrada
+    const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
+    const avisoPrevioTipo = document.getElementById('avisoPrevioTipo').value;
+    const dataAdmissao = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
+    const dataDemissao = new Date(document.getElementById('dataDemissao').value + 'T00:00:00');
+    const dataTerminoContrato = document.getElementById('dataTerminoContrato').value ? new Date(document.getElementById('dataTerminoContrato').value + 'T00:00:00') : null;
+
+    const salarioBase = parseInput('salarioBruto');
+    const feriasVencidasQtd = parseInputInt('feriasVencidasNew');
+    const numDependentes = parseInputInt('numDependentes');
+
+    // 3. Validação Mínima
+    if (salarioBase <= 0 || !dataAdmissao || !dataDemissao || !tipoRescisao || !avisoPrevioTipo || isNaN(dataAdmissao) || isNaN(dataDemissao)) {
+        alert('Erro: Por favor, preencha o Salário Base, as datas de Admissão e Demissão, e os Tipos de Rescisão e Aviso Prévio corretamente.');
+        return;
+    }
+
+    // 4. Base de Cálculo da Remuneração (Simplificada: é apenas o Salário Base)
+    const baseAmpliada = salarioBase;
+    let totalProventos = 0;
+    let totalDeducoes = 0;
+    let baseAP = 0; // Base de cálculo do Aviso Prévio Indenizado (para FGTS/INSS/IRRF)
+
+    // NOVO: Cálculo dos Meses Totais para a estimativa do FGTS de todo o período
+    const totalMesesTrabalhados = calcularTotalMesesParaFGTS(dataAdmissao, dataDemissao);
+
+    // 5. Saldo de Salário (Sempre devido, exceto Justa Causa em alguns contextos, mas mantemos o padrão)
+    const ultimoDiaMesDemissao = new Date(dataDemissao.getFullYear(), dataDemissao.getMonth() + 1, 0).getDate();
+    const diasSaldo = dataDemissao.getDate();
+
+    // REGRA: Saldo de Salário é sempre devido.
+    calculosProprios.saldoSalario = (baseAmpliada / ultimoDiaMesDemissao) * diasSaldo;
+    totalProventos += calculosProprios.saldoSalario;
+
+    // 6. Fatores de Redução de Verbas (Específicos para Culpa Recíproca e Regras Customizadas)
+    
+    // Fatores de Pagamento: 1.0 (Integral), 0.5 (Metade), 0.0 (Não Pago)
+    let fatorReducaoFeriasVencidas = 1.0;
+    let fatorReducaoFeriasProp = 1.0;
+    let fatorReducaoDecimoTerceiro = 1.0;
+    let fatorReducaoAP = 1.0; // Aplica-se ao AP Indenizado
+
+    switch (tipoRescisao) {
+        case 'CJC': // Demissão Com Justa Causa
+            fatorReducaoFeriasVencidas = 0.0;
+            fatorReducaoFeriasProp = 0.0;
+            fatorReducaoDecimoTerceiro = 0.0;
+            break;
+        case 'CULPA_RECIPROCA': // Culpa Recíproca (Metade de tudo exceto Saldo Salário)
+            fatorReducaoFeriasVencidas = 0.5;
+            fatorReducaoFeriasProp = 0.5;
+            fatorReducaoDecimoTerceiro = 0.5;
+            fatorReducaoAP = 0.5; // AP Indenizado: Metade (CONFORME SOLICITADO)
+            break;
+        case 'PEDIDO': // Pedido de Demissão (AP não devido, ou descontado - já tratado abaixo)
+            fatorReducaoFeriasVencidas = 1.0; // Vencidas são devidas (Súmula 171 TST)
+            break;
+        case 'FALECIMENTO': // Falecimento (Devido integralmente)
+            fatorReducaoFeriasVencidas = 1.0;
+            fatorReducaoFeriasProp = 1.0;
+            fatorReducaoDecimoTerceiro = 1.0;
+            break;
+        case 'APOSENTADORIA': // Aposentadoria (Devido integralmente)
+            fatorReducaoFeriasVencidas = 1.0;
+            fatorReducaoFeriasProp = 1.0;
+            fatorReducaoDecimoTerceiro = 1.0;
+            break;
+        case 'ACORDO': // Acordo Comum
+            fatorReducaoAP = 0.5; // AP Indenizado: Metade
+            break;
+        case 'ANTEC_EMPREGADO': // Contrato Exp. Antecipado Empregado (Multa Contrato de Exp. = Desconto de AP)
+        case 'ANTEC_EMPREGADOR': // Contrato Exp. Antecipado Empregador (Multa Contrato de Exp. = Provento de AP)
+            // AP não é devido, mas a multa é tratada na seção 11
+            break;
+        // SJC, Rescisão Indireta, Dispensa Coletiva e PDV/PDI: Fatores = 1.0 (Integral)
+        default:
+            break;
+    }
+
+
+    // 7. Cálculo de Avos para 13º e Férias
+    const diaDemissao = dataDemissao.getDate();
+    let avos13 = dataDemissao.getMonth();
+    if (diaDemissao >= 15) {
+        avos13 += 1;
+    }
+    avos13 = Math.max(0, avos13);
+
+    let avosFerias = dataDemissao.getMonth();
+    if (diaDemissao >= 15) {
+        avosFerias += 1;
+    }
+    avosFerias = Math.max(0, avosFerias);
+
+    // 8. 13º Salário Proporcional
+    calculosProprios.decimoTerceiro = (baseAmpliada / 12) * avos13 * fatorReducaoDecimoTerceiro;
+    totalProventos += calculosProprios.decimoTerceiro;
+
+    // 9. Férias Proporcionais + 1/3
+    calculosProprios.feriasProporcionais = (baseAmpliada / 12) * avosFerias * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasProp;
+    totalProventos += calculosProprios.feriasProporcionais;
+
+    // 10. Férias Vencidas + 1/3
+    // OBS: A multa de dobra de férias não é contemplada na calculadora simplificada
+    calculosProprios.feriasVencidas = feriasVencidasQtd * baseAmpliada * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasVencidas;
+    totalProventos += calculosProprios.feriasVencidas;
+
+
+    // 11. Aviso Prévio Indenizado/Descontado ou Multa de Contrato a Termo
+    const isContratoTermo = ['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO'].includes(tipoRescisao);
+
+    if (isContratoTermo && dataTerminoContrato && !isNaN(dataTerminoContrato)) {
+        // Lógica de Contrato de Experiência (Contrato a Termo) - Multa do Art. 479/480
+        const timeDiff = dataTerminoContrato.getTime() - dataDemissao.getTime();
+        const diasFaltantesContrato = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        if (diasFaltantesContrato > 0) {
+            const valorDiasFaltantes = (baseAmpliada / 30) * diasFaltantesContrato;
+            const multaContratoExperiencia = valorDiasFaltantes * 0.50; // Multa de 50% (Art. 479/480)
+
+            if (tipoRescisao === 'ANTEC_EMPREGADOR') {
+                calculosProprios.avisoPrevio = multaContratoExperiencia; // Provento (Multa)
+                totalProventos += calculosProprios.avisoPrevio;
+            } else if (tipoRescisao === 'ANTEC_EMPREGADO') {
+                calculosProprios.avisoPrevioDesconto = multaContratoExperiencia; // Desconto (Multa)
+                totalDeducoes += calculosProprios.avisoPrevioDesconto;
             }
         }
-        window.addEventListener('DOMContentLoaded', integrarCalculoRescisao);
+    } else if (avisoPrevioTipo === 'INDENIZADO') {
+        // Lógica de Aviso Prévio Padrão Indenizado (Contrato Indeterminado)
+
+        // 11.2.1 Valor Integral do AP (30 dias + Proporcionais Lei 12.506/11)
+        let valorAPIntegral = baseAmpliada;
+        const anosServico = (dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+        const diasAdicionais = Math.floor(anosServico) * DIAS_ADICIONAIS_AP;
+        valorAPIntegral += (baseAmpliada / 30) * diasAdicionais;
+
+        // Fator de Redução já calculado na seção 6: fatorReducaoAP (1.0 ou 0.5)
+
+        calculosProprios.avisoPrevio = valorAPIntegral * fatorReducaoAP;
+        totalProventos += calculosProprios.avisoPrevio;
+
+        // AP Indenizado Padrão entra na base de FGTS e INSS/IRRF
+        baseAP = calculosProprios.avisoPrevio;
+
+    } else if (avisoPrevioTipo === 'NAO_CUMPRIDO') {
+        // Lógica de Aviso Prévio Padrão Descontado (Contrato Indeterminado - Usado em Pedido de Demissão)
+
+        // REGRA: AP não pode ser descontado se for SJC, Rescisão Indireta, Contrato a Termo, Falecimento ou Aposentadoria (Já filtrado no JS anterior)
+        if (tipoRescisao === 'PEDIDO') { // Apenas Pedido de Demissão e similares
+            calculosProprios.avisoPrevioDesconto = baseAmpliada;
+            totalDeducoes += calculosProprios.avisoPrevioDesconto;
+        }
+    }
+    // Aviso Prévio Trabalhado (TRABALHADO) e Não Aplicável (NAO_APLICAVEL) não entram como provento nem base de cálculo.
+
+
+    // 12. CÁLCULO FGTS (Depósito e Multa)
+
+    // Base FGTS: Saldo Salário + 13º Prop + AP Indenizado Padrão
+    const fgtsBasePeriodo = calculosProprios.saldoSalario + calculosProprios.decimoTerceiro + baseAP;
+
+    // Depósito FGTS Mês da Rescisão
+    calculosProprios.fgtsDepositado = fgtsBasePeriodo * ALIQUOTA_FGTS;
+
+    // NOVO: Cálculo do FGTS Total Estimado (Base para a Multa)
+    calculosProprios.fgtsTotalEstimado = totalMesesTrabalhados * baseAmpliada * ALIQUOTA_FGTS;
+
+    let baseParaMulta = calculosProprios.fgtsTotalEstimado; // Usa o total estimado como base da multa
+    let percentualMulta = 0.00;
+
+    // REGRA: Multa do FGTS
+    if (['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA'].includes(tipoRescisao) || (isContratoTermo && tipoRescisao === 'ANTEC_EMPREGADOR')) {
+        percentualMulta = 0.40; // 40%
+    } else if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
+        percentualMulta = 0.20; // 20% (metade do 40%)
+    } else if (tipoRescisao === 'PDV_PDI') {
+        // Situação Especial, depende da negociação. Usaremos 0% como padrão simplificado.
+        percentualMulta = 0.00;
+    }
+    // Demais casos (Pedido, CJC, Falecimento, Aposentadoria, ANTEC_EMPREGADO) = 0%
+
+    calculosProprios.fgtsTotalBase = baseParaMulta;
+    calculosProprios.multaFGTS = calculosProprios.fgtsTotalBase * percentualMulta;
+
+    // Adiciona a Multa FGTS aos proventos (Provento para o empregado)
+    totalProventos += calculosProprios.multaFGTS;
+
+
+    // 13. CÁLCULO SEGURO DESEMPREGO (Lógica Simplificada)
+    // REGRA: Elegibilidade ao Seguro-Desemprego
+    const elegivelSD = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ANTEC_EMPREGADOR'].includes(tipoRescisao);
+
+    if (elegivelSD) {
+        const umAnoEmMillis = 1000 * 60 * 60 * 24 * 365.25;
+        const anosCompletos = (dataDemissao.getTime() - dataAdmissao.getTime()) / umAnoEmMillis;
+        const mesesTrabalhados = Math.floor(anosCompletos * 12);
+
+        let parcelas = 0;
+        if (mesesTrabalhados >= 24) {
+            parcelas = 5;
+        } else if (mesesTrabalhados >= 12) {
+            parcelas = 4;
+        }
+        // OBS: O cálculo de parcelas é complexo, dependendo de solicitações anteriores. Aqui, é uma ESTIMATIVA.
+
+        if (parcelas > 0) {
+            calculosProprios.seguroDesempregoElegivel = true;
+            calculosProprios.seguroDesempregoParcelas = parcelas;
+
+            let valorParcela = Math.min(baseAmpliada, TETO_SEGURO_SD);
+            calculosProprios.seguroDesempregoValorParcela = Math.max(valorParcela, MINIMO_NACIONAL_SD);
+        }
+    }
+
+
+    // 14. Saque FGTS (Apenas para exibição - não afeta o valor líquido)
+    // REGRA: Saque FGTS
+    const podeSacarFgts = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ACORDO', 'FALECIMENTO', 'ANTEC_EMPREGADOR', 'APOSENTADORIA', 'PDV_PDI'].includes(tipoRescisao);
+
+    // Ajuste para Acordo Comum: 80% do Saldo (usamos o fgtsTotalEstimado como base do saldo)
+    if (tipoRescisao === 'ACORDO') {
+        calculosProprios.fgtsTotalBase *= 0.80; // Reduz a base de saque para 80%
+    }
+    
+    // Adiciona uma variável para informar no resultado se o saque é elegível
+    calculosProprios.saqueFgtsElegivel = podeSacarFgts;
+    // O valor a ser sacado não é somado aos proventos, pois a calculadora calcula apenas a verba rescisória paga pelo empregador.
+
+
+    // 15. Cálculo de Descontos Obrigatórios (INSS, IRRF)
+    // Base INSS Salário: Saldo Salário + AP Indenizado Padrão. 
+    // AP Trabalhado (TRABALHADO) não entra aqui, pois já está no salário base, evitando dupla tributação na rescisão.
+    let baseInssSalario = calculosProprios.saldoSalario + baseAP;
+    
+    // Adiciona Salário (baseAmpliada) se o AP for TRABALHADO. Isso simula o pagamento do salário do AP.
+    // Base: Saldo Salário + AP Indenizado. Se for TRABALHADO, a base é Saldo Salário + Salário Base (AP Trabalhado)
+    if (avisoPrevioTipo === 'TRABALHADO') {
+        // Base de INSS/IRRF é Saldo Salário + Salário Base (referente aos 30 dias do AP trabalhado)
+        baseInssSalario = calculosProprios.saldoSalario + baseAmpliada;
+    }
+
+
+    calculosProprios.inss = calcularInss(baseInssSalario);
+    totalDeducoes += calculosProprios.inss;
+
+    calculosProprios.inss13 = calcularInss(calculosProprios.decimoTerceiro);
+    totalDeducoes += calculosProprios.inss13;
+
+    // IRRF sobre Salário (Base Tributável - INSS)
+    const baseIrrfSalario = baseInssSalario - calculosProprios.inss;
+    calculosProprios.irrf = calcularIrrf(baseIrrfSalario, numDependentes);
+    totalDeducoes += calculosProprios.irrf;
+
+    // IRRF sobre 13º
+    const baseIrrf13 = calculosProprios.decimoTerceiro - calculosProprios.inss13;
+    calculosProprios.irrf13 = calcularIrrf(baseIrrf13, 0);
+    totalDeducoes += calculosProprios.irrf13;
+
+
+    // 16. Totalização de FGTS a Recolher (NOVO PASSO)
+    // Recolhimento é o depósito do mês + a multa (pagos pela empresa)
+    calculosProprios.fgtsTotalRecolher = calculosProprios.fgtsDepositado + calculosProprios.multaFGTS;
+
+
+    // 17. CÁLCULO DA PRESCRIÇÃO BIENAL (2 ANOS)
+    let dataLimiteAcao = new Date(dataDemissao);
+    dataLimiteAcao.setFullYear(dataLimiteAcao.getFullYear() + 2);
+    calculosProprios.dataLimiteAcaoTrabalhista = dataLimiteAcao;
+
+
+    // 18. Totalização Final
+    calculosProprios.proventosBrutos = totalProventos;
+    calculosProprios.deducoes = totalDeducoes;
+    calculosProprios.liquido = totalProventos - totalDeducoes;
+
+    // 19. Exibir Resultado
+    exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados);
+}
+
+/* -------------------------------------------------------------------------- */
+/* FUNÇÃO AUXILIAR: Gerar Linhas de Tabela */
+/* -------------------------------------------------------------------------- */
+function gerarLinhaProvento(descricao, valor) {
+    if (Math.abs(valor) < 0.01) return ''; // Não exibe linhas com valor zero/próximo
+    const isDesconto = valor < 0;
+    const corClasse = isDesconto ? 'text-red-600 font-semibold' : 'text-gray-800';
+    const bgClasse = isDesconto ? 'bg-red-50' : 'bg-white';
+    return `
+        <tr class="${bgClasse}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${descricao}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm ${corClasse}">${formatarMoeda(valor)}</td>
+        </tr>
+    `;
+}
+function gerarLinhaTributo(descricao, valor) {
+    if (Math.abs(valor) < 0.01) return '';
+    return `
+        <tr class="bg-white">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${descricao}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-red-600">${formatarMoeda(-valor)}</td>
+        </tr>
+    `;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* FUNÇÃO PARA EXIBIR O RESULTADO */
+/* -------------------------------------------------------------------------- */
+// OBS: Ajuste na exibição do FGTS e Seguro Desemprego para refletir as novas regras
+function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados) {
+    const resultadoDiv = document.getElementById('resultadoCalculo');
+
+    if (calculosProprios.proventosBrutos === 0 && calculosProprios.deducoes === 0) {
+        resultadoDiv.innerHTML =
+            '<div class="text-center text-red-600 font-bold p-4 bg-red-100 rounded">Não foi possível calcular. Verifique se preencheu o Salário Base e as datas.</div>';
+        resultadoDiv.style.display = 'block';
+        return;
+    }
+
+    const avisoPrevioTipo = document.getElementById('avisoPrevioTipo').value;
+    let descAP = '';
+    if (avisoPrevioTipo === 'INDENIZADO') descAP = 'Aviso Prévio Indenizado / Multa Contrato (Provento)';
+    else if (avisoPrevioTipo === 'NAO_CUMPRIDO') descAP = 'Desconto de Aviso Prévio / Multa Contrato';
+    else if (avisoPrevioTipo === 'TRABALHADO') descAP = 'Aviso Prévio Trabalhado (Já Incluso no Salário/Salário de Aviso)';
+    else if (avisoPrevioTipo === 'NAO_APLICAVEL') descAP = 'Aviso Prévio Não Aplicável (Não Devido/Não Descontado)';
+    
+    // ----------------------------------------------------------------------
+    // SEÇÃO 1: VERBAS PRINCIPAIS E ADICIONAIS
+    // ----------------------------------------------------------------------
+    let verbasPrincipaisHtml = `
+        ${gerarLinhaProvento(`Saldo de Salário (${diasSaldo} dias)`, calculosProprios.saldoSalario)}
+        ${gerarLinhaProvento(descAP, calculosProprios.avisoPrevio)}
+        ${gerarLinhaProvento('Desconto de Aviso Prévio / Multa Contrato (Desconto)', -calculosProprios.avisoPrevioDesconto)}
+        ${gerarLinhaProvento(`13º Salário Proporcional (${avos13}/12 avos)`, calculosProprios.decimoTerceiro)}
+        ${gerarLinhaProvento(`Férias Proporcionais + 1/3 (${avosFerias}/12 avos)`, calculosProprios.feriasProporcionais)}
+        ${gerarLinhaProvento(`Férias Vencidas + 1/3 (${feriasVencidasQtd} período(s))`, calculosProprios.feriasVencidas)}
+    `;
+
+    // ----------------------------------------------------------------------
+    // SEÇÃO 2: TRIBUTOS
+    // ----------------------------------------------------------------------
+    let tributosHtml = `
+        ${gerarLinhaTributo('INSS (Verbas Salariais e AP)', calculosProprios.inss)}
+        ${gerarLinhaTributo('INSS (Sobre 13º Salário)', calculosProprios.inss13)}
+        ${gerarLinhaTributo('IRRF (Verbas Salariais e AP)', calculosProprios.irrf)}
+        ${gerarLinhaTributo('IRRF (Sobre 13º Salário)', calculosProprios.irrf13)}
+    `;
+
+    // ----------------------------------------------------------------------
+    // SEÇÃO 3: FGTS E SEGURO DESEMPREGO
+    // ----------------------------------------------------------------------
+
+    // Lógica para exibição do saque do FGTS
+    let saqueFgtsStatusHtml;
+    if (calculosProprios.saqueFgtsElegivel) {
+        if (document.getElementById('tipoRescisaoNew').value === 'ACORDO') {
+            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (80% do Saldo)</p>`;
+        } else {
+            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
+        }
+    } else {
+        saqueFgtsStatusHtml = `<p class="text-md font-bold text-red-700 mt-4">Status de Saque: NÃO PERMITIDO</p>`;
+    }
+
+
+    let fgtsDetalhesHtml = `
+        <p class="text-sm font-medium">FGTS de Todo o Período Estimado (${totalMesesTrabalhados} meses x Salário Base):</p>
+        <p class="text-xl font-bold text-green-700">${formatarMoeda(calculosProprios.fgtsTotalEstimado)}</p>
+
+        <p class="text-sm font-medium mt-4">Depósito FGTS das Verbas Rescisórias (Saldo Salário, 13º Prop, AP Indenizado):</p>
+        <p class="text-lg font-semibold text-[#007380]">${formatarMoeda(calculosProprios.fgtsDepositado)}</p>
+
+        <p class="text-sm font-medium mt-4">Multa de ${calculosProprios.multaFGTS > 0 ? (calculosProprios.multaFGTS / calculosProprios.fgtsTotalBase) * 100 : 0}% sobre o Saldo do FGTS (Valor da Indenização):</p>
+        <p class="text-lg font-bold text-green-700">${formatarMoeda(calculosProprios.multaFGTS)}</p>
+
+        <p class="text-sm font-medium mt-4 border-t pt-2">Total FGTS a Recolher (Depósito + Multa):</p>
+        <p class="text-xl font-extrabold text-[#005a62]">${formatarMoeda(calculosProprios.fgtsTotalRecolher)}</p>
+        
+        ${saqueFgtsStatusHtml}
+
+        <p class="text-xs text-red-500 mt-4">* ATENÇÃO: O valor do FGTS Total e a Multa Rescisória são **ESTIMATIVAS** baseadas no último Salário Base. O valor real pode ser diferente.</p>
+    `;
+
+    let seguroDesempregoHtml;
+    if (calculosProprios.seguroDesempregoElegivel) {
+        seguroDesempregoHtml = `
+            <p class="text-md font-bold text-green-700">Status: ELEGÍVEL</p>
+            <p class="text-sm font-medium mt-2">Nº de Parcelas Estimadas:</p>
+            <p class="text-lg font-semibold text-green-700">${calculosProprios.seguroDesempregoParcelas}</p>
+            <p class="text-sm font-medium mt-2">Valor Estimado por Parcela:</p>
+            <p class="text-lg font-semibold text-green-700">${formatarMoeda(calculosProprios.seguroDesempregoValorParcela)}</p>
+            <p class="text-xs text-red-500 mt-4">* ATENÇÃO: A elegibilidade, o valor e o número de parcelas SÃO ESTIMATIVAS e dependem de verificação de tempo de serviço, solicitações anteriores e média salarial nos órgãos oficiais (CAIXA/MTE).</p>
+        `;
+    } else {
+        seguroDesempregoHtml = `
+            <p class="text-md font-bold text-red-700">Status: NÃO ELEGÍVEL</p>
+            <p class="text-sm text-gray-600 mt-2">A modalidade de rescisão selecionada não permite o saque ou o recebimento do Seguro Desemprego, ou o tempo de serviço é insuficiente para a primeira solicitação.</p>
+        `;
+    }
+
+    // BLOCO: Prazo para Ação Trabalhista
+    let prazoAcaoTrabalhistaHtml = `
+        <div class="p-6 mb-8 border border-red-300 rounded-lg shadow-lg bg-red-50 text-center">
+            <h5 class="text-lg font-bold text-red-700 border-b pb-2 mb-3">Prazo Limite para Ação Trabalhista (Prescrição Bienal)</h5>
+            <p class="text-sm font-medium text-red-600">O prazo máximo de 2 anos para ingressar com a Reclamação Trabalhista se encerra em:</p>
+            <p class="text-3xl font-extrabold text-red-900 mt-2">${formatarData(calculosProprios.dataLimiteAcaoTrabalhista)}</p>
+            <p class="text-xs text-gray-700 mt-3">
+                * A lei estabelece 2 anos após a data de demissão para entrar com a ação.
+                <br>
+                * Você só pode cobrar verbas referentes aos 5 anos anteriores à data de entrada da ação.
+            </p>
+        </div>
+    `;
+
+
+    // ----------------------------------------------------------------------
+    // RELATÓRIO FINAL
+    // ----------------------------------------------------------------------
+    let html = `
+        <h3 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Relatório da Simulação</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-center font-bold">
+            <div class="p-4 rounded-lg shadow-md total bruto">
+                <p class="text-sm text-gray-700">Total de Proventos Brutos</p>
+                <p class="text-xl text-[#007380]">${formatarMoeda(calculosProprios.proventosBrutos)}</p>
+            </div>
+            <div class="p-4 rounded-lg shadow-md bg-red-100">
+                <p class="text-sm text-gray-700">Total de Deduções</p>
+                <p class="text-xl text-red-600">${formatarMoeda(calculosProprios.deducoes)}</p>
+            </div>
+            <div class="p-4 rounded-lg shadow-2xl total liquido border-2 border-green-600">
+                <p class="text-sm text-gray-800">Valor Líquido da Rescisão</p>
+                <p class="text-2xl text-green-700">${formatarMoeda(calculosProprios.liquido)}</p>
+            </div>
+        </div>
+
+        <h4 class="text-xl font-semibold text-[#007380] mb-4">Detalhamento das Verbas (Proventos e Deduções do AP)</h4>
+        <div class="overflow-x-auto mb-8 shadow-lg rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verba</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    ${verbasPrincipaisHtml}
+                    <tr class="bg-gray-100 font-semibold">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">TOTAL DE PROVENTOS BRUTOS (Incluindo Multa FGTS)</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-[#007380]">${formatarMoeda(calculosProprios.proventosBrutos)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4 class="text-xl font-semibold text-[#007380] mb-4">Detalhamento de Deduções Obrigatórias (INSS e IRRF)</h4>
+        <div class="overflow-x-auto mb-8 shadow-lg rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tributo</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    ${tributosHtml}
+                    <tr class="bg-gray-100 font-semibold"><td class="px-6 py-4 whitespace-nowrap text-sm">TOTAL TRIBUTOS</td><td class="px-6 py-4 whitespace-nowrap text-right text-red-600">${formatarMoeda(calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13)}</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4 class="text-xl font-semibold text-[#007380] mb-4 mt-8">Informações Extras (FGTS e Seguro Desemprego)</h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 mb-8 border border-gray-200 rounded-lg shadow-lg bg-white">
+
+            <div class="p-4 border-r md:border-r-2 border-gray-200">
+                <h5 class="text-lg font-bold text-[#005a62] border-b pb-1 mb-3">Fundo de Garantia (FGTS)</h5>
+                ${fgtsDetalhesHtml}
+                <p class="text-xs text-red-500 mt-4">* O saque do saldo só é permitido em casos específicos (ex: SJC, RESCISÃO INDIRETA, etc.).</p>
+            </div>
+
+            <div class="p-4">
+                <h5 class="text-lg font-bold text-[#005a62] border-b pb-1 mb-3">Seguro Desemprego (Estimativa)</h5>
+                ${seguroDesempregoHtml}
+            </div>
+        </div>
+
+        ${prazoAcaoTrabalhistaHtml}
+
+        <div class="text-center font-bold mb-6 mt-6 p-4 border-2 border-red-600 rounded-lg bg-red-100 text-red-700 aviso-importante-global">
+            AVISO IMPORTANTE: Este cálculo gera apenas uma ESTIMATIVA Simplificada, sem considerar variáveis específicas e particularidades do seu caso.
+            <br>
+            Para um cálculo mais detalhado, acesse a opção da Calculadora Completa.
+            <br>
+            A consulta a um Advogado é indispensável para a apuração do valor exato e para melhor compreensão dos seus direitos.
+        </div>
+
+        <div class="flex justify-center gap-4">
+            <button onclick="window.print()" class="bg-gray-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-600 transition">Imprimir Relatório</button>
+            <button onclick="resetFormAndHideResult()" class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-red-600 transition">Limpar e Recalcular</button>
+        </div>
+    `;
+
+    resultadoDiv.innerHTML = html;
+    resultadoDiv.style.display = 'block';
+    resultadoDiv.scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO PARA ATUALIZAR CAMPOS (AP e Contrato a Termo) */
+        /* -------------------------------------------------------------------------- */
+        function atualizarCampos() {
+            const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
+            const avisoPrevioSelect = document.getElementById('avisoPrevioTipo');
+            const grupoDataTermino = document.getElementById('grupoDataTerminoContrato');
+            const options = avisoPrevioSelect.options;
+
+            // 1. Resetar e configurar estado inicial
+            const valorAnterior = avisoPrevioSelect.value; 
+
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value !== '') {
+                    options[i].style.display = 'block';
+                }
+                options[i].disabled = false;
+            }
+            avisoPrevioSelect.disabled = false;
+            avisoPrevioSelect.value = ''; // Temporariamente reseta para permitir a seleção automática
+
+            // 2. Lógica para Contrato a Termo
+            if (tipoRescisao === 'ANTEC_EMPREGADOR' || tipoRescisao === 'ANTEC_EMPREGADO') {
+                grupoDataTermino.style.display = 'block';
+            } else {
+                grupoDataTermino.style.display = 'none';
+            }
+
+            // 3. Lógica para filtrar opções de Aviso Prévio com base no Tipo de Rescisão
+            let opcoesPermitidas = ['']; 
+            let forcarValor = null;
+
+            switch (tipoRescisao) {
+                case 'SJC': // Demissão Sem Justa Causa
+                case 'DISP_COLETIVA': // Dispensa Coletiva
+                    // Tabela: Trabalhado ou Indenizado
+                    opcoesPermitidas = ['INDENIZADO', 'TRABALHADO', ''];
+                    break;
+
+                case 'PEDIDO': // Pedido de Demissão
+                    // Tabela: Trabalhado ou Descontado
+                    opcoesPermitidas = ['TRABALHADO', 'NAO_CUMPRIDO', '']; 
+                    break;
+
+                case 'ACORDO': // Comum Acordo
+                    // Tabela: Trabalhado ou Indenizado
+                    opcoesPermitidas = ['INDENIZADO', 'TRABALHADO', ''];
+                    break;
+                    
+                case 'RESCISAO_INDIRETA': // Rescisão Indireta
+                    // Tabela: Indenizado
+                    opcoesPermitidas = ['INDENIZADO', ''];
+                    break;
+                    
+                case 'CULPA_RECIPROCA': // Culpa Recíproca
+                    // Tabela: Indenizado (O fator de 50% é aplicado no cálculo, mantendo a opção de AP Indenizado)
+                    opcoesPermitidas = ['INDENIZADO', ''];
+                    break;
+
+                case 'APOSENTADORIA': // Aposentadoria (NOVA REGRA: Indenizado ou Trabalhado)
+                    // Tabela: Trabalhado ou Indenizado (Conforme solicitado)
+                    opcoesPermitidas = ['INDENIZADO', 'TRABALHADO', ''];
+                    break;
+                    
+                // Casos onde o AP NÃO é devido nem descontado. Usa-se o novo NAO_APLICAVEL
+                case 'CJC': // Demissão Com Justa Causa
+                case 'FALECIMENTO': // Falecimento
+                case 'PDV_PDI': // PDV
+                case 'ANTEC_EMPREGADOR': // Multa Contrato Termo (Multa substitui o AP)
+                case 'ANTEC_EMPREGADO': // Multa Contrato Termo (Multa substitui o AP)
+                    forcarValor = 'NAO_APLICAVEL'; // Força o valor 'Não Aplicável'
+                    break;
+
+                default:
+                    break;
+            }
+            
+            // 4. Aplicar forçar valor se houver (Precedência sobre o filtro de visibilidade)
+            if (forcarValor) {
+                opcoesPermitidas = [forcarValor, '']; // Permite apenas a opção forçada e o "Selecione..." (que é vazio)
+            }
+
+
+            // 5. Ocultar opções não permitidas e coletar opções válidas restantes
+            let opcoesValidasRestantes = [];
+            for (let i = 0; i < options.length; i++) {
+                if (!opcoesPermitidas.includes(options[i].value)) {
+                    options[i].style.display = 'none';
+                } else {
+                    options[i].style.display = 'block'; // Garante que a opção permitida esteja visível
+                    if (options[i].value !== '') {
+                        opcoesValidasRestantes.push(options[i].value);
+                    }
+                }
+            }
+            
+            // 6. Lógica de Seleção Automática (se sobrar apenas uma opção válida)
+            if (opcoesValidasRestantes.length === 1) {
+                avisoPrevioSelect.value = opcoesValidasRestantes[0]; // Seleciona automaticamente
+            } else if (opcoesValidasRestantes.includes(valorAnterior)) {
+                // Tenta manter o valor anterior se ele ainda for válido
+                avisoPrevioSelect.value = valorAnterior;
+            } else {
+                avisoPrevioSelect.value = ''; // Retorna ao "Selecione..."
+            }
+        }
+
+
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO PARA LIMPAR DADOS E REINICIAR CALCULADORA */
+        /* -------------------------------------------------------------------------- */
+        function resetFormAndHideResult() {
+            // 1. Limpa todos os inputs e selects
+            document.querySelectorAll('input:not([type="button"]):not([type="submit"]):not([type="reset"]), select').forEach(input => {
+                if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                } else if (input.type === 'number' || ['salarioBruto'].includes(input.id)) { 
+                    // Define 0.00 para Salário Base. 0 para Férias Vencidas
+                    input.value = (input.type === 'number' ? '0' : '0.00');
+                } else if (input.type === 'date') {
+                    input.value = '';
+                }
+            });
+
+            // 2. Chama a função de atualização de campos para redefinir o estado de AP
+            atualizarCampos();
+
+            // 3. Oculta o resultado
+            document.getElementById('resultadoCalculo').style.display = 'none';
+            document.getElementById('resultadoCalculo').innerHTML = '';
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* INICIALIZAÇÃO */
+        /* -------------------------------------------------------------------------- */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Chama a função de atualização de campos para configurar o estado inicial de Aviso Prévio/Contrato a Termo
+            atualizarCampos();
+        });
     </script>
 </body>
 
