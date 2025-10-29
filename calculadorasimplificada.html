@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Trabalhista | Rescisão Simplificada</title>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -132,8 +135,7 @@
                                 <h3 class="text-lg font-bold text-[#005a62] border-b pb-2">Rescisão e Aviso</h3>
 
                                 <div class="input-group">
-                                    <label for="tipoRescisaoNew"
-                                        class="block text-sm font-medium text-gray-700">Tipo de
+                                    <label for="tipoRescisaoNew" class="block text-sm font-medium text-gray-700">Tipo de
                                         Rescisão:</label>
                                     <select id="tipoRescisaoNew" onchange="atualizarCampos()"
                                         class="mt-1 block w-full modern-input bg-white" required>
@@ -142,7 +144,8 @@
                                         <option value="CJC">Demissão Com Justa Causa</option>
                                         <option value="PEDIDO">Pedido de Demissão</option>
                                         <option value="ACORDO">Comum Acordo</option>
-                                        <option value="CULPA_RECIPROCA">Culpa Recíproca (empregador e empregado)</option>
+                                        <option value="CULPA_RECIPROCA">Culpa Recíproca (empregador e empregado)
+                                        </option>
                                         <option value="RESCISAO_INDIRETA">Culpa do Empregador (Indireta do Contrato de
                                             Trabalho)</option>
                                         <option value="ANTEC_EMPREGADOR">Antecipada do Contrato de Experiência
@@ -168,7 +171,8 @@
                                         <option value="INDENIZADO">Indenizado (pela Empresa)</option>
                                         <option value="TRABALHADO">Trabalhado</option>
                                         <option value="NAO_CUMPRIDO">Não Cumprido (Desconto)</option>
-                                        <option value="NAO_APLICAVEL">Não Aplicável / Multa Contratual</option> </select>
+                                        <option value="NAO_APLICAVEL">Não Aplicável / Multa Contratual</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -176,22 +180,19 @@
                                 <h3 class="text-lg font-bold text-[#005a62] border-b pb-2">Datas e Prazos</h3>
 
                                 <div class="input-group">
-                                    <label for="dataAdmissao"
-                                        class="block text-sm font-medium text-gray-700">Data de
+                                    <label for="dataAdmissao" class="block text-sm font-medium text-gray-700">Data de
                                         Admissão:</label>
                                     <input type="date" id="dataAdmissao" value=""
                                         class="mt-1 block w-full modern-input">
                                 </div>
                                 <div class="input-group">
-                                    <label for="dataDemissao"
-                                        class="block text-sm font-medium text-gray-700">Data de
+                                    <label for="dataDemissao" class="block text-sm font-medium text-gray-700">Data de
                                         Demissão (Afastamento):</label>
                                     <input type="date" id="dataDemissao" value=""
                                         class="mt-1 block w-full modern-input">
                                 </div>
                                 <div class="input-group">
-                                    <label for="dataPagamento"
-                                        class="block text-sm font-medium text-gray-700">Data de
+                                    <label for="dataPagamento" class="block text-sm font-medium text-gray-700">Data de
                                         Pagamento da Rescisão (Homologação):</label>
                                     <input type="date" id="dataPagamento" value=""
                                         class="mt-1 block w-full modern-input">
@@ -202,7 +203,8 @@
                                         Término Prevista (Contrato a Termo):</label>
                                     <input type="date" id="dataTerminoContrato" value=""
                                         class="mt-1 block w-full modern-input">
-                                    <small class="text-xs text-gray-500">*Necessário para calcular a multa de 50% pela antecipação.</small>
+                                    <small class="text-xs text-gray-500">*Necessário para calcular a multa de 50% pela
+                                        antecipação.</small>
                                 </div>
                             </div>
 
@@ -225,13 +227,14 @@
                                         completos.</small>
                                 </div>
                                 <div class="input-group">
-                                    <label for="numDependentes"
-                                        class="block text-sm font-medium text-gray-700">Número de Dependentes (IRRF):</label>
-                                    <input type="number" id="numDependentes" value="0" placeholder="0" min="0"
-                                        step="1" class="mt-1 block w-full modern-input">
-                                    <small class="text-xs text-gray-500">*Para fins de dedução do Imposto de Renda (R$ 189,59/mês).</small>
+                                    <label for="numDependentes" class="block text-sm font-medium text-gray-700">Número
+                                        de Dependentes (IRRF):</label>
+                                    <input type="number" id="numDependentes" value="0" placeholder="0" min="0" step="1"
+                                        class="mt-1 block w-full modern-input">
+                                    <small class="text-xs text-gray-500">*Para fins de dedução do Imposto de Renda (R$
+                                        189,59/mês).</small>
                                 </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -244,7 +247,7 @@
                     <div id="resultadoCalculo" style="display:none;" class="resultado">
                     </div>
 
-                    </section>
+                </section>
             </div>
         </main>
     </div>
@@ -256,10 +259,10 @@
         const TERCO_CONSTITUCIONAL = 1 / 3;
         const DIAS_ADICIONAIS_AP = 3; // 3 dias por ano completo de serviço (Lei 12.506/11)
         const ALIQUOTA_FGTS = 0.08; // 8% de depósito
-        
+
         // Exemplo de Tabela IRRF (2024 - Simplificado)
         const TABELA_IRRF = [ // limite inferior, limite superior, alíquota, dedução
-            [0.00, 2428.80, 0.00, 0.00], 
+            [0.00, 2428.80, 0.00, 0.00],
             [2428.81, 2826.65, 0.075, 182.16],
             [2826.66, 3751.05, 0.15, 394.16],
             [3751.06, 4664.68, 0.225, 675.49],
@@ -268,7 +271,7 @@
 
         // Tabela INSS (2024 - Simplificado)
         const TETO_INSS = 8157.41;
-        const TABELA_INSS = [ 
+        const TABELA_INSS = [
             {
                 limite: 1558.50,
                 aliquota: 0.075
@@ -322,7 +325,7 @@
             avisoPrevioDesconto: 0.00, // Desconto (AP Não Cumprido ou Multa Contrato Empregado)
             multaAtraso477: 0.00, // NOVO: Multa por Atraso de Pagamento (Art. 477, § 8º)
             // Informações de Prazo
-            dataLimiteAcaoTrabalhista: null, 
+            dataLimiteAcaoTrabalhista: null,
         };
 
         /* -------------------------------------------------------------------------- */
@@ -343,7 +346,7 @@
             }
             return formatado;
         }
-        
+
         function formatarData(date) {
             if (isNaN(date.getTime())) return 'Data Inválida';
             const day = String(date.getDate()).padStart(2, '0');
@@ -424,325 +427,325 @@
             const totalMonthsRounded = Math.ceil(totalDaysApprox / 30.4375); // Média de 30.4375 dias por mês
 
             // Retorna o número de meses, garantindo que não seja negativo e que seja pelo menos 1, se houver trabalho.
-            return Math.max(0, totalMonthsRounded); 
+            return Math.max(0, totalMonthsRounded);
         }
 
         /* -------------------------------------------------------------------------- */
-     /* -------------------------------------------------------------------------- */
-/* FUNÇÃO PRINCIPAL: CALCULAR RESCISÃO (SIMPLIFICADA) */
-/* -------------------------------------------------------------------------- */
-function calcularRescisao() {
-    // 1. Limpa o resultado anterior e redefine as variáveis globais
-    Object.keys(calculosProprios).forEach(key => calculosProprios[key] = 0.00);
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO PRINCIPAL: CALCULAR RESCISÃO (SIMPLIFICADA) */
+        /* -------------------------------------------------------------------------- */
+        function calcularRescisao() {
+            // 1. Limpa o resultado anterior e redefine as variáveis globais
+            Object.keys(calculosProprios).forEach(key => calculosProprios[key] = 0.00);
 
-    // 2. Obter Dados de Entrada
-    const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
-    const avisoPrevioTipo = document.getElementById('avisoPrevioTipo').value;
-    const dataAdmissao = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
-    const dataDemissao = new Date(document.getElementById('dataDemissao').value + 'T00:00:00');
-    const dataTerminoContrato = document.getElementById('dataTerminoContrato').value ? new Date(document.getElementById('dataTerminoContrato').value + 'T00:00:00') : null;
-    const dataPagamentoElement = document.getElementById('dataPagamento').value; // Pegar o valor do campo de data
-    const dataPagamento = dataPagamentoElement ? new Date(dataPagamentoElement + 'T00:00:00') : null; // Criar objeto Date
+            // 2. Obter Dados de Entrada
+            const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
+            const avisoPrevioTipo = document.getElementById('avisoPrevioTipo').value;
+            const dataAdmissao = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
+            const dataDemissao = new Date(document.getElementById('dataDemissao').value + 'T00:00:00');
+            const dataTerminoContrato = document.getElementById('dataTerminoContrato').value ? new Date(document.getElementById('dataTerminoContrato').value + 'T00:00:00') : null;
+            const dataPagamentoElement = document.getElementById('dataPagamento').value; // Pegar o valor do campo de data
+            const dataPagamento = dataPagamentoElement ? new Date(dataPagamentoElement + 'T00:00:00') : null; // Criar objeto Date
 
-    const salarioBase = parseInput('salarioBruto');
-    const feriasVencidasQtd = parseInputInt('feriasVencidasNew');
-    const numDependentes = parseInputInt('numDependentes');
+            const salarioBase = parseInput('salarioBruto');
+            const feriasVencidasQtd = parseInputInt('feriasVencidasNew');
+            const numDependentes = parseInputInt('numDependentes');
 
-    // 3. Validação Mínima
-    if (salarioBase <= 0 || !dataAdmissao || !dataDemissao || !tipoRescisao || !avisoPrevioTipo || isNaN(dataAdmissao) || isNaN(dataDemissao)) {
-        alert('Erro: Por favor, preencha o Salário Base, as datas de Admissão e Demissão, e os Tipos de Rescisão e Aviso Prévio corretamente.');
-        return;
-    }
-
-    // 4. Base de Cálculo da Remuneração (Simplificada: é apenas o Salário Base)
-    const baseAmpliada = salarioBase;
-    let totalProventos = 0;
-    let totalDeducoes = 0;
-    let baseAP = 0; // Base de cálculo do Aviso Prévio Indenizado (para FGTS/INSS/IRRF)
-
-    // NOVO: Cálculo dos Meses Totais para a estimativa do FGTS de todo o período
-    const totalMesesTrabalhados = calcularTotalMesesParaFGTS(dataAdmissao, dataDemissao);
-
-    // 5. Saldo de Salário (Sempre devido, exceto Justa Causa em alguns contextos, mas mantemos o padrão)
-    const ultimoDiaMesDemissao = new Date(dataDemissao.getFullYear(), dataDemissao.getMonth() + 1, 0).getDate();
-    const diasSaldo = dataDemissao.getDate();
-
-    // REGRA: Saldo de Salário é sempre devido.
-    calculosProprios.saldoSalario = (baseAmpliada / ultimoDiaMesDemissao) * diasSaldo;
-    totalProventos += calculosProprios.saldoSalario;
-
-    // 6. Fatores de Redução de Verbas (Específicos para Culpa Recíproca e Regras Customizadas)
-    
-    // Fatores de Pagamento: 1.0 (Integral), 0.5 (Metade), 0.0 (Não Pago)
-    let fatorReducaoFeriasVencidas = 1.0;
-    let fatorReducaoFeriasProp = 1.0;
-    let fatorReducaoDecimoTerceiro = 1.0;
-    let fatorReducaoAP = 1.0; // Aplica-se ao AP Indenizado
-
-    switch (tipoRescisao) {
-        case 'CJC': // Demissão Com Justa Causa
-            // ALTERAÇÃO SOLICITADA 2: Remover proporcionais
-            fatorReducaoFeriasVencidas = 1.0; // Férias Vencidas + 1/3 são devidas em CJC (Súmula 171 do TST)
-            fatorReducaoFeriasProp = 0.0;
-            fatorReducaoDecimoTerceiro = 0.0;
-            break;
-        case 'CULPA_RECIPROCA': // Culpa Recíproca (Metade de tudo exceto Saldo Salário)
-            fatorReducaoFeriasVencidas = 0.5;
-            fatorReducaoFeriasProp = 0.5;
-            fatorReducaoDecimoTerceiro = 0.5;
-            fatorReducaoAP = 0.5; // AP Indenizado: Metade
-            break;
-        case 'PEDIDO': // Pedido de Demissão (AP não devido, ou descontado - já tratado abaixo)
-            fatorReducaoFeriasVencidas = 1.0; // Vencidas são devidas (Súmula 171 TST)
-            break;
-        case 'FALECIMENTO': // Falecimento (Devido integralmente)
-            fatorReducaoFeriasVencidas = 1.0;
-            fatorReducaoFeriasProp = 1.0;
-            fatorReducaoDecimoTerceiro = 1.0;
-            break;
-        case 'APOSENTADORIA': // Aposentadoria (Devido integralmente)
-            fatorReducaoFeriasVencidas = 1.0;
-            fatorReducaoFeriasProp = 1.0;
-            fatorReducaoDecimoTerceiro = 1.0;
-            break;
-        case 'ACORDO': // Acordo Comum
-            fatorReducaoAP = 0.5; // AP Indenizado: Metade
-            break;
-        case 'ANTEC_EMPREGADO': // Contrato Exp. Antecipado Empregado (Multa Contrato de Exp. = Desconto de AP)
-        case 'ANTEC_EMPREGADOR': // Contrato Exp. Antecipado Empregador (Multa Contrato de Exp. = Provento de AP)
-            // AP não é devido, mas a multa é tratada na seção 11
-            break;
-        // SJC, Rescisão Indireta, Dispensa Coletiva e PDV/PDI: Fatores = 1.0 (Integral)
-        default:
-            break;
-    }
-
-
-    // 7. Cálculo de Avos para 13º e Férias
-    const diaDemissao = dataDemissao.getDate();
-    let avos13 = dataDemissao.getMonth();
-    if (diaDemissao >= 15) {
-        avos13 += 1;
-    }
-    avos13 = Math.max(0, avos13);
-
-    let avosFerias = dataDemissao.getMonth();
-    if (diaDemissao >= 15) {
-        avosFerias += 1;
-    }
-    avosFerias = Math.max(0, avosFerias);
-
-    // 8. 13º Salário Proporcional
-    calculosProprios.decimoTerceiro = (baseAmpliada / 12) * avos13 * fatorReducaoDecimoTerceiro;
-    totalProventos += calculosProprios.decimoTerceiro;
-
-    // 9. Férias Proporcionais + 1/3
-    calculosProprios.feriasProporcionais = (baseAmpliada / 12) * avosFerias * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasProp;
-    totalProventos += calculosProprios.feriasProporcionais;
-
-    // 10. Férias Vencidas + 1/3
-    // OBS: A multa de dobra de férias não é contemplada na calculadora simplificada
-    calculosProprios.feriasVencidas = feriasVencidasQtd * baseAmpliada * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasVencidas;
-    totalProventos += calculosProprios.feriasVencidas;
-
-
-    // 11. Aviso Prévio Indenizado/Descontado ou Multa de Contrato a Termo
-    const isContratoTermo = ['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO'].includes(tipoRescisao);
-
-    if (isContratoTermo && dataTerminoContrato && !isNaN(dataTerminoContrato)) {
-        // Lógica de Contrato de Experiência (Contrato a Termo) - Multa do Art. 479/480
-        const timeDiff = dataTerminoContrato.getTime() - dataDemissao.getTime();
-        const diasFaltantesContrato = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-        if (diasFaltantesContrato > 0) {
-            const valorDiasFaltantes = (baseAmpliada / 30) * diasFaltantesContrato;
-            const multaContratoExperiencia = valorDiasFaltantes * 0.50; // Multa de 50% (Art. 479/480)
-
-            if (tipoRescisao === 'ANTEC_EMPREGADOR') {
-                calculosProprios.avisoPrevio = multaContratoExperiencia; // Provento (Multa)
-                totalProventos += calculosProprios.avisoPrevio;
-            } else if (tipoRescisao === 'ANTEC_EMPREGADO') {
-                calculosProprios.avisoPrevioDesconto = multaContratoExperiencia; // Desconto (Multa)
-                totalDeducoes += calculosProprios.avisoPrevioDesconto;
+            // 3. Validação Mínima
+            if (salarioBase <= 0 || !dataAdmissao || !dataDemissao || !tipoRescisao || !avisoPrevioTipo || isNaN(dataAdmissao) || isNaN(dataDemissao)) {
+                alert('Erro: Por favor, preencha o Salário Base, as datas de Admissão e Demissão, e os Tipos de Rescisão e Aviso Prévio corretamente.');
+                return;
             }
+
+            // 4. Base de Cálculo da Remuneração (Simplificada: é apenas o Salário Base)
+            const baseAmpliada = salarioBase;
+            let totalProventos = 0;
+            let totalDeducoes = 0;
+            let baseAP = 0; // Base de cálculo do Aviso Prévio Indenizado (para FGTS/INSS/IRRF)
+
+            // NOVO: Cálculo dos Meses Totais para a estimativa do FGTS de todo o período
+            const totalMesesTrabalhados = calcularTotalMesesParaFGTS(dataAdmissao, dataDemissao);
+
+            // 5. Saldo de Salário (Sempre devido, exceto Justa Causa em alguns contextos, mas mantemos o padrão)
+            const ultimoDiaMesDemissao = new Date(dataDemissao.getFullYear(), dataDemissao.getMonth() + 1, 0).getDate();
+            const diasSaldo = dataDemissao.getDate();
+
+            // REGRA: Saldo de Salário é sempre devido.
+            calculosProprios.saldoSalario = (baseAmpliada / ultimoDiaMesDemissao) * diasSaldo;
+            totalProventos += calculosProprios.saldoSalario;
+
+            // 6. Fatores de Redução de Verbas (Específicos para Culpa Recíproca e Regras Customizadas)
+
+            // Fatores de Pagamento: 1.0 (Integral), 0.5 (Metade), 0.0 (Não Pago)
+            let fatorReducaoFeriasVencidas = 1.0;
+            let fatorReducaoFeriasProp = 1.0;
+            let fatorReducaoDecimoTerceiro = 1.0;
+            let fatorReducaoAP = 1.0; // Aplica-se ao AP Indenizado
+
+            switch (tipoRescisao) {
+                case 'CJC': // Demissão Com Justa Causa
+                    // ALTERAÇÃO SOLICITADA 2: Remover proporcionais
+                    fatorReducaoFeriasVencidas = 1.0; // Férias Vencidas + 1/3 são devidas em CJC (Súmula 171 do TST)
+                    fatorReducaoFeriasProp = 0.0;
+                    fatorReducaoDecimoTerceiro = 0.0;
+                    break;
+                case 'CULPA_RECIPROCA': // Culpa Recíproca (Metade de tudo exceto Saldo Salário)
+                    fatorReducaoFeriasVencidas = 0.5;
+                    fatorReducaoFeriasProp = 0.5;
+                    fatorReducaoDecimoTerceiro = 0.5;
+                    fatorReducaoAP = 0.5; // AP Indenizado: Metade
+                    break;
+                case 'PEDIDO': // Pedido de Demissão (AP não devido, ou descontado - já tratado abaixo)
+                    fatorReducaoFeriasVencidas = 1.0; // Vencidas são devidas (Súmula 171 TST)
+                    break;
+                case 'FALECIMENTO': // Falecimento (Devido integralmente)
+                    fatorReducaoFeriasVencidas = 1.0;
+                    fatorReducaoFeriasProp = 1.0;
+                    fatorReducaoDecimoTerceiro = 1.0;
+                    break;
+                case 'APOSENTADORIA': // Aposentadoria (Devido integralmente)
+                    fatorReducaoFeriasVencidas = 1.0;
+                    fatorReducaoFeriasProp = 1.0;
+                    fatorReducaoDecimoTerceiro = 1.0;
+                    break;
+                case 'ACORDO': // Acordo Comum
+                    fatorReducaoAP = 0.5; // AP Indenizado: Metade
+                    break;
+                case 'ANTEC_EMPREGADO': // Contrato Exp. Antecipado Empregado (Multa Contrato de Exp. = Desconto de AP)
+                case 'ANTEC_EMPREGADOR': // Contrato Exp. Antecipado Empregador (Multa Contrato de Exp. = Provento de AP)
+                    // AP não é devido, mas a multa é tratada na seção 11
+                    break;
+                // SJC, Rescisão Indireta, Dispensa Coletiva e PDV/PDI: Fatores = 1.0 (Integral)
+                default:
+                    break;
+            }
+
+
+            // 7. Cálculo de Avos para 13º e Férias
+            const diaDemissao = dataDemissao.getDate();
+            let avos13 = dataDemissao.getMonth();
+            if (diaDemissao >= 15) {
+                avos13 += 1;
+            }
+            avos13 = Math.max(0, avos13);
+
+            let avosFerias = dataDemissao.getMonth();
+            if (diaDemissao >= 15) {
+                avosFerias += 1;
+            }
+            avosFerias = Math.max(0, avosFerias);
+
+            // 8. 13º Salário Proporcional
+            calculosProprios.decimoTerceiro = (baseAmpliada / 12) * avos13 * fatorReducaoDecimoTerceiro;
+            totalProventos += calculosProprios.decimoTerceiro;
+
+            // 9. Férias Proporcionais + 1/3
+            calculosProprios.feriasProporcionais = (baseAmpliada / 12) * avosFerias * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasProp;
+            totalProventos += calculosProprios.feriasProporcionais;
+
+            // 10. Férias Vencidas + 1/3
+            // OBS: A multa de dobra de férias não é contemplada na calculadora simplificada
+            calculosProprios.feriasVencidas = feriasVencidasQtd * baseAmpliada * (1 + TERCO_CONSTITUCIONAL) * fatorReducaoFeriasVencidas;
+            totalProventos += calculosProprios.feriasVencidas;
+
+
+            // 11. Aviso Prévio Indenizado/Descontado ou Multa de Contrato a Termo
+            const isContratoTermo = ['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO'].includes(tipoRescisao);
+
+            if (isContratoTermo && dataTerminoContrato && !isNaN(dataTerminoContrato)) {
+                // Lógica de Contrato de Experiência (Contrato a Termo) - Multa do Art. 479/480
+                const timeDiff = dataTerminoContrato.getTime() - dataDemissao.getTime();
+                const diasFaltantesContrato = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                if (diasFaltantesContrato > 0) {
+                    const valorDiasFaltantes = (baseAmpliada / 30) * diasFaltantesContrato;
+                    const multaContratoExperiencia = valorDiasFaltantes * 0.50; // Multa de 50% (Art. 479/480)
+
+                    if (tipoRescisao === 'ANTEC_EMPREGADOR') {
+                        calculosProprios.avisoPrevio = multaContratoExperiencia; // Provento (Multa)
+                        totalProventos += calculosProprios.avisoPrevio;
+                    } else if (tipoRescisao === 'ANTEC_EMPREGADO') {
+                        calculosProprios.avisoPrevioDesconto = multaContratoExperiencia; // Desconto (Multa)
+                        totalDeducoes += calculosProprios.avisoPrevioDesconto;
+                    }
+                }
+            } else if (avisoPrevioTipo === 'INDENIZADO') {
+                // Lógica de Aviso Prévio Padrão Indenizado (Contrato Indeterminado)
+
+                // 11.2.1 Valor Integral do AP (30 dias + Proporcionais Lei 12.506/11)
+                let valorAPIntegral = baseAmpliada;
+                const anosServico = (dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+                const diasAdicionais = Math.floor(anosServico) * DIAS_ADICIONAIS_AP;
+                valorAPIntegral += (baseAmpliada / 30) * diasAdicionais;
+
+                // Fator de Redução já calculado na seção 6: fatorReducaoAP (1.0 ou 0.5)
+
+                calculosProprios.avisoPrevio = valorAPIntegral * fatorReducaoAP;
+                totalProventos += calculosProprios.avisoPrevio;
+
+                // AP Indenizado Padrão entra na base de FGTS e INSS/IRRF
+                baseAP = calculosProprios.avisoPrevio;
+
+            } else if (avisoPrevioTipo === 'NAO_CUMPRIDO') {
+                // Lógica de Aviso Prévio Padrão Descontado (Contrato Indeterminado - Usado em Pedido de Demissão)
+
+                // REGRA: AP não pode ser descontado se for SJC, Rescisão Indireta, Contrato a Termo, Falecimento ou Aposentadoria (Já filtrado no JS anterior)
+                if (tipoRescisao === 'PEDIDO') { // Apenas Pedido de Demissão e similares
+                    calculosProprios.avisoPrevioDesconto = baseAmpliada;
+                    totalDeducoes += calculosProprios.avisoPrevioDesconto;
+                }
+            }
+            // Aviso Prévio Trabalhado (TRABALHADO) e NAO_APLICAVEL não geram provento/desconto nesta seção, a menos que sejam Multas Contratuais (já tratadas).
+
+
+            // 12. CÁLCULO FGTS (Depósito e Multa)
+
+            // Base FGTS: Saldo Salário + 13º Prop + AP Indenizado Padrão
+            const fgtsBasePeriodo = calculosProprios.saldoSalario + calculosProprios.decimoTerceiro + baseAP;
+
+            // Depósito FGTS Mês da Rescisão
+            calculosProprios.fgtsDepositado = fgtsBasePeriodo * ALIQUOTA_FGTS;
+
+            // NOVO: Cálculo do FGTS Total Estimado (Base para a Multa)
+            calculosProprios.fgtsTotalEstimado = totalMesesTrabalhados * baseAmpliada * ALIQUOTA_FGTS;
+
+            let baseParaMulta = calculosProprios.fgtsTotalEstimado; // Usa o total estimado como base da multa
+            let percentualMulta = 0.00;
+
+            // REGRA: Multa do FGTS
+            if (['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA'].includes(tipoRescisao) || (isContratoTermo && tipoRescisao === 'ANTEC_EMPREGADOR')) {
+                percentualMulta = 0.40; // 40%
+            } else if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
+                percentualMulta = 0.20; // 20% (metade do 40%)
+            } else if (tipoRescisao === 'PDV_PDI') {
+                // Situação Especial, depende da negociação. Usaremos 0% como padrão simplificado.
+                percentualMulta = 0.00;
+            }
+            // Demais casos (Pedido, CJC, Falecimento, Aposentadoria, ANTEC_EMPREGADO) = 0%
+
+            calculosProprios.fgtsTotalBase = baseParaMulta;
+            calculosProprios.multaFGTS = calculosProprios.fgtsTotalBase * percentualMulta;
+
+            // Adiciona a Multa FGTS aos proventos (Provento para o empregado)
+            totalProventos += calculosProprios.multaFGTS;
+
+
+            // 13. CÁLCULO SEGURO DESEMPREGO (Lógica Simplificada)
+            // REGRA: Elegibilidade ao Seguro-Desemprego
+            const elegivelSD = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ANTEC_EMPREGADOR'].includes(tipoRescisao);
+
+            if (elegivelSD) {
+                const umAnoEmMillis = 1000 * 60 * 60 * 24 * 365.25;
+                const anosCompletos = (dataDemissao.getTime() - dataAdmissao.getTime()) / umAnoEmMillis;
+                const mesesTrabalhados = Math.floor(anosCompletos * 12);
+
+                let parcelas = 0;
+                if (mesesTrabalhados >= 24) {
+                    parcelas = 5;
+                } else if (mesesTrabalhados >= 12) {
+                    parcelas = 4;
+                }
+                // OBS: O cálculo de parcelas é complexo, dependendo de solicitações anteriores. Aqui, é uma ESTIMATIVA.
+
+                if (parcelas > 0) {
+                    calculosProprios.seguroDesempregoElegivel = true;
+                    calculosProprios.seguroDesempregoParcelas = parcelas;
+
+                    let valorParcela = Math.min(baseAmpliada, TETO_SEGURO_SD);
+                    calculosProprios.seguroDesempregoValorParcela = Math.max(valorParcela, MINIMO_NACIONAL_SD);
+                }
+            }
+
+
+            // 14. Saque FGTS (Apenas para exibição - não afeta o valor líquido)
+            // REGRA: Saque FGTS
+            const podeSacarFgts = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ACORDO', 'FALECIMENTO', 'ANTEC_EMPREGADOR', 'APOSENTADORIA', 'PDV_PDI'].includes(tipoRescisao);
+
+            // Ajuste para Acordo Comum: 80% do Saldo (usamos o fgtsTotalEstimado como base do saldo)
+            if (tipoRescisao === 'ACORDO') {
+                calculosProprios.fgtsTotalBase *= 0.80; // Reduz a base de saque para 80%
+            }
+
+            // Adiciona uma variável para informar no resultado se o saque é elegível
+            calculosProprios.saqueFgtsElegivel = podeSacarFgts;
+            // O valor a ser sacado não é somado aos proventos, pois a calculadora calcula apenas a verba rescisória paga pelo empregador.
+
+
+            // 15. Cálculo de Descontos Obrigatórios (INSS, IRRF)
+            // Base INSS Salário: Saldo Salário + AP Indenizado Padrão
+            const baseInssSalario = calculosProprios.saldoSalario + baseAP;
+
+            calculosProprios.inss = calcularInss(baseInssSalario);
+            totalDeducoes += calculosProprios.inss;
+
+            calculosProprios.inss13 = calcularInss(calculosProprios.decimoTerceiro);
+            totalDeducoes += calculosProprios.inss13;
+
+            // IRRF sobre Salário (Base Tributável - INSS)
+            const baseIrrfSalario = baseInssSalario - calculosProprios.inss;
+            calculosProprios.irrf = calcularIrrf(baseIrrfSalario, numDependentes);
+            totalDeducoes += calculosProprios.irrf;
+
+            // IRRF sobre 13º
+            const baseIrrf13 = calculosProprios.decimoTerceiro - calculosProprios.inss13;
+            calculosProprios.irrf13 = calcularIrrf(baseIrrf13, 0);
+            totalDeducoes += calculosProprios.irrf13;
+
+            // NOVO: 15.5. CÁLCULO DA MULTA POR ATRASO NO PAGAMENTO (Art. 477, § 8º) - INSERIDO AQUI
+            if (dataPagamento && !isNaN(dataPagamento)) {
+                let dataLimitePagamento = new Date(dataDemissao);
+                // O prazo padrão para pagamento de rescisão é de 10 dias corridos a partir do término do contrato ou da notificação.
+                dataLimitePagamento.setDate(dataLimitePagamento.getDate() + 10);
+
+                // Se a data de pagamento for maior que o limite legal, aplica-se a multa.
+                if (dataPagamento.getTime() > dataLimitePagamento.getTime()) {
+                    // Multa: 1x Salário Base.
+                    // Aplicado a todos os tipos de rescisão, conforme solicitação do usuário.
+                    calculosProprios.multaAtraso477 = baseAmpliada;
+                    totalProventos += calculosProprios.multaAtraso477;
+                }
+            }
+
+
+            // 16. Totalização de FGTS a Receber (Saldo Total Estimado + Multa)
+            // ATENÇÃO: A pedido do usuário, estamos somando o saldo estimado, o depósito do mês e a multa.
+            // Isso pode gerar uma pequena dupla contagem do depósito do mês, mas reflete a soma dos campos solicitados.
+            calculosProprios.fgtsTotalRecolher = calculosProprios.fgtsTotalEstimado + calculosProprios.fgtsDepositado + calculosProprios.multaFGTS;
+
+            // 17. CÁLCULO DA PRESCRIÇÃO BIENAL (2 ANOS)
+            let dataLimiteAcao = new Date(dataDemissao);
+            dataLimiteAcao.setFullYear(dataLimiteAcao.getFullYear() + 2);
+            calculosProprios.dataLimiteAcaoTrabalhista = dataLimiteAcao;
+
+
+            // 18. Totalização Final
+            calculosProprios.proventosBrutos = totalProventos;
+            calculosProprios.deducoes = totalDeducoes;
+            calculosProprios.liquido = totalProventos - totalDeducoes;
+
+            // 19. Exibir Resultado
+            exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados);
         }
-    } else if (avisoPrevioTipo === 'INDENIZADO') {
-        // Lógica de Aviso Prévio Padrão Indenizado (Contrato Indeterminado)
 
-        // 11.2.1 Valor Integral do AP (30 dias + Proporcionais Lei 12.506/11)
-        let valorAPIntegral = baseAmpliada;
-        const anosServico = (dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-        const diasAdicionais = Math.floor(anosServico) * DIAS_ADICIONAIS_AP;
-        valorAPIntegral += (baseAmpliada / 30) * diasAdicionais;
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO PARA EXIBIR O RESULTADO */
+        /* -------------------------------------------------------------------------- */
+        // OBS: Ajuste na exibição do FGTS e Seguro Desemprego para refletir as novas regras
+        function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados) {
+            const resultadoDiv = document.getElementById('resultadoCalculo');
 
-        // Fator de Redução já calculado na seção 6: fatorReducaoAP (1.0 ou 0.5)
-
-        calculosProprios.avisoPrevio = valorAPIntegral * fatorReducaoAP;
-        totalProventos += calculosProprios.avisoPrevio;
-
-        // AP Indenizado Padrão entra na base de FGTS e INSS/IRRF
-        baseAP = calculosProprios.avisoPrevio;
-
-    } else if (avisoPrevioTipo === 'NAO_CUMPRIDO') {
-        // Lógica de Aviso Prévio Padrão Descontado (Contrato Indeterminado - Usado em Pedido de Demissão)
-
-        // REGRA: AP não pode ser descontado se for SJC, Rescisão Indireta, Contrato a Termo, Falecimento ou Aposentadoria (Já filtrado no JS anterior)
-        if (tipoRescisao === 'PEDIDO') { // Apenas Pedido de Demissão e similares
-            calculosProprios.avisoPrevioDesconto = baseAmpliada;
-            totalDeducoes += calculosProprios.avisoPrevioDesconto;
-        }
-    }
-    // Aviso Prévio Trabalhado (TRABALHADO) e NAO_APLICAVEL não geram provento/desconto nesta seção, a menos que sejam Multas Contratuais (já tratadas).
+            if (calculosProprios.proventosBrutos === 0 && calculosProprios.deducoes === 0) {
+                resultadoDiv.innerHTML =
+                    '<div class="text-center text-red-600 font-bold p-4 bg-red-100 rounded">Não foi possível calcular. Verifique se preencheu o Salário Base e as datas.</div>';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
 
 
-    // 12. CÁLCULO FGTS (Depósito e Multa)
-
-    // Base FGTS: Saldo Salário + 13º Prop + AP Indenizado Padrão
-    const fgtsBasePeriodo = calculosProprios.saldoSalario + calculosProprios.decimoTerceiro + baseAP;
-
-    // Depósito FGTS Mês da Rescisão
-    calculosProprios.fgtsDepositado = fgtsBasePeriodo * ALIQUOTA_FGTS;
-
-    // NOVO: Cálculo do FGTS Total Estimado (Base para a Multa)
-    calculosProprios.fgtsTotalEstimado = totalMesesTrabalhados * baseAmpliada * ALIQUOTA_FGTS;
-
-    let baseParaMulta = calculosProprios.fgtsTotalEstimado; // Usa o total estimado como base da multa
-    let percentualMulta = 0.00;
-
-    // REGRA: Multa do FGTS
-    if (['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA'].includes(tipoRescisao) || (isContratoTermo && tipoRescisao === 'ANTEC_EMPREGADOR')) {
-        percentualMulta = 0.40; // 40%
-    } else if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
-        percentualMulta = 0.20; // 20% (metade do 40%)
-    } else if (tipoRescisao === 'PDV_PDI') {
-        // Situação Especial, depende da negociação. Usaremos 0% como padrão simplificado.
-        percentualMulta = 0.00;
-    }
-    // Demais casos (Pedido, CJC, Falecimento, Aposentadoria, ANTEC_EMPREGADO) = 0%
-
-    calculosProprios.fgtsTotalBase = baseParaMulta;
-    calculosProprios.multaFGTS = calculosProprios.fgtsTotalBase * percentualMulta;
-
-    // Adiciona a Multa FGTS aos proventos (Provento para o empregado)
-    totalProventos += calculosProprios.multaFGTS;
-
-
-    // 13. CÁLCULO SEGURO DESEMPREGO (Lógica Simplificada)
-    // REGRA: Elegibilidade ao Seguro-Desemprego
-    const elegivelSD = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ANTEC_EMPREGADOR'].includes(tipoRescisao);
-
-    if (elegivelSD) {
-        const umAnoEmMillis = 1000 * 60 * 60 * 24 * 365.25;
-        const anosCompletos = (dataDemissao.getTime() - dataAdmissao.getTime()) / umAnoEmMillis;
-        const mesesTrabalhados = Math.floor(anosCompletos * 12);
-
-        let parcelas = 0;
-        if (mesesTrabalhados >= 24) {
-            parcelas = 5;
-        } else if (mesesTrabalhados >= 12) {
-            parcelas = 4;
-        }
-        // OBS: O cálculo de parcelas é complexo, dependendo de solicitações anteriores. Aqui, é uma ESTIMATIVA.
-
-        if (parcelas > 0) {
-            calculosProprios.seguroDesempregoElegivel = true;
-            calculosProprios.seguroDesempregoParcelas = parcelas;
-
-            let valorParcela = Math.min(baseAmpliada, TETO_SEGURO_SD);
-            calculosProprios.seguroDesempregoValorParcela = Math.max(valorParcela, MINIMO_NACIONAL_SD);
-        }
-    }
-
-
-    // 14. Saque FGTS (Apenas para exibição - não afeta o valor líquido)
-    // REGRA: Saque FGTS
-    const podeSacarFgts = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'ACORDO', 'FALECIMENTO', 'ANTEC_EMPREGADOR', 'APOSENTADORIA', 'PDV_PDI'].includes(tipoRescisao);
-
-    // Ajuste para Acordo Comum: 80% do Saldo (usamos o fgtsTotalEstimado como base do saldo)
-    if (tipoRescisao === 'ACORDO') {
-        calculosProprios.fgtsTotalBase *= 0.80; // Reduz a base de saque para 80%
-    }
-    
-    // Adiciona uma variável para informar no resultado se o saque é elegível
-    calculosProprios.saqueFgtsElegivel = podeSacarFgts;
-    // O valor a ser sacado não é somado aos proventos, pois a calculadora calcula apenas a verba rescisória paga pelo empregador.
-
-
-    // 15. Cálculo de Descontos Obrigatórios (INSS, IRRF)
-    // Base INSS Salário: Saldo Salário + AP Indenizado Padrão
-    const baseInssSalario = calculosProprios.saldoSalario + baseAP;
-
-    calculosProprios.inss = calcularInss(baseInssSalario);
-    totalDeducoes += calculosProprios.inss;
-
-    calculosProprios.inss13 = calcularInss(calculosProprios.decimoTerceiro);
-    totalDeducoes += calculosProprios.inss13;
-
-    // IRRF sobre Salário (Base Tributável - INSS)
-    const baseIrrfSalario = baseInssSalario - calculosProprios.inss;
-    calculosProprios.irrf = calcularIrrf(baseIrrfSalario, numDependentes);
-    totalDeducoes += calculosProprios.irrf;
-
-    // IRRF sobre 13º
-    const baseIrrf13 = calculosProprios.decimoTerceiro - calculosProprios.inss13;
-    calculosProprios.irrf13 = calcularIrrf(baseIrrf13, 0);
-    totalDeducoes += calculosProprios.irrf13;
-    
-    // NOVO: 15.5. CÁLCULO DA MULTA POR ATRASO NO PAGAMENTO (Art. 477, § 8º) - INSERIDO AQUI
-    if (dataPagamento && !isNaN(dataPagamento)) {
-        let dataLimitePagamento = new Date(dataDemissao);
-        // O prazo padrão para pagamento de rescisão é de 10 dias corridos a partir do término do contrato ou da notificação.
-        dataLimitePagamento.setDate(dataLimitePagamento.getDate() + 10);
-        
-        // Se a data de pagamento for maior que o limite legal, aplica-se a multa.
-        if (dataPagamento.getTime() > dataLimitePagamento.getTime()) {
-            // Multa: 1x Salário Base.
-            // Aplicado a todos os tipos de rescisão, conforme solicitação do usuário.
-            calculosProprios.multaAtraso477 = baseAmpliada;
-            totalProventos += calculosProprios.multaAtraso477;
-        }
-    }
-
-
-    // 16. Totalização de FGTS a Receber (Saldo Total Estimado + Multa)
-// ATENÇÃO: A pedido do usuário, estamos somando o saldo estimado, o depósito do mês e a multa.
-// Isso pode gerar uma pequena dupla contagem do depósito do mês, mas reflete a soma dos campos solicitados.
-calculosProprios.fgtsTotalRecolher = calculosProprios.fgtsTotalEstimado + calculosProprios.fgtsDepositado + calculosProprios.multaFGTS;
-
-    // 17. CÁLCULO DA PRESCRIÇÃO BIENAL (2 ANOS)
-    let dataLimiteAcao = new Date(dataDemissao);
-    dataLimiteAcao.setFullYear(dataLimiteAcao.getFullYear() + 2);
-    calculosProprios.dataLimiteAcaoTrabalhista = dataLimiteAcao;
-
-
-    // 18. Totalização Final
-    calculosProprios.proventosBrutos = totalProventos;
-    calculosProprios.deducoes = totalDeducoes;
-    calculosProprios.liquido = totalProventos - totalDeducoes;
-
-    // 19. Exibir Resultado
-    exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados);
-}
-
-/* -------------------------------------------------------------------------- */
-/* FUNÇÃO PARA EXIBIR O RESULTADO */
-/* -------------------------------------------------------------------------- */
-// OBS: Ajuste na exibição do FGTS e Seguro Desemprego para refletir as novas regras
-function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, diasSaldo, totalMesesTrabalhados) {
-    const resultadoDiv = document.getElementById('resultadoCalculo');
-
-    if (calculosProprios.proventosBrutos === 0 && calculosProprios.deducoes === 0) {
-        resultadoDiv.innerHTML =
-            '<div class="text-center text-red-600 font-bold p-4 bg-red-100 rounded">Não foi possível calcular. Verifique se preencheu o Salário Base e as datas.</div>';
-        resultadoDiv.style.display = 'block';
-        return;
-    }
-
-
-    // ----------------------------------------------------------------------
-    // SEÇÃO 1: VERBAS PRINCIPAIS E ADICIONAIS
-    // ----------------------------------------------------------------------
-    let verbasPrincipaisHtml = `
+            // ----------------------------------------------------------------------
+            // SEÇÃO 1: VERBAS PRINCIPAIS E ADICIONAIS
+            // ----------------------------------------------------------------------
+            let verbasPrincipaisHtml = `
         ${gerarLinhaProvento(`Saldo de Salário (${diasSaldo} dias)`, calculosProprios.saldoSalario)}
         ${gerarLinhaProvento('Aviso Prévio Indenizado / Multa Contrato (Provento)', calculosProprios.avisoPrevio)}
         ${gerarLinhaProvento('Desconto de Aviso Prévio / Multa Contrato', -calculosProprios.avisoPrevioDesconto)}
@@ -752,34 +755,34 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
         ${gerarLinhaProvento('Multa por Atraso de Pagamento (Art. 477, CLT)', calculosProprios.multaAtraso477)}
     `;
 
-    // ----------------------------------------------------------------------
-    // SEÇÃO 2: TRIBUTOS
-    // ----------------------------------------------------------------------
-    let tributosHtml = `
+            // ----------------------------------------------------------------------
+            // SEÇÃO 2: TRIBUTOS
+            // ----------------------------------------------------------------------
+            let tributosHtml = `
         ${gerarLinhaTributo('INSS (Verbas Salariais)', calculosProprios.inss)}
         ${gerarLinhaTributo('INSS (Sobre 13º Salário)', calculosProprios.inss13)}
         ${gerarLinhaTributo('IRRF (Verbas Salariais)', calculosProprios.irrf)}
         ${gerarLinhaTributo('IRRF (Sobre 13º Salário)', calculosProprios.irrf13)}
     `;
 
-    // ----------------------------------------------------------------------
-    // SEÇÃO 3: FGTS E SEGURO DESEMPREGO
-    // ----------------------------------------------------------------------
+            // ----------------------------------------------------------------------
+            // SEÇÃO 3: FGTS E SEGURO DESEMPREGO
+            // ----------------------------------------------------------------------
 
-    // Lógica para exibição do saque do FGTS
-    let saqueFgtsStatusHtml;
-    if (calculosProprios.saqueFgtsElegivel) {
-        if (document.getElementById('tipoRescisaoNew').value === 'ACORDO') {
-            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (80% do Saldo)</p>`;
-        } else {
-            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
-        }
-    } else {
-        saqueFgtsStatusHtml = `<p class="text-md font-bold text-red-700 mt-4">Status de Saque: NÃO PERMITIDO</p>`;
-    }
+            // Lógica para exibição do saque do FGTS
+            let saqueFgtsStatusHtml;
+            if (calculosProprios.saqueFgtsElegivel) {
+                if (document.getElementById('tipoRescisaoNew').value === 'ACORDO') {
+                    saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (80% do Saldo)</p>`;
+                } else {
+                    saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
+                }
+            } else {
+                saqueFgtsStatusHtml = `<p class="text-md font-bold text-red-700 mt-4">Status de Saque: NÃO PERMITIDO</p>`;
+            }
 
 
-    let fgtsDetalhesHtml = `
+            let fgtsDetalhesHtml = `
         <p class="text-sm font-medium">FGTS de Todo o Período Estimado (${totalMesesTrabalhados} meses x Salário Base):</p>
         <p class="text-xl font-bold text-green-700">${formatarMoeda(calculosProprios.fgtsTotalEstimado)}</p>
 
@@ -797,9 +800,9 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
         <p class="text-xs text-red-500 mt-4">* ATENÇÃO: O valor do FGTS Total e a Multa Rescisória são **ESTIMATIVAS** baseadas no último Salário Base. O valor real pode ser diferente.</p>
     `;
 
-    let seguroDesempregoHtml;
-    if (calculosProprios.seguroDesempregoElegivel) {
-        seguroDesempregoHtml = `
+            let seguroDesempregoHtml;
+            if (calculosProprios.seguroDesempregoElegivel) {
+                seguroDesempregoHtml = `
             <p class="text-md font-bold text-green-700">Status: ELEGÍVEL</p>
             <p class="text-sm font-medium mt-2">Nº de Parcelas Estimadas:</p>
             <p class="text-lg font-semibold text-green-700">${calculosProprios.seguroDesempregoParcelas}</p>
@@ -807,15 +810,15 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
             <p class="text-lg font-semibold text-green-700">${formatarMoeda(calculosProprios.seguroDesempregoValorParcela)}</p>
             <p class="text-xs text-red-500 mt-4">* ATENÇÃO: A elegibilidade, o valor e o número de parcelas SÃO ESTIMATIVAS e dependem de verificação de tempo de serviço, solicitações anteriores e média salarial nos órgãos oficiais (CAIXA/MTE).</p>
         `;
-    } else {
-        seguroDesempregoHtml = `
+            } else {
+                seguroDesempregoHtml = `
             <p class="text-md font-bold text-red-700">Status: NÃO ELEGÍVEL</p>
             <p class="text-sm text-gray-600 mt-2">A modalidade de rescisão selecionada não permite o saque ou o recebimento do Seguro Desemprego, ou o tempo de serviço é insuficiente para a primeira solicitação.</p>
         `;
-    }
+            }
 
-    // BLOCO: Prazo para Ação Trabalhista
-    let prazoAcaoTrabalhistaHtml = `
+            // BLOCO: Prazo para Ação Trabalhista
+            let prazoAcaoTrabalhistaHtml = `
         <div class="p-6 mb-8 border border-red-300 rounded-lg shadow-lg bg-red-50 text-center">
             <h5 class="text-lg font-bold text-red-700 border-b pb-2 mb-3">Prazo Limite para Ação Trabalhista (Prescrição Bienal)</h5>
             <p class="text-sm font-medium text-red-600">O prazo máximo de 2 anos para ingressar com a Reclamação Trabalhista se encerra em:</p>
@@ -829,10 +832,10 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
     `;
 
 
-    // ----------------------------------------------------------------------
-    // RELATÓRIO FINAL
-    // ----------------------------------------------------------------------
-    let html = `
+            // ----------------------------------------------------------------------
+            // RELATÓRIO FINAL
+            // ----------------------------------------------------------------------
+            let html = `
         <h3 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Relatório da Simulação</h3>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-center font-bold">
@@ -919,12 +922,12 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
         </div>
     `;
 
-    resultadoDiv.innerHTML = html;
-    resultadoDiv.style.display = 'block';
-    resultadoDiv.scrollIntoView({
-        behavior: 'smooth'
-    });
-}
+            resultadoDiv.innerHTML = html;
+            resultadoDiv.style.display = 'block';
+            resultadoDiv.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
         /* -------------------------------------------------------------------------- */
         /* FUNÇÃO PARA ATUALIZAR CAMPOS (AP e Contrato a Termo) */
         /* -------------------------------------------------------------------------- */
@@ -952,7 +955,7 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
             }
 
             // 3. Lógica para filtrar opções de Aviso Prévio com base no Tipo de Rescisão
-            let opcoesPermitidas = ['']; 
+            let opcoesPermitidas = [''];
             let forcarValor = null;
 
             switch (tipoRescisao) {
@@ -964,24 +967,24 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
 
                 case 'PEDIDO': // Pedido de Demissão
                     // Tabela: Trabalhado ou Indenizado (pelo empregado) -> NAO_CUMPRIDO
-                    opcoesPermitidas = ['TRABALHADO', 'NAO_CUMPRIDO', '']; 
+                    opcoesPermitidas = ['TRABALHADO', 'NAO_CUMPRIDO', ''];
                     break;
 
                 case 'ACORDO': // Comum Acordo
                     // Tabela: Trabalhado ou Indenizado
                     opcoesPermitidas = ['INDENIZADO', 'TRABALHADO', ''];
                     break;
-                    
+
                 case 'RESCISAO_INDIRETA': // Rescisão Indireta
                     // Tabela: Indenizado
                     opcoesPermitidas = ['INDENIZADO', ''];
                     break;
-                    
+
                 case 'CULPA_RECIPROCA': // Culpa Recíproca
                     // Tabela: Indenizado
                     opcoesPermitidas = ['INDENIZADO', ''];
                     break;
-                    
+
                 // Casos com Aviso Prévio Não Aplicável
                 case 'CJC': // Demissão Com Justa Causa
                 case 'FALECIMENTO': // Falecimento
@@ -995,7 +998,7 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
                 default:
                     break;
             }
-            
+
             // 4. Aplicar forçar valor se houver
             if (forcarValor) {
                 opcoesPermitidas = [forcarValor, '']; // Permite ver a opção forçada e o placeholder
@@ -1020,7 +1023,7 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
             document.querySelectorAll('input:not([type="button"]):not([type="submit"]):not([type="reset"]), select').forEach(input => {
                 if (input.tagName === 'SELECT') {
                     input.selectedIndex = 0;
-                } else if (input.type === 'number' || ['salarioBruto'].includes(input.id)) { 
+                } else if (input.type === 'number' || ['salarioBruto'].includes(input.id)) {
                     // Define 0.00 para Salário Base. 0 para Férias Vencidas
                     input.value = (input.type === 'number' ? '0' : '0.00');
                 } else if (input.type === 'date') {
@@ -1041,7 +1044,7 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
         /* -------------------------------------------------------------------------- */
         function gerarLinhaProvento(descricao, valor) {
             // Se o valor for zero, oculta a linha para simplificar a visualização
-            if (Math.abs(valor) < 0.01) return ''; 
+            if (Math.abs(valor) < 0.01) return '';
 
             const isDeducao = valor < 0;
             const corTexto = isDeducao ? 'text-red-600' : 'text-green-700';
@@ -1059,7 +1062,7 @@ function exibirResultado(baseAmpliada, avos13, avosFerias, feriasVencidasQtd, di
         /* -------------------------------------------------------------------------- */
         function gerarLinhaTributo(descricao, valor) {
             // Os tributos são sempre deduções
-            if (Math.abs(valor) < 0.01) return ''; 
+            if (Math.abs(valor) < 0.01) return '';
 
             return `
                 <tr class="bg-red-50">
