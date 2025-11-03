@@ -1,142 +1,142 @@
-/* TABELAS E CONSTANTES TRIBUTÁRIAS E LEGAIS */
-/* -------------------------------------------------------------------------- */
+//==============================================================================
+// A. TABELAS E CONSTANTES LEGAIS
+//==============================================================================
 const TERCO_CONSTITUCIONAL = 1 / 3;
 const DIAS_MES = 30;
 const DIAS_ANO_MEDIO = 365.25;
 
-// Salário Mínimo de Referência para Insalubridade/Teto de Benefícios
-const SD_SALARIO_MINIMO = 1518.00; // Salário Mínimo de Referência para o benefício (Referência 2025)
+// Salário Mínimo de Referência para Insalubridade/Teto de Benefícios (Referência 2025)
+const SD_SALARIO_MINIMO = 1518.00;
 const SALARIO_MINIMO_REF = SD_SALARIO_MINIMO;
 
 const DIAS_ADICIONAIS_AP = 3; // 3 dias por ano completo de serviço (Lei 12.506/11)
 
-const TABELA_IRRF = [ // limite inferior, limite superior, alíquota, dedução
-    [0.00, 2428.80, 0.00, 0.00], // Isento (Ajustado para simplificação e compatibilidade)
+// Tabela IRRF (limite inferior, limite superior, alíquota, dedução)
+const TABELA_IRRF = [
+    [0.00, 2428.80, 0.00, 0.00], // Isento
     [2428.81, 2826.65, 0.075, 182.16],
     [2826.66, 3751.05, 0.15, 394.16],
     [3751.06, 4664.68, 0.225, 675.49],
-    [4664.69, Infinity, 0.275, 908.73], // Acima
+    [4664.69, Infinity, 0.275, 908.73],
 ];
+
+// Tabela INSS Contribuição progressiva
 const TETO_INSS = 8157.41;
-const TABELA_INSS = [ // limite, alíquota
-    { limite: 1558.50, aliquota: 0.075 }, // Tabela Contribuição progressiva
+const TABELA_INSS = [
+    { limite: 1558.50, aliquota: 0.075 },
     { limite: 2597.51, aliquota: 0.09 },
     { limite: 3896.25, aliquota: 0.12 },
     { limite: TETO_INSS, aliquota: 0.14 }
 ];
 
-// NOVAS CONSTANTES - SEGURO DESEMPREGO (Tabela de Referência 2025)
-const SD_TETO_MAXIMO = 2424.11; // Valor máximo da parcela
-const SD_LIMITE_FAIXA_1 = 2138.76; // R$ 2.138,76
-const SD_LIMITE_FAIXA_2 = 3564.96; // R$ 3.564,96
-const SD_ADICAO_FAIXA_2 = 1711.01; // R$ 1.711,01
+// Constantes Seguro Desemprego (Tabela de Referência 2025)
+const SD_TETO_MAXIMO = 2424.11;
+const SD_LIMITE_FAIXA_1 = 2138.76;
+const SD_ADICAO_FAIXA_2_CALC = 1711.01;
 
-/* -------------------------------------------------------------------------- */
-/* VARIÁVEIS GLOBAIS DE RESULTADO */
-/* -------------------------------------------------------------------------- */
+//==============================================================================
+// B. VARIÁVEIS GLOBAIS DE RESULTADO
+//==============================================================================
 let calculosProprios = {
-    // Totais
+    // Totais Financeiros
     proventosBrutos: 0.00,
     deducoes: 0.00,
     liquido: 0.00,
 
     // Verbas Principais
     saldoSalario: 0.00,
-    avisoPrevio: 0.00,
+    avisoPrevio: 0.00, // Provento (Indenizado)
+    avisoPrevioDesconto: 0.00, // Desconto (Não Cumprido)
     decimoTerceiro: 0.00,
     feriasVencidas: 0.00,
     feriasProporcionais: 0.00,
 
-    // Verbas Adicionais Proporcionais 
+    // Adicionais e Multas
     adicionalInsalubridade: 0.00,
     adicionalPericulosidade: 0.00,
     adicionalTransferencia: 0.00,
     adicionalNoturno: 0.00,
-    gratificacoes: 0.00,
-
-    // Verbas Indenizatórias/Multas 
     multaArt477: 0.00,
     multaArt479: 0.00,
     multaArt480: 0.00,
     estabilidadeIndenizacao: 0.00,
 
-    // FGTS
+    // GRATIFICAÇÕES ADICIONADAS 
+    gratificacaoFuncao: 0.00,
+    gratificacaoTempoServico: 0.00,
+    gratificacaoProdutividade: 0.00,
+    gratificacaoAssiduidade: 0.00,
+    gratificacaoQuebraCaixa: 0.00,
+
+    // FGTS e Saque
     fgtsDeposito: 0.00,
     multaFgts: 0.00,
-    fgtsSaldoTotal: 0.00,
+    fgtsTotalEstimado: 0.00,
+    fgtsTotalRecolher: 0.00,
+    saqueFgtsElegivel: false,
 
-    // SEGURO DESEMPREGO
-    seguroDesempregoDireito: 'Não Elegível',
+    // Seguro Desemprego
     seguroDesempregoParcelas: 0,
     seguroDesempregoValorParcela: 0.00,
+    seguroDesempregoElegivel: false,
 
-    // Deduções Obrigatórias
+    // Deduções Tributárias e Informadas
     inss: 0.00,
     inss13: 0.00,
     irrf: 0.00,
     irrf13: 0.00,
-    avisoPrevioDesconto: 0.00,
-    // Deduções Informadas pelo Usuário 
     descontoAdiantamentoSalario: 0.00,
     descontoOutros: 0.00,
+
+    // Data Limite Legal
+    dataLimiteAcaoTrabalhista: null,
 };
 
-/* FUNÇÕES AUXILIARES E DE INPUT/CONFIGURAÇÃO */
-/* -------------------------------------------------------------------------- */
 
+//==============================================================================
+// C. FUNÇÕES AUXILIARES DE FORMATAÇÃO E INPUT
+//==============================================================================
+
+/** Formata um valor numérico para moeda brasileira (R$). */
 function formatarMoeda(valor) {
     if (isNaN(valor) || valor === null) return 'R$ 0,00';
     return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+/** Formata um objeto Date para exibição em português. */
+function formatarData(data) {
+    if (!data) return 'N/A';
+    const d = new Date(data);
+    if (isNaN(d.getTime())) return 'N/A';
+    // Adiciona 1 dia para evitar problemas de fuso horário no dia da prescrição
+    d.setDate(d.getDate() + 1);
+    return d.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+/** Converte o valor de um input (string) para float. */
 function parseInput(id) {
     const element = document.getElementById(id);
-    if (!element) { return 0.00; }
-    // Converte vírgula para ponto se o navegador não fizer automaticamente
+    if (!element) return 0.00;
     return parseFloat(String(element.value).replace(',', '.')) || 0.00;
 }
 
+/** Converte o valor de um input (string) para inteiro. */
 function parseInputInt(id) {
     const element = document.getElementById(id);
-    if (!element) { return 0; }
+    if (!element) return 0;
     return parseInt(element.value) || 0;
 }
 
+/** Verifica se um checkbox está marcado. */
 function isChecked(id) {
     const element = document.getElementById(id);
     return element ? element.checked : false;
 }
 
-function handleInsalubridadeChange(checkedCheckbox) {
-    const checkboxes = document.querySelectorAll('.insalubridade-checkbox');
-    checkboxes.forEach(cb => {
-        if (cb !== checkedCheckbox) {
-            cb.checked = false;
-        }
-    });
-}
 
-function handleCheckboxAndInput(checkbox) {
-    const inputId = checkbox.getAttribute('data-input-id');
-    const containerId = checkbox.getAttribute('data-container-id');
-    const input = document.getElementById(inputId);
-    const container = document.getElementById(containerId);
-
-    if (input && container) {
-        if (checkbox.checked) {
-            container.style.display = 'block';
-            // Garante que o input seja inicializado com valor diferente de zero ao marcar (se for estabilidade)
-            if (checkbox.classList.contains('estabilidade-checkbox') && parseInputInt(inputId) === 0) {
-                input.value = '1';
-            } else if (!checkbox.classList.contains('estabilidade-checkbox') && parseInput(inputId) === 0) {
-                input.value = '0.00';
-            }
-        } else {
-            container.style.display = 'none';
-            input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '0.00';
-        }
-    }
-}
+//==============================================================================
+// D. FUNÇÕES DE MANIPULAÇÃO DO FORMULÁRIO
+//==============================================================================
 
 function toggleAccordion(header) {
     const content = header.nextElementSibling;
@@ -162,133 +162,182 @@ function toggleAccordion(header) {
     }
 }
 
+function handleCheckboxAndInput(checkbox) {
+    const inputId = checkbox.getAttribute('data-input-id');
+    const containerId = checkbox.getAttribute('data-container-id');
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
 
-function limparCampos() {
-    // 1. Limpa todos os inputs de texto e selects
-    document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select').forEach(input => {
-        // Redefine para o valor padrão se o campo não estiver vazio
-        if (input.id === 'fgtsSaldoTotal') {
-            input.value = '0.00';
-        } else if (input.id === 'feriasVencidasNew' || input.id === 'faltasInjustificadas') {
-            input.value = '0';
-        } else if (input.id === 'comissoesMedia' || input.id === 'outrosAdicionais' || input.id === 'horasExtrasMedia' || input.id.startsWith('desconto') || input.id.startsWith('valor')) {
-            input.value = '0.00';
-        } else if (input.tagName === 'SELECT') {
-            input.value = ''; // Reseta selects para o 'Selecione...'
+    if (input && container) {
+        if (checkbox.checked) {
+            container.style.display = 'block';
         } else {
-            input.value = '';
+            container.style.display = 'none';
+            // Zera o valor ao desmarcar, garantindo que não entre no cálculo
+            input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '0.00';
+        }
+    }
+}
+
+function handleInsalubridadeChange(checkedCheckbox) {
+    const checkboxes = document.querySelectorAll('.insalubridade-checkbox');
+    checkboxes.forEach(cb => {
+        if (cb !== checkedCheckbox) {
+            cb.checked = false;
+        }
+    });
+}
+
+/** Atualiza o estado dos campos de Aviso Prévio e Data de Término do Contrato. */
+function atualizarCampos() {
+    const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
+    const apTipoCampo = 'avisoPrevioTipo';
+    const isRescisaoSelected = !!tipoRescisao;
+
+    let permittedOptions = [];
+    let defaultValue = '';
+
+    switch (tipoRescisao) {
+        case 'SJC':
+        case 'DISP_COLETIVA':
+            permittedOptions = ['INDENIZADO', 'TRABALHADO'];
+            defaultValue = 'INDENIZADO';
+            break;
+        case 'RESCISAO_INDIRETA':
+            permittedOptions = ['INDENIZADO'];
+            defaultValue = 'INDENIZADO';
+            break;
+        case 'PEDIDO':
+            permittedOptions = ['DESCONTO', 'TRABALHADO'];
+            defaultValue = 'DESCONTO';
+            break;
+        case 'ACORDO':
+        case 'CULPA_RECIPROCA':
+            permittedOptions = ['INDENIZADO', 'TRABALHADO'];
+            defaultValue = 'TRABALHADO';
+            break;
+        case 'APOSENTADORIA':
+            permittedOptions = ['TRABALHADO'];
+            defaultValue = 'TRABALHADO';
+            break;
+        case 'CJC':
+        case 'FALECIMENTO':
+        case 'PDV_PDI':
+        case 'ANTEC_EMPREGADOR':
+        case 'ANTEC_EMPREGADO':
+        case 'TERMINO_CONTRATO':
+            permittedOptions = ['NA'];
+            defaultValue = 'NA';
+            break;
+        default:
+            permittedOptions = [];
+            break;
+    }
+
+    // Configura o campo de Aviso Prévio
+    manipularCampoAvisoPrevio(apTipoCampo, permittedOptions, defaultValue, isRescisaoSelected);
+
+    // Lógica da Data de Término do Contrato de Experiência
+    const isContratoExperiencia = ['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO', 'TERMINO_CONTRATO'].includes(tipoRescisao);
+    const elDataTermino = document.getElementById('grupoDataTerminoContrato');
+    if (elDataTermino) {
+        elDataTermino.style.display = isContratoExperiencia ? 'block' : 'none';
+    }
+}
+
+function manipularCampoAvisoPrevio(elementId, permittedOptions, defaultValue = 'NA', isRescisaoSelected = false) {
+    const selectEl = document.getElementById(elementId);
+    if (!selectEl) return;
+
+    selectEl.closest('.input-group').style.display = 'block';
+    selectEl.innerHTML = '';
+
+    if (!isRescisaoSelected) {
+        selectEl.disabled = true;
+        const opt = document.createElement('option');
+        opt.textContent = 'Selecione um tipo de rescisão...';
+        selectEl.appendChild(opt);
+        return;
+    }
+
+    const allOptions = [
+        { value: 'NA', label: 'Não Aplicável' },
+        { value: 'INDENIZADO', label: 'Aviso Prévio Indenizado' },
+        { value: 'TRABALHADO', label: 'Aviso Prévio Trabalhado' },
+        { value: 'DESCONTO', label: 'Desconto do Aviso Prévio (Não Cumprido)' }
+    ];
+
+    let hasValidOptions = false;
+    allOptions.forEach(option => {
+        if (permittedOptions.includes(option.value)) {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.label;
+            selectEl.appendChild(opt);
+            hasValidOptions = true;
         }
     });
 
-    // Reseta o input de Salário Bruto especificamente para vazio
-    document.getElementById('salarioBruto').value = '';
+    if (hasValidOptions) {
+        selectEl.disabled = false;
+        selectEl.value = permittedOptions.includes(defaultValue) ? defaultValue : permittedOptions[0];
+    } else {
+        selectEl.disabled = true;
+        const opt = document.createElement('option');
+        opt.value = 'NA';
+        opt.textContent = 'Não Aplicável';
+        selectEl.appendChild(opt);
+    }
+}
 
-    // 2. Limpa todos os checkboxes e oculta os campos relacionados
-    document.querySelectorAll('[data-input-id]').forEach(checkbox => {
-        checkbox.checked = false;
-        handleCheckboxAndInput(checkbox); // Chama para ocultar o campo
+function limparCampos() {
+    // 1. Limpa todos os inputs de texto, número, e selects
+    document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select').forEach(input => {
+        if (input.id === 'avisoPrevioTipo') {
+            input.value = 'NA';
+        } else if (input.tagName === 'SELECT') {
+            input.value = '';
+        } else if (input.id === 'salarioBruto') {
+            input.value = '';
+        } else {
+            input.value = '0.00'; // Define valores numéricos para 0.00
+        }
     });
 
-    // 3. Limpa os checkboxes de adicionais
-    document.querySelectorAll('.insalubridade-checkbox').forEach(cb => cb.checked = false);
-    document.getElementById('periculosidade').checked = false;
-    document.getElementById('transferencia').checked = false;
-    document.getElementById('adicionalNoturno').checked = false;
+    // 2. Limpa todos os checkboxes e oculta campos relacionados
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+        if (checkbox.hasAttribute('data-input-id')) {
+            handleCheckboxAndInput(checkbox);
+        }
+    });
 
-    // 4. Chama a função de atualização de campos para redefinir o estado de AP e datas
+    // 3. Reseta o estado dos campos dependentes
     atualizarCampos();
 
-    // 5. Oculta o resultado
+    // 4. Oculta e limpa o resultado
     document.getElementById('resultadoCalculo').style.display = 'none';
     document.getElementById('resultadoCalculo').innerHTML = '';
 }
 
-/**
- * Funções auxiliar para simplificar a desabilitação/habilitação de campos do Aviso Prévio.
- */
-function manipularCampoAvisoPrevio(elementId, disabled = true, defaultValue = '') {
-    const el = document.getElementById(elementId);
-    if (el) {
-        el.disabled = disabled;
 
-        if (disabled) {
-            el.value = 'NAO';
-        } else {
-            el.value = defaultValue;
-        }
+//==============================================================================
+// E. FUNÇÕES DE CÁLCULO DE TEMPO E AVOS
+//==============================================================================
 
-        const container = el.closest('.input-group');
-        if (container) {
-            container.style.opacity = disabled ? 0.5 : 1;
-        }
-    }
-}
-
-/**
- * Função auxiliar para mostrar/esconder contêineres de campos.
- */
-function toggleFieldDisplay(elementId, shouldShow) {
-    const el = document.getElementById(elementId);
-    if (el) {
-        el.style.display = shouldShow ? 'block' : 'none';
-    }
-}
-
-
-/**
- * Função que atualiza o estado dos campos de Aviso Prévio E CAMPOS DE DATA com base no Tipo de Rescisão.
- */
-function atualizarCampos() {
-    const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
-
-    // Define os grupos de rescisão
-    const isSemJustaCausa = tipoRescisao === 'SJC' || tipoRescisao === 'ACORDO' || tipoRescisao === 'APOSENTADORIA' || tipoRescisao === 'RESCISAO_INDIRETA' || tipoRescisao === 'CULPA_RECIPROCA'; // CULPA_RECIPROCA tem AP indenizado
-    const isPedidoDemissao = tipoRescisao === 'PEDIDO';
-    const isContratoExperiencia = tipoRescisao === 'ANTEC_EMPREGADOR' || tipoRescisao === 'ANTEC_EMPREGADO';
-    const isJustaCausa = tipoRescisao === 'CJC' || tipoRescisao === 'FALECIMENTO';
-
-    const apIndenizadoCampo = 'avisoPrevioIndenizado';
-    const apDescontadoCampo = 'avisoPrevioDescontado';
-
-    // A. Lógica do Aviso Prévio
-    if (isSemJustaCausa || tipoRescisao === 'ANTEC_EMPREGADOR') {
-        // SJC, Acordo, Rescisão Indireta, Culpa Recíproca e Antecipação Empregador
-        manipularCampoAvisoPrevio(apIndenizadoCampo, false, 'SIM');
-        manipularCampoAvisoPrevio(apDescontadoCampo, true, 'NAO');
-    } else if (isPedidoDemissao || tipoRescisao === 'ANTEC_EMPREGADO') {
-        // Pedido de Demissão e Antecipação Empregado
-        manipularCampoAvisoPrevio(apIndenizadoCampo, true, 'NAO');
-        manipularCampoAvisoPrevio(apDescontadoCampo, false, 'SIM');
-    } else {
-        // Outros casos (Justa Causa, Contrato a Termo, etc.)
-        manipularCampoAvisoPrevio(apIndenizadoCampo, true, 'NAO');
-        manipularCampoAvisoPrevio(apDescontadoCampo, true, 'NAO');
-    }
-
-    // B. Lógica da Data de Término do Contrato de Experiência (para multas 479/480)
-    toggleFieldDisplay('grupoDataTerminoContrato', isContratoExperiencia);
-}
-
-/* FUNÇÕES DE CÁLCULO DE TEMPO E DATAS */
-/* -------------------------------------------------------------------------- */
-
-// Calcula a diferença em dias corridos entre duas datas
+/** Calcula a diferença em dias corridos entre duas datas. */
 function calcularDiasEntreDates(dataInicialStr, dataFinalStr) {
     const dataInicial = new Date(dataInicialStr + 'T00:00:00');
     const dataFinal = new Date(dataFinalStr + 'T00:00:00');
 
     if (isNaN(dataInicial.getTime()) || isNaN(dataFinal.getTime())) return null;
 
-    // Calcula a diferença em milissegundos (diferença absoluta)
     const diffTime = Math.abs(dataFinal.getTime() - dataInicial.getTime());
-    // Converte milissegundos para dias
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
 }
 
-/**
- * Calcula o total de dias de Aviso Prévio (30 + Proporcional).
- */
+/** Calcula o total de dias de Aviso Prévio (30 + Proporcional). */
 function getDiasAvisoPrevio(dataAdmissao, dataDemissao) {
     if (isNaN(dataAdmissao.getTime()) || isNaN(dataDemissao.getTime())) return 30;
 
@@ -297,7 +346,6 @@ function getDiasAvisoPrevio(dataAdmissao, dataDemissao) {
     const anosCompletos = Math.floor(diffYears);
 
     let diasAvisoPrevio = 30;
-
     if (anosCompletos >= 1) {
         diasAvisoPrevio += (anosCompletos) * DIAS_ADICIONAIS_AP;
     }
@@ -305,137 +353,88 @@ function getDiasAvisoPrevio(dataAdmissao, dataDemissao) {
     return Math.min(90, diasAvisoPrevio);
 }
 
-/**
- * Calcula o total de meses cheios de vínculo para SD (Lei 7.998/90).
- */
+/** Calcula o total de meses cheios de vínculo (ou fração >= 15 dias). */
 function getMesesTrabalhados(dataAdmissao, dataDemissao) {
     if (isNaN(dataAdmissao.getTime()) || isNaN(dataDemissao.getTime())) return 0;
 
     let mesesDiferenca = (dataDemissao.getFullYear() - dataAdmissao.getFullYear()) * 12 + (dataDemissao.getMonth() - dataAdmissao.getMonth());
-
     let mesesCompletos = 0;
 
     if (mesesDiferenca === 0) {
         const diffDays = Math.ceil((dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24));
-        if (diffDays >= 15) {
-            mesesCompletos = 1;
+        return diffDays >= 15 ? 1 : 0;
+    }
+
+    // Contagem de avos baseada no dia 15 do mês
+    let dataAtual = new Date(dataAdmissao.getTime());
+    while (dataAtual.getTime() <= dataDemissao.getTime()) {
+        const diffDays = Math.ceil((dataDemissao.getTime() - dataAtual.getTime()) / (1000 * 60 * 60 * 24));
+        if (dataAtual.getDate() <= 15 && diffDays >= 15) {
+            mesesCompletos++;
         }
-        return mesesCompletos;
+        dataAtual.setMonth(dataAtual.getMonth() + 1);
     }
-
-    mesesCompletos = Math.max(0, mesesDiferenca - 1);
-
-    const diasRestantesMesAdm = 30 - dataAdmissao.getDate() + 1;
-    if (diasRestantesMesAdm >= 15) {
-        mesesCompletos++;
-    }
-
-    if (dataDemissao.getDate() >= 15) {
-        mesesCompletos++;
-    }
-
     return mesesCompletos;
 }
 
-/**
- * Calcula o número de avos de direito (férias ou 13º).
- * @param {Date} dataAdmissao 
- * @param {Date} dataDemissao - Data do Afastamento (sem a projeção do aviso prévio)
- * @param {number} faltasInjustificadas 
- * @param {boolean} isFerias - true para Férias, false para 13º
- * @returns {number} Número de avos (0 a 12)
- */
+/** Calcula o número de avos de direito (férias ou 13º). */
 function calcularAvos(dataAdmissao, dataDemissao, faltasInjustificadas, isFerias) {
     if (isNaN(dataAdmissao.getTime()) || isNaN(dataDemissao.getTime())) return 0;
-    
+
     let dataReferencia;
 
     // 13º: O período de contagem é sempre o Ano Civil (Jan a Dez)
-    if (!isFerias) { 
-        dataReferencia = new Date(dataDemissao.getFullYear(), 0, 1, 0, 0, 0, 0); // 1º de Janeiro
+    if (!isFerias) {
+        dataReferencia = new Date(dataDemissao.getFullYear(), 0, 1);
     } else {
         // Férias: O período de contagem é o Período Aquisitivo (aniversário da admissão)
-        let anoAdmissao = dataAdmissao.getFullYear();
-        let mesAdmissao = dataAdmissao.getMonth();
-        let diaAdmissao = dataAdmissao.getDate();
-        
-        dataReferencia = new Date(dataDemissao.getFullYear(), mesAdmissao, diaAdmissao, 0, 0, 0, 0);
+        const mesAdmissao = dataAdmissao.getMonth();
+        const diaAdmissao = dataAdmissao.getDate();
+        let anoReferencia = dataDemissao.getFullYear();
+        dataReferencia = new Date(anoReferencia, mesAdmissao, diaAdmissao);
 
-        // Se a data de demissão for anterior ao aniversário da admissão, volta um ano
-        if (dataDemissao < dataReferencia) {
-            dataReferencia.setFullYear(dataReferencia.getFullYear() - 1);
+        if (dataReferencia.getTime() >= dataDemissao.getTime()) {
+            dataReferencia.setFullYear(anoReferencia - 1);
         }
     }
 
-    // Calcula a diferença em meses
-    let mesesCompletos = (dataDemissao.getFullYear() * 12 + dataDemissao.getMonth()) - 
-                         (dataReferencia.getFullYear() * 12 + dataReferencia.getMonth());
+    let anosDiferenca = dataDemissao.getFullYear() - dataReferencia.getFullYear();
+    let mesesDiferenca = (dataDemissao.getMonth() - dataReferencia.getMonth()) + (anosDiferenca * 12);
 
-    // Regra dos 15 dias: se o mês de afastamento tiver 15 ou mais dias trabalhados, conta-se como 1 avo.
-    const diaDemissao = dataDemissao.getDate();
-    if (diaDemissao >= 15) {
-        mesesCompletos++;
+    let avosProporcionais = 0;
+    if (mesesDiferenca >= 0) {
+        const diaDemissao = dataDemissao.getDate();
+        avosProporcionais = mesesDiferenca;
+        if (diaDemissao >= 15) {
+            avosProporcionais++;
+        }
     }
 
-    let avosCalculados = Math.max(0, mesesCompletos);
-
-    // Tratamento de Faltas para Férias Proporcionais/Vencidas
     if (isFerias) {
-        if (faltasInjustificadas > 5 && faltasInjustificadas <= 14) avosCalculados = Math.floor(avosCalculados * 11 / 12);
-        else if (faltasInjustificadas > 14 && faltasInjustificadas <= 23) avosCalculados = Math.floor(avosCalculados * 10 / 12);
-        else if (faltasInjustificadas > 23 && faltasInjustificadas <= 32) avosCalculados = Math.floor(avosCalculados * 9 / 12);
-        else if (faltasInjustificadas > 32) avosCalculados = 0; 
+        // Regra de perda de férias por faltas (Simplificado para o último PA)
+        if (faltasInjustificadas > 32) avosProporcionais = 0;
+        else if (faltasInjustificadas > 24) avosProporcionais = 6;
+        else if (faltasInjustificadas > 15) avosProporcionais = 9;
     }
-    
-    return Math.min(12, avosCalculados);
+
+    return Math.min(12, Math.max(0, avosProporcionais));
 }
 
-/**
- * Calcula a Remuneração Base (Salário Base + Médias de Variáveis)
- */
-function getRemuneracaoBase(salarioBase, comissoesMedia, outrosAdicionais, horasExtrasMedia) {
-    return salarioBase + comissoesMedia + outrosAdicionais + horasExtrasMedia;
-}
+//==============================================================================
+// F. FUNÇÕES DE CÁLCULO TRIBUTÁRIO E BENEFÍCIOS
+//==============================================================================
 
-/**
- * Calcula o valor do Adicional de Insalubridade.
- */
-function calcularInsalubridade(grauInsalubridade, salarioMinimoRef) {
-    if (grauInsalubridade > 0) {
-        return salarioMinimoRef * grauInsalubridade;
-    }
-    return 0.00;
-}
-
-/**
- * Calcula a data projetada do aviso prévio indenizado.
- */
-function calcularDataProjetada(dataDemissaoStr, diasAvisoPrevio) {
-    const dataDemissao = new Date(dataDemissaoStr + 'T00:00:00');
-    if (isNaN(dataDemissao.getTime())) return new Date(NaN);
-
-    let dataProjetada = new Date(dataDemissao.getTime());
-    dataProjetada.setDate(dataDemissao.getDate() + diasAvisoPrevio);
-    return dataProjetada;
-}
-
-
-/* FUNÇÕES ESSENCIAIS DE CÁLCULO DE IMPOSTOS E SEGURO-DESEMPREGO */
-/* -------------------------------------------------------------------------- */
-
+/** Calcula o valor do INSS, respeitando o teto e as alíquotas progressivas. */
 function calcularInss(base) {
     if (base <= 0) return 0.0;
     let inss = 0.0;
     let baseCalculada = Math.min(base, TETO_INSS);
-
-    const faixas = TABELA_INSS;
     let baseAnterior = 0.0;
 
-    for (const faixa of faixas) {
+    for (const faixa of TABELA_INSS) {
         if (baseCalculada > baseAnterior) {
             const limiteFaixa = Math.min(baseCalculada, faixa.limite);
             const valorNaFaixa = limiteFaixa - baseAnterior;
-
             inss += valorNaFaixa * faixa.aliquota;
             baseAnterior = faixa.limite;
         } else {
@@ -445,338 +444,306 @@ function calcularInss(base) {
     return parseFloat(inss.toFixed(2));
 }
 
-function calcularIrrf(base, numDependentes = 0) {
+/** Calcula o valor do IRRF, deduzindo INSS e dependentes. */
+function calcularIrrf(base, inssDesconto, numDependentes = 0) {
     if (base <= 0) return 0.0;
-
     const DEDUCAO_DEPENDENTE = 189.59;
-    // INSS é deduzido da base do IRRF.
-    const inssMes = calcularInss(base); 
+
     const deducaoDependentesTotal = numDependentes * DEDUCAO_DEPENDENTE;
-    const baseIrrf = base - inssMes - deducaoDependentesTotal;
 
-    if (baseIrrf <= 0) return 0.0;
+    const baseIrrf = Math.max(0, base - inssDesconto - deducaoDependentesTotal);
 
-    for (const [limiteInferior, limiteSuperior, aliquota, deducao] of TABELA_IRRF) {
-        if (baseIrrf >= limiteInferior && (baseIrrf <= limiteSuperior || limiteSuperior === Infinity)) {
-            const irrf = (baseIrrf * aliquota) - deducao;
-            return parseFloat(Math.max(0, irrf).toFixed(2));
+    let irrf = 0.0;
+    for (const faixa of TABELA_IRRF) {
+        const [limiteInferior, limiteSuperior, aliquota, deducao] = faixa;
+        if (baseIrrf > limiteInferior) {
+            if (baseIrrf <= limiteSuperior) {
+                irrf = (baseIrrf * aliquota) - deducao;
+                break;
+            } else if (limiteSuperior === Infinity) {
+                irrf = (baseIrrf * aliquota) - deducao;
+                break;
+            }
         }
     }
-    return 0.0;
+
+    return parseFloat(Math.max(0, irrf).toFixed(2));
 }
 
-function calcularSeguroDesemprego(tipoRescisao, salarioMedio, mesesTrabalhados) {
-    const resultado = { direito: 'Não Elegível', parcelas: 0, valorParcela: 0.00, };
+/** Simula a elegibilidade e os valores do Seguro Desemprego. */
+function calcularSeguroDesemprego(tipoRescisao, salarioMedio, mesesVinculo) {
+    let resultado = { direito: 'Não Elegível', parcelas: 0, valorParcela: 0.00 };
 
-    // Critério básico de elegibilidade para simulação
-    if (!['SJC', 'RESCISAO_INDIRETA', 'ANTEC_EMPREGADOR'].includes(tipoRescisao)) {
-        // CULPA_RECIPROCA não dá direito ao SD
-        return resultado;
-    }
+    // Elegibilidade por Modalidade
+    const elegiveis = ['SJC', 'RESCISAO_INDIRETA', 'DISP_COLETIVA', 'CULPA_RECIPROCA', 'ANTEC_EMPREGADOR'];
+    if (!elegiveis.includes(tipoRescisao)) return resultado;
 
-    if (mesesTrabalhados < 12) {
-        resultado.direito = 'Não Elegível (Mínimo de 12 meses de vínculo não atingido - Simulação 1ª solicitação)';
-        return resultado;
-    }
+    // Elegibilidade por Tempo (Simplificado: Primeira Solicitação)
+    let numParcelas = 0;
+    if (mesesVinculo >= 24) numParcelas = 5;
+    else if (mesesVinculo >= 12) numParcelas = 4;
+    else if (mesesVinculo >= 6) numParcelas = 3;
+    else return resultado;
 
-    resultado.direito = 'Elegível (Simulação - 1ª Solicitação)';
-
-    // Determinação do número de parcelas (simplificado para 1ª solicitação)
-    if (mesesTrabalhados >= 24) {
-        resultado.parcelas = 5;
-    } else if (mesesTrabalhados >= 12) {
-        resultado.parcelas = 4;
-    }
-
-    // Cálculo do valor da parcela
-    let valorParcela;
+    // Cálculo do Valor da Parcela
+    let valorParcela = 0.00;
     if (salarioMedio <= SD_LIMITE_FAIXA_1) {
         valorParcela = salarioMedio * 0.8;
-    } else if (salarioMedio <= SD_LIMITE_FAIXA_2) {
-        const excedente = salarioMedio - SD_LIMITE_FAIXA_1;
-        valorParcela = (excedente * 0.5) + SD_ADICAO_FAIXA_2;
     } else {
-        valorParcela = SD_TETO_MAXIMO;
+        const excedente = salarioMedio - SD_LIMITE_FAIXA_1;
+        valorParcela = (excedente * 0.5) + SD_ADICAO_FAIXA_2_CALC;
     }
 
-    // Aplica o piso (SM) e o teto (SD_TETO_MAXIMO)
     valorParcela = Math.max(SD_SALARIO_MINIMO, Math.min(valorParcela, SD_TETO_MAXIMO));
-    resultado.valorParcela = parseFloat(valorParcela.toFixed(2));
+
+    // Tratamento de Culpa Recíproca (50%)
+    if (tipoRescisao === 'CULPA_RECIPROCA') {
+        numParcelas = Math.ceil(numParcelas / 2);
+        valorParcela = valorParcela * 0.5;
+    }
+
+    if (numParcelas > 0) {
+        resultado.direito = 'Elegível';
+        resultado.parcelas = numParcelas;
+        resultado.valorParcela = parseFloat(valorParcela.toFixed(2));
+        resultado.seguroDesempregoElegivel = true;
+    }
+
     return resultado;
 }
 
 
-/* FUNÇÃO PRINCIPAL: CALCULAR RESCISÃO (CORRIGIDA) */
-/* -------------------------------------------------------------------------- */
+//==============================================================================
+// G. FUNÇÃO PRINCIPAL DE PROCESSAMENTO
+//==============================================================================
+
+/** Obtém todos os dados do formulário e retorna em um objeto estruturado. */
+function obterDadosDeEntrada() {
+    const dataAdmissaoStr = document.getElementById('dataAdmissao').value;
+    const dataDemissaoStr = document.getElementById('dataDemissao').value;
+    const dataTerminoContratoStr = document.getElementById('grupoDataTerminoContrato').style.display !== 'none' ? document.getElementById('dataTerminoContrato').value : null;
+
+    return {
+        tipoRescisao: document.getElementById('tipoRescisaoNew').value,
+        avisoPrevioTipo: document.getElementById('avisoPrevioTipo').value,
+        dataAdmissao: new Date(dataAdmissaoStr + 'T00:00:00'),
+        dataDemissao: new Date(dataDemissaoStr + 'T00:00:00'),
+        dataPagamento: document.getElementById('dataPagamento').value ? new Date(document.getElementById('dataPagamento').value + 'T00:00:00') : null,
+        dataTerminoContrato: dataTerminoContratoStr ? new Date(dataTerminoContratoStr + 'T00:00:00') : null,
+        dataAdmissaoStr: dataAdmissaoStr,
+        dataDemissaoStr: dataDemissaoStr,
+        dataTerminoContratoStr: dataTerminoContratoStr,
+
+        salarioBase: parseInput('salarioBruto'),
+        comissoesMedia: parseInput('comissoesMedia'),
+        horasExtrasMedia: parseInput('horasExtrasMedia'),
+        outrosAdicionais: parseInput('outrosAdicionais'),
+        fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
+        numDependentes: parseInputInt('numeroDependentes'),
+        feriasVencidasQtd: parseInputInt('feriasVencidasNew'),
+        faltasInjustificadas: parseInputInt('faltasInjustificadas'),
+        grauInsalubridade: parseInput('insalubridade_nivel_selecionado'),
+        temPericulosidade: isChecked('periculosidade'),
+        temTransferencia: isChecked('transferencia'),
+        temNoturno: isChecked('noturno'),
+        diasEstabilidadeIndenizar: parseInputInt('diasEstabilidadeIndenizar'),
+        descontoAdiantamentoSalario: parseInput('descontoAdiantamentoSalario'),
+        descontoOutros: parseInput('descontoOutros'),
+        gratificacaoFuncao: parseInput('gratificacaoFuncao'),
+        gratificacaoTempoServico: parseInput('gratificacaoTempoServico'),
+        gratificacaoProdutividade: parseInput('gratificacaoProdutividade'),
+        gratificacaoAssiduidade: parseInput('gratificacaoAssiduidade'),
+        gratificacaoQuebraCaixa: parseInput('gratificacaoQuebraCaixa'),
+
+    };
+}
+
 function calcularRescisao() {
     // 1. Limpa o resultado anterior
     Object.keys(calculosProprios).forEach(key => {
-        if (typeof calculosProprios[key] === 'number') {
-            calculosProprios[key] = 0.00;
-        }
+        if (typeof calculosProprios[key] === 'number') calculosProprios[key] = 0.00;
+        else if (key === 'dataLimiteAcaoTrabalhista') calculosProprios[key] = null;
+        else if (typeof calculosProprios[key] === 'boolean') calculosProprios[key] = false;
+        else calculosProprios[key] = '';
     });
-    calculosProprios.seguroDesempregoDireito = 'Não Elegível';
 
-    // 2. Obter Dados de Entrada
-    const tipoRescisao = document.getElementById('tipoRescisaoNew').value;
-    const avisoPrevioIndenizado = document.getElementById('avisoPrevioIndenizado').value;
-    const avisoPrevioDescontado = document.getElementById('avisoPrevioDescontado').value;
-    const dataAdmissaoStr = document.getElementById('dataAdmissao').value;
-    const dataDemissaoStr = document.getElementById('dataDemissao').value;
-    const dataPagamentoStr = document.getElementById('dataPagamento').value;
-    const dataTerminoContratoStr = document.getElementById('grupoDataTerminoContrato').style.display !== 'none' ? document.getElementById('dataTerminoContrato').value : null;
+    // 2. Obter Dados de Entrada e Validação
+    const dados = obterDadosDeEntrada();
 
-    if (!dataAdmissaoStr || !dataDemissaoStr || !tipoRescisao || !parseInput('salarioBruto')) {
-        document.getElementById('resultadoCalculo').innerHTML = '<p class="text-red-600 font-bold p-4">Por favor, preencha as datas e o salário base para calcular.</p>';
-        document.getElementById('resultadoCalculo').style.display = 'block';
+    if (!dados.dataAdmissaoStr || !dados.dataDemissaoStr || !dados.tipoRescisao || !dados.salarioBase) {
+        const resultadoDiv = document.getElementById('resultadoCalculo');
+        resultadoDiv.innerHTML = '<p class="text-red-600 font-bold p-4">Por favor, preencha as datas, o salário base e o tipo de rescisão.</p>';
+        resultadoDiv.style.display = 'block';
+        resultadoDiv.scrollIntoView({ behavior: 'smooth' });
         return;
     }
 
-    const dataAdmissao = new Date(dataAdmissaoStr + 'T00:00:00');
-    const dataDemissao = new Date(dataDemissaoStr + 'T00:00:00');
-    const dataPagamento = dataPagamentoStr ? new Date(dataPagamentoStr + 'T00:00:00') : null; // Mantido como null se não preenchido
-    const dataTerminoContrato = dataTerminoContratoStr ? new Date(dataTerminoContratoStr + 'T00:00:00') : new Date(NaN);
+    // Variáveis de Controle
+    const isAPIndenizado = dados.avisoPrevioTipo === 'INDENIZADO';
+    const isAPDesconto = dados.avisoPrevioTipo === 'DESCONTO';
+    const isAPTrabalhado = dados.avisoPrevioTipo === 'TRABALHADO';
+    const diasAvisoPrevioTotal = getDiasAvisoPrevio(dados.dataAdmissao, dados.dataDemissao);
+    const dataProjetada = isAPIndenizado ? calcularDataProjetada(dados.dataDemissaoStr, diasAvisoPrevioTotal) : dados.dataDemissao;
 
-    const salarioBase = parseInput('salarioBruto');
-    const comissoesMedia = parseInput('comissoesMedia');
-    const outrosAdicionais = parseInput('outrosAdicionais');
-    const horasExtrasMedia = parseInput('horasExtrasMedia');
-    const faltasInjustificadas = parseInputInt('faltasInjustificadas');
-    const feriasVencidasQtd = parseInputInt('feriasVencidasNew');
-    const fgtsSaldoTotal = parseInput('fgtsSaldoTotal');
-    const numDependentes = parseInputInt('numDependentes');
+    // Cálculo da Remuneração Base
+    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais;
+    const valInsalubridadeMensal = dados.grauInsalubridade > 0 ? calcularInsalubridade(dados.grauInsalubridade, SALARIO_MINIMO_REF) : 0.0;
+    const valPericulosidadeMensal = dados.temPericulosidade ? dados.salarioBase * 0.30 : 0.0;
+    const valTransferenciaMensal = dados.temTransferencia ? dados.salarioBase * 0.25 : 0.0;
+    const valNoturnoMensal = dados.temNoturno ? dados.salarioBase * 0.20 : 0.0;
 
-    // Deduções Informadas
-    calculosProprios.descontoAdiantamentoSalario = parseInput('descontoAdiantamentoSalario');
-    calculosProprios.descontoOutros = parseInput('descontoOutros');
+    // Base para cálculo de AP/13º/Férias (inclui adicionais integrais habituais)
+    const baseParaProporcionais = remuneracaoBase + valInsalubridadeMensal + valPericulosidadeMensal + valTransferenciaMensal + valNoturnoMensal;
 
-    // Estabilidade (Dias a indenizar)
-    let diasEstabilidadeIndenizar = 0;
-    document.querySelectorAll('.estabilidade-checkbox').forEach(checkbox => {
-        if (checkbox.checked) {
-            diasEstabilidadeIndenizar += parseInputInt(checkbox.getAttribute('data-input-id')) * DIAS_MES; // Multiplica por 30 dias/mês
-        }
-    });
 
-    // Adicionais Percentuais
-    let grauInsalubridade = 0.0;
-    document.querySelectorAll('.insalubridade-checkbox').forEach(cb => {
-        if (cb.checked) {
-            grauInsalubridade = parseFloat(cb.value);
-        }
-    });
-    const temPericulosidade = isChecked('periculosidade');
+    // 3. CÁLCULO DE PROVENTOS (VERBAS RESCISÓRIAS)
 
-    // 3. REMUNERAÇÃO BASE e VARIÁVEIS DE TEMPO
-    const remuneracaoBase = getRemuneracaoBase(salarioBase, comissoesMedia, outrosAdicionais, horasExtrasMedia);
-    const diasTrabalhadosMes = dataDemissao.getDate(); // Saldo de Salário é pelos dias trabalhados no mês da demissão
-
-    const avos13 = calcularAvos(dataAdmissao, dataDemissao, 0, false); // Faltas não afetam avos 13º diretamente
-    const avosFeriasProp = calcularAvos(dataAdmissao, dataDemissao, faltasInjustificadas, true);
-
-    const diasAvisoPrevioTotal = getDiasAvisoPrevio(dataAdmissao, dataDemissao);
-    // A data projetada é usada para a contagem de tempo (ex: 13º e Férias em caso de AP indenizado).
-    const dataProjetada = calcularDataProjetada(dataDemissaoStr, diasAvisoPrevioTotal); 
-
-    // 4. CÁLCULO DAS VERBAS (Proventos)
-
-    // Saldo de Salário
+    // Saldo de Salário e Adicionais Proporcionais
+    const diasTrabalhadosMes = dados.dataDemissao.getDate();
     calculosProprios.saldoSalario = (remuneracaoBase / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.adicionalInsalubridade = (valInsalubridadeMensal / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.adicionalPericulosidade = (valPericulosidadeMensal / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.adicionalTransferencia = (valTransferenciaMensal / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.adicionalNoturno = (valNoturnoMensal / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.gratificacaoFuncao = (dados.gratificacaoFuncao / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.gratificacaoTempoServico = (dados.gratificacaoTempoServico / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.gratificacaoProdutividade = (dados.gratificacaoProdutividade / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.gratificacaoAssiduidade = (dados.gratificacaoAssiduidade / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.gratificacaoQuebraCaixa = (dados.gratificacaoQuebraCaixa / DIAS_MES) * diasTrabalhadosMes;
+    const adicionaisMensaisProporcionais = calculosProprios.adicionalInsalubridade + calculosProprios.adicionalPericulosidade + calculosProprios.adicionalTransferencia + calculosProprios.adicionalNoturno + calculosProprios.gratificacaoFuncao + calculosProprios.gratificacaoTempoServico + calculosProprios.gratificacaoProdutividade + calculosProprios.gratificacaoAssiduidade + calculosProprios.gratificacaoQuebraCaixa;
 
-    // Adicionais Mensais Proporcionais (Base é o Salário Base)
-    let adicionaisMensais = 0.0;
-    if (grauInsalubridade > 0) {
-        const valInsalubridadeMensal = calcularInsalubridade(grauInsalubridade, SALARIO_MINIMO_REF);
-        calculosProprios.adicionalInsalubridade = (valInsalubridadeMensal / DIAS_MES) * diasTrabalhadosMes;
-        adicionaisMensais += calculosProprios.adicionalInsalubridade;
-    }
-    if (temPericulosidade) {
-        const valPericulosidadeMensal = salarioBase * 0.30;
-        calculosProprios.adicionalPericulosidade = (valPericulosidadeMensal / DIAS_MES) * diasTrabalhadosMes;
-        adicionaisMensais += calculosProprios.adicionalPericulosidade;
-    }
-    
-    // Base para cálculo de AP/13º/Férias
-    const baseParaProporcionais = remuneracaoBase 
-        + (grauInsalubridade > 0 ? calcularInsalubridade(grauInsalubridade, SALARIO_MINIMO_REF) : 0.0)
-        + (temPericulosidade ? salarioBase * 0.30 : 0.0); // Soma os adicionais MENSAIS
-
-
-    // Aviso Prévio
-    if (avisoPrevioIndenizado === 'SIM' && tipoRescisao === 'ACORDO') {
-        // Aviso Prévio Indenizado por Acordo (50% dos 30 dias iniciais - Sem Proporcional da Lei 12.506/11)
-        calculosProprios.avisoPrevio = (baseParaProporcionais / DIAS_MES) * 30 * 0.5;
-    } else if (avisoPrevioIndenizado === 'SIM' && tipoRescisao === 'CULPA_RECIPROCA') {
-        // *** ALTERAÇÃO 1: Culpa Recíproca - 50% do total de dias de AP (incluindo proporcional) ***
-        calculosProprios.avisoPrevio = (baseParaProporcionais / DIAS_MES) * diasAvisoPrevioTotal * 0.5;
-    } else if (avisoPrevioIndenizado === 'SIM') {
-        // Aviso Prévio Indenizado Integral (SJC, Rescisão Indireta, Antecipação Empregador)
-        calculosProprios.avisoPrevio = (baseParaProporcionais / DIAS_MES) * diasAvisoPrevioTotal;
-    } else if (avisoPrevioDescontado === 'SIM') {
-        // Desconto de Aviso Prévio (Pedido de Demissão, Antecipação Empregado)
-        calculosProprios.avisoPrevioDesconto = -(baseParaProporcionais / DIAS_MES) * 30; // Desconta 30 dias de salário
+    // Aviso Prévio Indenizado
+    if (isAPIndenizado) {
+        const is50Percent = ['ACORDO', 'CULPA_RECIPROCA'].includes(dados.tipoRescisao);
+        calculosProprios.avisoPrevio = (baseParaProporcionais / DIAS_MES) * diasAvisoPrevioTotal * (is50Percent ? 0.5 : 1.0);
     }
 
+    // Férias Proporcionais e Vencidas (+ 1/3)
+    const avosFeriasProp = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, true);
+    calculosProprios.feriasProporcionais = (baseParaProporcionais / 12) * avosFeriasProp * (1 + TERCO_CONSTITUCIONAL);
+    calculosProprios.feriasVencidas = baseParaProporcionais * dados.feriasVencidasQtd * (1 + TERCO_CONSTITUCIONAL);
 
     // 13º Salário Proporcional
-    const avos13ComProjecao = (avisoPrevioIndenizado === 'SIM') ? calcularAvos(dataAdmissao, dataProjetada, 0, false) : avos13;
+    const avos13Prop = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, false);
+    calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13Prop;
 
-    if (['CJC', 'ANTEC_EMPREGADO', 'PEDIDO', 'FALECIMENTO'].includes(tipoRescisao)) {
-        // CJC, Pedido, Antecipação Empregado, Falecimento: Recebe APENAS os avos devidos até a data de demissão (sem projeção)
-        calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13;
-    } else if (tipoRescisao === 'ACORDO') {
-        // Acordo: Recebe 50% dos avos (com projeção)
-        calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13ComProjecao * 0.5;
-    } else if (tipoRescisao === 'CULPA_RECIPROCA') {
-         // *** ALTERAÇÃO 2: Culpa Recíproca - 50% dos avos (com projeção) ***
-        calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13ComProjecao * 0.5;
-    } else {
-        // SJC, Rescisão Indireta, Antecipação Empregador, etc.: Recebe integral (com projeção)
-        calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13ComProjecao;
+    // Multas e Indenizações
+    if (dados.diasEstabilidadeIndenizar > 0) {
+        calculosProprios.estabilidadeIndenizacao = (baseParaProporcionais / DIAS_MES) * dados.diasEstabilidadeIndenizar;
     }
 
-
-    // Férias Vencidas + 1/3 (Faltas afetam o valor base)
-    const feriasBaseMensal = baseParaProporcionais;
-    let feriasVencidasBruto = feriasBaseMensal * feriasVencidasQtd;
-    // Em culpa recíproca, apenas as férias proporcionais são reduzidas. As férias vencidas devem ser integrais.
-    calculosProprios.feriasVencidas = feriasVencidasBruto * (1 + TERCO_CONSTITUCIONAL);
-
-    // Férias Proporcionais + 1/3
-    // A projeção do AP só interfere se cair em um novo avo. Vamos usar a projeção na função calcularAvos.
-    const avosFeriasPropComProjecao = (avisoPrevioIndenizado === 'SIM') ? calcularAvos(dataAdmissao, dataProjetada, faltasInjustificadas, true) : avosFeriasProp;
-    let feriasPropBruto = (feriasBaseMensal / 12) * avosFeriasPropComProjecao;
-    
-    if (tipoRescisao === 'CULPA_RECIPROCA') {
-        // *** ALTERAÇÃO 3: Culpa Recíproca - 50% das férias proporcionais + 1/3 ***
-        calculosProprios.feriasProporcionais = feriasPropBruto * 0.5 * (1 + TERCO_CONSTITUCIONAL);
-    } else {
-        calculosProprios.feriasProporcionais = feriasPropBruto * (1 + TERCO_CONSTITUCIONAL);
-    }
-
-
-    // Multa do Contrato de Experiência (Antecipação)
-    if (tipoRescisao === 'ANTEC_EMPREGADOR' && dataTerminoContrato.getTime()) {
-        const diasRestantes = calcularDiasEntreDates(dataDemissaoStr, dataTerminoContratoStr);
-        if (diasRestantes > 0) {
-            calculosProprios.multaArt479 = (baseParaProporcionais / DIAS_MES) * diasRestantes * 0.5;
-        }
-    } else if (tipoRescisao === 'ANTEC_EMPREGADO' && dataTerminoContrato.getTime()) {
-        const diasRestantes = calcularDiasEntreDates(dataDemissaoStr, dataTerminoContratoStr);
-        if (diasRestantes > 0) {
-            // Multa 480: Desconto limitado aos prejuízos comprovados, simplificando: 50% dos dias restantes.
-            calculosProprios.multaArt480 = -(baseParaProporcionais / DIAS_MES) * diasRestantes * 0.5;
-        }
-    }
-
-
-    // Indenização por Estabilidade
-    if (diasEstabilidadeIndenizar > 0) {
-        calculosProprios.estabilidadeIndenizacao = (baseParaProporcionais / DIAS_MES) * diasEstabilidadeIndenizar;
-    }
-
-
-    // Multa do Art. 477 (Atraso no Pagamento da Rescisão) - CORRIGIDO
-    // Rescisões que geram verbas rescisórias: Quase todas, exceto Falecimento do Empregado.
-    const isRescisaoComVerbasDevidas = !['CJC', 'FALECIMENTO'].includes(tipoRescisao); // J. Causa e Falecimento não costumam ter atraso de verbas para gerar multa 477.
-    
-    if (dataPagamento && isRescisaoComVerbasDevidas) {
-        // Data a ser considerada para o prazo é a do fim do contrato (projetada pelo AP, se indenizado)
-        // Devemos usar a data mais distante entre a Demissão e a Projeção (se indenizado)
-        const dataFimContrato = avisoPrevioIndenizado === 'SIM' ? dataProjetada : dataDemissao;
-
-        // Prazo de pagamento: 10 dias corridos após o término do contrato
+    // Multas 477, 479 e 480
+    if (dados.dataPagamento) {
+        const dataFimContrato = isAPIndenizado ? dataProjetada : dados.dataDemissao;
         let dataLimitePagamento = new Date(dataFimContrato.getTime());
         dataLimitePagamento.setDate(dataFimContrato.getDate() + 10);
-
-        // Zera as horas para comparação correta
-        dataPagamento.setHours(0, 0, 0, 0);
         dataLimitePagamento.setHours(0, 0, 0, 0);
-        
-        // A multa é devida se a data de pagamento for estritamente MAIOR que a data limite de pagamento
-        if (dataPagamento.getTime() > dataLimitePagamento.getTime()) {
-            calculosProprios.multaArt477 = remuneracaoBase; // Multa no valor de 1 salário
+
+        if (dados.dataPagamento.getTime() > dataLimitePagamento.getTime()) {
+            calculosProprios.multaArt477 = remuneracaoBase;
         }
+    }
+    if (dados.tipoRescisao === 'ANTEC_EMPREGADOR' && dados.dataTerminoContratoStr) {
+        const diasRestantes = calcularDiasEntreDates(dados.dataDemissaoStr, dados.dataTerminoContratoStr);
+        if (diasRestantes > 0) calculosProprios.multaArt479 = (baseParaProporcionais / DIAS_MES) * diasRestantes * 0.5;
+    } else if (dados.tipoRescisao === 'ANTEC_EMPREGADO' && dados.dataTerminoContratoStr) {
+        const diasRestantes = calcularDiasEntreDates(dados.dataDemissaoStr, dados.dataTerminoContratoStr);
+        if (diasRestantes > 0) calculosProprios.multaArt480 = (baseParaProporcionais / DIAS_MES) * diasRestantes * 0.5;
     }
 
 
-    // 5. CÁLCULO DO FGTS
-    // Base: Saldo de Salário + 13º + AP Indenizado. Férias são base, mas o recolhimento é mensal.
-    const fgtsBaseMensal = calculosProprios.saldoSalario + adicionaisMensais;
-    const fgtsBase13 = calculosProprios.decimoTerceiro;
-    const fgtsBaseAP = avisoPrevioIndenizado === 'SIM' ? calculosProprios.avisoPrevio : 0.0;
+    // 4. CÁLCULO DE DEDUÇÕES
 
-    calculosProprios.fgtsDeposito = (fgtsBaseMensal + fgtsBase13 + fgtsBaseAP) * 0.08;
-
-    const isFGTSMultaDevida = ['SJC', 'RESCISAO_INDIRETA', 'CULPA_RECIPROCA', 'ANTEC_EMPREGADOR'].includes(tipoRescisao);
-    if (isFGTSMultaDevida && fgtsSaldoTotal > 0) {
-        let percentualMulta = 0.40; // 40% (SJC, Rescisão Indireta, Antecipação Empregador)
-        if (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA') {
-            percentualMulta = 0.20; // 20% (Acordo ou Culpa Recíproca)
-        }
-
-        calculosProprios.multaFgts = fgtsSaldoTotal * percentualMulta;
+    // Desconto Aviso Prévio
+    if (isAPDesconto) {
+        calculosProprios.avisoPrevioDesconto = (baseParaProporcionais / DIAS_MES) * 30;
     }
 
-    // 6. CÁLCULO DE DEDUÇÕES
-
-    // INSS sobre Verbas do Mês (Saldo de Salário + Adicionais Proporcionais + Aviso Prévio Trabalhado)
-    const baseInssMensal = calculosProprios.saldoSalario + adicionaisMensais + (avisoPrevioIndenizado === 'NAO' && avisoPrevioDescontado === 'NAO' ? (baseParaProporcionais / DIAS_MES) * 30 : 0.0);
+    // INSS
+    const baseInssMensal = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0);
     calculosProprios.inss = calcularInss(baseInssMensal);
+    calculosProprios.inss13 = calcularInss(calculosProprios.decimoTerceiro);
 
-    // INSS sobre 13º Salário
-    const baseInss13 = calculosProprios.decimoTerceiro;
-    if (baseInss13 > 0) {
-        calculosProprios.inss13 = calcularInss(baseInss13);
+    // IRRF
+    // Base IRRF (exceto 13º e Férias/AP indenizados)
+    const baseIRRFTributavel = calculosProprios.saldoSalario + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0) + adicionaisMensaisProporcionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao;
+    calculosProprios.irrf = calcularIrrf(baseIRRFTributavel, calculosProprios.inss, dados.numDependentes);
+
+    // IRRF 13º (Tributação Exclusiva)
+    calculosProprios.irrf13 = calcularIrrf(calculosProprios.decimoTerceiro, calculosProprios.inss13, dados.numDependentes);
+
+    // Descontos informados
+    calculosProprios.descontoAdiantamentoSalario = dados.descontoAdiantamentoSalario;
+    calculosProprios.descontoOutros = dados.descontoOutros;
+
+
+    // 5. CÁLCULO FGTS, SD E PRAZO LEGAL
+
+    // FGTS Depósito (8% sobre Saldo Salário, 13º, AP Indenizado)
+    const baseAP = isAPIndenizado ? calculosProprios.avisoPrevio : 0.0;
+    const fgtsBaseDepositada = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + calculosProprios.decimoTerceiro + baseAP;
+    calculosProprios.fgtsDeposito = fgtsBaseDepositada * 0.08;
+
+    // FGTS Multa Rescisória (40% ou 20%)
+    const isFGTSMulta40 = ['SJC', 'RESCISAO_INDIRETA', 'ANTEC_EMPREGADOR', 'DISP_COLETIVA'].includes(dados.tipoRescisao);
+    const isFGTSMulta20 = ['ACORDO', 'CULPA_RECIPROCA'].includes(dados.tipoRescisao);
+
+    if (dados.fgtsSaldoTotal > 0) {
+        if (isFGTSMulta40) calculosProprios.multaFgts = dados.fgtsSaldoTotal * 0.40;
+        else if (isFGTSMulta20) calculosProprios.multaFgts = dados.fgtsSaldoTotal * 0.20;
     }
 
-    // IRRF (Base: Proventos tributáveis - INSS mensal - Desconto Dependentes)
-    // Férias, Indenização Estabilidade, Multa 477/FGTS não são base de IRRF.
-    const proventosTributaveis = calculosProprios.saldoSalario + adicionaisMensais + calculosProprios.avisoPrevio; // AP Indenizado é tributável.
-    // O cálculo do IRRF já desconta o INSS e dependentes.
-    calculosProprios.irrf = calcularIrrf(proventosTributaveis, numDependentes);
+    // Detalhamento FGTS
+    const totalMesesTrabalhados = getMesesTrabalhados(dados.dataAdmissao, dados.dataDemissao);
+    calculosProprios.fgtsTotalEstimado = dados.salarioBase * 0.08 * totalMesesTrabalhados;
+    calculosProprios.fgtsTotalRecolher = calculosProprios.fgtsDeposito + calculosProprios.multaFgts;
 
-    // IRRF sobre 13º Salário
-    const baseIrrf13 = calculosProprios.decimoTerceiro;
-    if (baseIrrf13 > 0) {
-        // O cálculo do IRRF para 13º já descontará o INSS do 13º.
-        calculosProprios.irrf13 = calcularIrrf(baseIrrf13, numDependentes);
-    }
+    // Saque FGTS
+    const elegiveisSaque = ['SJC', 'RESCISAO_INDIRETA', 'ANTEC_EMPREGADOR', 'DISPENSA_COLETIVA', 'ACORDO', 'CULPA_RECIPROCA', 'APOSENTADORIA', 'TERMINO_CONTRATO', 'FALECIMENTO', 'PDV_PDI'];
+    calculosProprios.saqueFgtsElegivel = elegiveisSaque.includes(dados.tipoRescisao);
 
-
-    // 7. CÁLCULO DO SEGURO-DESEMPREGO (Apenas simulação)
-    const salarioMedioSD = remuneracaoBase; // Simplificação: usa a remuneração base
-    const mesesVinculoSD = getMesesTrabalhados(dataAdmissao, dataDemissao);
-    const resultadoSD = calcularSeguroDesemprego(tipoRescisao, salarioMedioSD, mesesVinculoSD);
-
-    calculosProprios.seguroDesempregoDireito = resultadoSD.direito;
+    // Seguro Desemprego
+    const mesesVinculoSD = getMesesTrabalhados(dados.dataAdmissao, dados.dataDemissao);
+    const resultadoSD = calcularSeguroDesemprego(dados.tipoRescisao, remuneracaoBase, mesesVinculoSD);
     calculosProprios.seguroDesempregoParcelas = resultadoSD.parcelas;
     calculosProprios.seguroDesempregoValorParcela = resultadoSD.valorParcela;
+    calculosProprios.seguroDesempregoElegivel = resultadoSD.seguroDesempregoElegivel;
 
-    // 8. TOTAIS
-    const proventos = calculosProprios.saldoSalario + calculosProprios.avisoPrevio + calculosProprios.decimoTerceiro + calculosProprios.feriasVencidas + calculosProprios.feriasProporcionais + calculosProprios.adicionalInsalubridade + calculosProprios.adicionalPericulosidade + calculosProprios.multaArt477 + calculosProprios.multaFgts + calculosProprios.estabilidadeIndenizacao;
+    // Data Limite para Ação Trabalhista (Prescrição Bienal)
+    const dataLimite = new Date(dados.dataDemissao.getTime());
+    dataLimite.setFullYear(dataLimite.getFullYear() + 2);
+    calculosProprios.dataLimiteAcaoTrabalhista = dataLimite;
 
-    const deducoes = calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13 + (-calculosProprios.avisoPrevioDesconto) + (-calculosProprios.multaArt480) + calculosProprios.descontoAdiantamentoSalario + calculosProprios.descontoOutros;
 
+    // 6. TOTAIS E GERAÇÃO DE RUBRICAS
+    const proventos = calculosProprios.saldoSalario + calculosProprios.avisoPrevio + calculosProprios.decimoTerceiro + calculosProprios.feriasVencidas + calculosProprios.feriasProporcionais + adicionaisMensaisProporcionais + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao + calculosProprios.multaArt479;
+    const deducoes = calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13 + calculosProprios.avisoPrevioDesconto + calculosProprios.multaArt480 + calculosProprios.descontoAdiantamentoSalario + calculosProprios.descontoOutros;
     calculosProprios.proventosBrutos = proventos;
     calculosProprios.deducoes = deducoes;
     calculosProprios.liquido = proventos - deducoes;
 
-    // 9. Geração das Rubricas para o Relatório
     const rubricas = [
+        { nome: '--- PROVENTOS ---', valor: 0.00, tipo: 'S' },
         { nome: 'Saldo de Salário (' + diasTrabalhadosMes + ' dias)', valor: calculosProprios.saldoSalario, tipo: 'P' },
-        { nome: 'Aviso Prévio Indenizado (' + diasAvisoPrevioTotal + ' dias)' + (tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''), valor: calculosProprios.avisoPrevio, tipo: 'P' },
-        { nome: '13º Salário Proporcional (' + avos13ComProjecao + '/12 avos)' + (tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''), valor: calculosProprios.decimoTerceiro, tipo: 'P' },
-        { nome: 'Férias Vencidas (' + feriasVencidasQtd + ' períodos) + 1/3', valor: calculosProprios.feriasVencidas, tipo: 'P' },
-        { nome: 'Férias Proporcionais (' + avosFeriasPropComProjecao + '/12 avos) + 1/3' + (tipoRescisao === 'CULPA_RECIPROCA' ? ' (50%)' : ''), valor: calculosProprios.feriasProporcionais, tipo: 'P' },
-
+        { nome: 'Aviso Prévio (' + diasAvisoPrevioTotal + ' dias)', valor: calculosProprios.avisoPrevio, tipo: 'P' },
+        { nome: 'Férias Proporcionais (' + avosFeriasProp + '/12) + 1/3', valor: calculosProprios.feriasProporcionais, tipo: 'P' },
+        { nome: 'Férias Vencidas (' + dados.feriasVencidasQtd + ' períodos) + 1/3', valor: calculosProprios.feriasVencidas, tipo: 'P' },
+        { nome: '13º Salário Proporcional (' + avos13Prop + '/12)', valor: calculosProprios.decimoTerceiro, tipo: 'P' },
         { nome: 'Adicional de Insalubridade Proporcional', valor: calculosProprios.adicionalInsalubridade, tipo: 'P' },
-        { nome: 'Adicional de Periculosidade Proporcional', valor: calculosProprios.adicionalPericulosidade, tipo: 'P' },
-        { nome: 'Indenização por Estabilidade (' + (diasEstabilidadeIndenizar / DIAS_MES) + ' meses)', valor: calculosProprios.estabilidadeIndenizacao, tipo: 'P' },
-
-        { nome: 'Multa do Art. 477 (Atraso Pagamento)', valor: calculosProprios.multaArt477, tipo: 'P' },
+        { nome: 'Adicional de Periculosidade 30% - Proporcional', valor: calculosProprios.adicionalPericulosidade, tipo: 'P' },
+        { nome: 'Adicional de Transferencia 25% - Proporcional', valor: calculosProprios.adicionalTransferencia, tipo: 'P' },
+        { nome: 'Adicional Noturno 20% - Proporcional', valor: calculosProprios.adicionalNoturno, tipo: 'P' },
+        { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Gratificação de Função - Proporcional', valor: calculosProprios.gratificacaoFuncao, tipo: 'P' },
+        { nome: 'Gratificação por Tempo de Serviço - Proporcional', valor: calculosProprios.gratificacaoTempoServico, tipo: 'P' },
+        { nome: 'Gratificação por Produtividade - Proporcional', valor: calculosProprios.gratificacaoProdutividade, tipo: 'P' },
+        { nome: 'Gratificação por Assiduidade - Proporcional', valor: calculosProprios.gratificacaoAssiduidade, tipo: 'P' },
+        { nome: 'Gratificação Quebra de Caixa - Proporcional', valor: calculosProprios.gratificacaoQuebraCaixa, tipo: 'P' },
+        { nome: 'Indenização por Estabilidade', valor: calculosProprios.estabilidadeIndenizacao, tipo: 'P' },
+        { nome: 'Multa do Art. 477 (Atraso na Rescisão)', valor: calculosProprios.multaArt477, tipo: 'P' },
         { nome: 'Multa do Art. 479 (Contrato a Termo - Empregador)', valor: calculosProprios.multaArt479, tipo: 'P' },
-       
+
         { nome: '--- DEDUÇÕES OBRIGATÓRIAS ---', valor: 0.00, tipo: 'S' },
         { nome: 'INSS (Verbas Mensais)', valor: calculosProprios.inss, tipo: 'D' },
         { nome: 'INSS (13º Salário)', valor: calculosProprios.inss13, tipo: 'D' },
@@ -784,35 +751,41 @@ function calcularRescisao() {
         { nome: 'IRRF (13º Salário)', valor: calculosProprios.irrf13, tipo: 'D' },
 
         { nome: '--- DESCONTOS E MULTAS DO EMPREGADO ---', valor: 0.00, tipo: 'S' },
-        { nome: 'Aviso Prévio Descontado', valor: -calculosProprios.avisoPrevioDesconto, tipo: 'D' },
-        { nome: 'Multa do Art. 480 (Contrato a Termo - Empregado)', valor: -calculosProprios.multaArt480, tipo: 'D' },
+        { nome: 'Desconto Aviso Prévio (30 dias)', valor: calculosProprios.avisoPrevioDesconto, tipo: 'D' },
+        { nome: 'Multa do Art. 480 (Contrato a Termo - Empregado)', valor: calculosProprios.multaArt480, tipo: 'D' },
         { nome: 'Adiantamento Salarial', valor: calculosProprios.descontoAdiantamentoSalario, tipo: 'D' },
         { nome: 'Outros Descontos Informados', valor: calculosProprios.descontoOutros, tipo: 'D' },
-        
-        { nome: '--- INFORMAÇÕES ADICIONAIS ---', valor: 0.00, tipo: 'S' },
-        // CORREÇÃO: Exibição do FGTS e Multa
-        { nome: 'FGTS (Base Saldo Total)', valor: 0.00, info: formatarMoeda(fgtsSaldoTotal), tipo: 'INFO' },
-        { nome: 'Multa do FGTS (' + (calculosProprios.multaFgts > 0 ? (tipoRescisao === 'ACORDO' || tipoRescisao === 'CULPA_RECIPROCA' ? '20%' : '40%') : 'N/A') + ')', valor: 0.00, info: formatarMoeda(calculosProprios.multaFgts), tipo: 'INFO' },
-        { nome: 'Depósito FGTS sobre Verbas Rescisórias', valor: 0.00, info: formatarMoeda(calculosProprios.fgtsDeposito), tipo: 'INFO' },
-        { nome: 'Seguro Desemprego (Elegibilidade)', valor: 0.00, info: calculosProprios.seguroDesempregoDireito + (calculosProprios.seguroDesempregoParcelas > 0 ? ` - ${resultadoSD.parcelas} parcelas de ${formatarMoeda(resultadoSD.valorParcela)}` : ''), tipo: 'INFO' }
-    ].filter(r => r.valor > 0.0001 || r.tipo === 'S' || r.tipo === 'INFO'); 
+    ].filter(r => r && (r.valor > 0.0001 || r.valor < -0.0001 || r.tipo === 'S'));
 
-    exibirRelatorioRescisao(rubricas);
-
-    return { rubricas, totais: calculosProprios };
+    exibirRelatorioRescisao(rubricas, dados.tipoRescisao, totalMesesTrabalhados);
 }
 
-/**
- * Gera a tabela HTML dos resultados da rescisão.
- */
-function exibirRelatorioRescisao(rubricas) {
+// Funções auxiliares usadas no cálculo, movidas para o bloco F/E
+function calcularDataProjetada(dataDemissaoStr, diasAvisoPrevio) {
+    const dataDemissao = new Date(dataDemissaoStr + 'T00:00:00');
+    if (isNaN(dataDemissao.getTime())) return new Date(NaN);
+    let dataProjetada = new Date(dataDemissao.getTime());
+    dataProjetada.setDate(dataDemissao.getDate() + diasAvisoPrevio);
+    return dataProjetada;
+}
+
+function calcularInsalubridade(grauInsalubridade, salarioMinimoRef) {
+    return grauInsalubridade > 0 ? salarioMinimoRef * grauInsalubridade : 0.00;
+}
+
+
+//==============================================================================
+// H. FUNÇÃO DE EXIBIÇÃO DO RELATÓRIO
+//==============================================================================
+
+/** Gera a tabela HTML dos resultados da rescisão. */
+function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados) {
     const resultadoDiv = document.getElementById('resultadoCalculo');
     let html = '';
 
-    // Filtra e soma proventos e deduções
-    const proventos = rubricas.filter(r => r.tipo === 'P').reduce((sum, r) => sum + r.valor, 0);
-    const deducoes = rubricas.filter(r => r.tipo === 'D').reduce((sum, r) => sum + r.valor, 0);
-    const liquido = proventos - deducoes;
+    const proventos = calculosProprios.proventosBrutos;
+    const deducoes = calculosProprios.deducoes;
+    const liquido = calculosProprios.liquido;
 
     html += `
         <h3 class="text-2xl font-bold text-gray-800 mb-4 section-header">Resultado da Simulação</h3>
@@ -850,8 +823,6 @@ function exibirRelatorioRescisao(rubricas) {
     rubricas.forEach(r => {
         if (r.tipo === 'S') {
             html += `<tr class="bg-gray-200"><td colspan="2" class="px-4 py-2 font-bold text-sm text-gray-700">${r.nome}</td></tr>`;
-        } else if (r.tipo === 'INFO') {
-            html += `<tr class="bg-yellow-50"><td class="px-4 py-2 text-gray-600">${r.nome}</td><td class="px-4 py-2 text-right text-sm text-gray-600">${r.info}</td></tr>`;
         } else {
             const isDeducao = r.tipo === 'D';
             const valorFormatado = formatarMoeda(r.valor);
@@ -874,7 +845,111 @@ function exibirRelatorioRescisao(rubricas) {
         </div>
         `;
 
-    // Rodapé com botões e informações
+    // --- BLOCO DE FGTS, SEGURO DESEMPREGO E PRAZO DE AÇÃO ---
+
+    // 1. Lógica para exibição do saque do FGTS
+    let saqueFgtsStatusHtml;
+    if (calculosProprios.saqueFgtsElegivel) {
+        if (tipoRescisao === 'ACORDO') {
+            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (80% do Saldo)</p>`;
+        } else if (tipoRescisao === 'CULPA_RECIPROCA') {
+            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
+        } else {
+            saqueFgtsStatusHtml = `<p class="text-md font-bold text-green-700 mt-4">Status de Saque: SIM (Saldo Integral)</p>`;
+        }
+    } else {
+        saqueFgtsStatusHtml = `<p class="text-md font-bold text-red-700 mt-4">Status de Saque: NÃO PERMITIDO</p>`;
+    }
+
+    // 2. Calcula o percentual de multa para exibir dinamicamente
+    let percentualMultaFgts = 0;
+    if (['SJC', 'RESCISAO_INDIRETA', 'ANTEC_EMPREGADOR', 'DISPENSA_COLETIVA'].includes(tipoRescisao)) {
+        percentualMultaFgts = 40;
+    } else if (['ACORDO', 'CULPA_RECIPROCA'].includes(tipoRescisao)) {
+        percentualMultaFgts = 20;
+    }
+
+    let fgtsDetalhesHtml = `
+        <div class="p-6 border border-gray-300 rounded-lg shadow-lg bg-gray-50 mb-6">
+            <h5 class="text-lg font-bold text-[#007380] border-b pb-2 mb-3">Detalhamento FGTS e Multa Rescisória</h5>
+            <p class="text-sm font-medium">FGTS de Todo o Período Estimado (${totalMesesTrabalhados} meses x Salário Base):</p>
+            <p class="text-xl font-bold text-green-700">${formatarMoeda(calculosProprios.fgtsTotalEstimado)}</p>
+
+            <p class="text-sm font-medium mt-4">Depósito FGTS das Verbas Rescisórias (8%):</p>
+            <p class="text-lg font-semibold text-[#007380]">${formatarMoeda(calculosProprios.fgtsDeposito)}</p>
+
+            <p class="text-sm font-medium mt-4">Multa de ${percentualMultaFgts}% sobre o Saldo do FGTS (Valor da Indenização):</p>
+            <p class="text-lg font-bold text-green-700">${formatarMoeda(calculosProprios.multaFgts)}</p>
+
+            <p class="text-sm font-medium mt-4 border-t pt-2">Total FGTS a Recolher (Depósito + Multa):</p>
+            <p class="text-xl font-extrabold text-[#005a62]">${formatarMoeda(calculosProprios.fgtsTotalRecolher)}</p>
+            
+            ${saqueFgtsStatusHtml}
+
+            <p class="text-xs text-gray-500 mt-4">* ATENÇÃO: O valor do FGTS Total e a Multa Rescisória são ESTIMATIVAS baseadas no último Salário Base. O valor real pode ser diferente.</p>
+        </div>
+    `;
+
+    // 3. Seguro Desemprego
+    let seguroDesempregoHtml;
+    if (calculosProprios.seguroDesempregoElegivel) {
+        seguroDesempregoHtml = `
+            <div class="p-6 border border-green-300 rounded-lg shadow-lg bg-green-50 mb-6">
+                <h5 class="text-lg font-bold text-green-700 border-b pb-2 mb-3">Seguro Desemprego (Simulação)</h5>
+                <p class="text-md font-bold text-green-700">Status: ELEGÍVEL</p>
+                <p class="text-sm font-medium mt-2">Nº de Parcelas Estimadas:</p>
+                <p class="text-lg font-semibold text-green-700">${calculosProprios.seguroDesempregoParcelas}</p>
+                <p class="text-sm font-medium mt-2">Valor Estimado por Parcela:</p>
+                <p class="text-lg font-semibold text-green-700">${formatarMoeda(calculosProprios.seguroDesempregoValorParcela)}</p>
+                <p class="text-xs text-gray-700 mt-4">* ATENÇÃO: A elegibilidade, o valor e o número de parcelas SÃO ESTIMATIVAS e dependem de verificação de tempo de serviço, solicitações anteriores e média salarial nos órgãos oficiais (CAIXA/MTE).</p>
+            </div>
+        `;
+    } else {
+        seguroDesempregoHtml = `
+            <div class="p-6 border border-red-300 rounded-lg shadow-lg bg-red-50 mb-6">
+                <h5 class="text-lg font-bold text-red-700 border-b pb-2 mb-3">Seguro Desemprego (Simulação)</h5>
+                <p class="text-md font-bold text-red-700">Status: NÃO ELEGÍVEL</p>
+                <p class="text-sm text-gray-600 mt-2">A modalidade de rescisão selecionada não permite o saque ou o recebimento do Seguro Desemprego, ou o tempo de serviço é insuficiente para a primeira solicitação.</p>
+            </div>
+        `;
+    }
+
+    // 4. Prazo para Ação Trabalhista
+    let prazoAcaoTrabalhistaHtml = `
+        <div class="p-6 mb-8 border border-red-300 rounded-lg shadow-lg bg-red-50 text-center">
+            <h5 class="text-lg font-bold text-red-700 border-b pb-2 mb-3">Prazo Limite para Ação Trabalhista (Prescrição Bienal)</h5>
+            <p class="text-sm font-medium text-red-600">O prazo máximo de 2 anos para ingressar com a Reclamação Trabalhista se encerra em:</p>
+            <p class="text-3xl font-extrabold text-red-900 mt-2">${formatarData(calculosProprios.dataLimiteAcaoTrabalhista)}</p>
+            <p class="text-xs text-gray-700 mt-3">
+                * A lei estabelece 2 anos após a data de demissão para entrar com a ação.
+                <br>
+                * Você só pode cobrar verbas referentes aos 5 anos anteriores à data de entrada da ação.
+            </p>
+        </div>
+    `;
+
+    // Combina os novos blocos
+    html += '<h4 class="text-lg font-semibold text-[#007380] mb-2">Informações Adicionais (Não Inclusas no Valor Líquido)</h4>';
+
+    // NOVO: Adiciona um contêiner flexível
+    // flex-col: Em telas pequenas, ficam em coluna (um abaixo do outro)
+    // md:flex-row: Em telas médias e grandes, ficam em linha (lado a lado)
+    // gap-6: Adiciona espaçamento entre os dois blocos
+    html += '<div class="flex flex-col md:flex-row gap-6 mb-6">';
+
+    // NOVO: Adiciona a classe flex-1 ao bloco do FGTS. Isso faz com que ele ocupe 50% da largura do contêiner flexível.
+    fgtsDetalhesHtml = fgtsDetalhesHtml.replace('<div class="p-6 border', '<div class="flex-1 p-6 border');
+    html += fgtsDetalhesHtml;
+
+    // NOVO: Adiciona a classe flex-1 ao bloco do Seguro Desemprego, fazendo-o ocupar os outros 50%.
+    seguroDesempregoHtml = seguroDesempregoHtml.replace('<div class="p-6 border', '<div class="flex-1 p-6 border');
+    html += seguroDesempregoHtml;
+
+    // NOVO: Fecha o contêiner flexível
+    html += '</div>';
+    html += prazoAcaoTrabalhistaHtml;
+
+    // Rodapé
     html += `<div class="flex justify-center gap-4 mt-8 print:hidden">`;
     html += `<button onclick="window.print()" class="bg-[#007380] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#005a62] transition duration-150 ease-in-out font-semibold">
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2h-2m-4-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m0 0v1a2 2 0 002 2h2a2 2 0 002-2v-1m-8 0H4"></path></svg>
@@ -892,25 +967,24 @@ function exibirRelatorioRescisao(rubricas) {
 }
 
 
-/* INICIALIZAÇÃO */
-/* -------------------------------------------------------------------------- */
+//==============================================================================
+// I. INICIALIZAÇÃO
+//==============================================================================
 document.addEventListener('DOMContentLoaded', function () {
-    // Inicializa os accordions
     document.querySelectorAll('.accordion-header').forEach(button => {
         button.addEventListener('click', () => toggleAccordion(button));
     });
 
-    // Anexa a função de cálculo ao botão.
     const btnCalcular = document.getElementById('btnCalcular');
     if (btnCalcular) {
         btnCalcular.addEventListener('click', calcularRescisao);
     }
 
-    // Adiciona listeners para os checkboxes de estabilidade/desconto
     document.querySelectorAll('[data-input-id]').forEach(checkbox => {
         checkbox.addEventListener('change', () => handleCheckboxAndInput(checkbox));
     });
 
-    // Inicializa o estado dos campos (Aviso Prévio e Datas)
+    document.getElementById('tipoRescisaoNew').addEventListener('change', atualizarCampos);
+
     atualizarCampos();
 });
