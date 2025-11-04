@@ -542,12 +542,22 @@ function obterDadosDeEntrada() {
         numDependentes: parseInputInt('numeroDependentes'),
         feriasVencidasQtd: parseInputInt('feriasVencidasNew'),
         faltasInjustificadas: parseInputInt('faltasInjustificadas'),
-        grauInsalubridade: parseInput('insalubridade_nivel_selecionado'),
+        grauInsalubridade: document.querySelector('input[name="insalubridade_nivel"]:checked') ? parseFloat(document.querySelector('input[name="insalubridade_nivel"]:checked').value) : 0.0,
+        grauInsalubridadePercentual: document.querySelector('input[name="insalubridade_nivel"]:checked') ? document.querySelector('input[name="insalubridade_nivel"]:checked').value * 100 : 0,
         temPericulosidade: isChecked('periculosidade'),
         temTransferencia: isChecked('transferencia'),
-        temNoturno: isChecked('noturno'),
-        diasEstabilidadeIndenizar: parseInputInt('diasEstabilidadeIndenizar'),
+        temNoturno: isChecked('adicionalNoturno'),
+        estabilidadeGestante: isChecked('estabilidadeGestante'),
+        mesesGestante: parseInputInt('mesesGestante'),
+        estabilidadeCipa: isChecked('estabilidadeCipa'),
+        mesesCipa: parseInputInt('mesesCipa'),
+        estabilidadeAcidente: isChecked('estabilidadeAcidente'),
+        mesesAcidente: parseInputInt('mesesAcidente'),
         descontoAdiantamentoSalario: parseInput('descontoAdiantamentoSalario'),
+        descontoAdiantamentoFerias: parseInput('descontoAdiantamentoFerias'),
+        descontoAdiantamento13: parseInput('descontoAdiantamento13'),
+        descontoValeTransporte: parseInput('descontoValeTransporte'),
+        descontoPensaoAlimenticia: parseInput('descontoPensaoAlimenticia'),
         descontoOutros: parseInput('descontoOutros'),
         gratificacaoFuncao: parseInput('gratificacaoFuncao'),
         gratificacaoTempoServico: parseInput('gratificacaoTempoServico'),
@@ -628,8 +638,22 @@ function calcularRescisao() {
     calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13Prop;
 
     // Multas e Indenizações
-    if (dados.diasEstabilidadeIndenizar > 0) {
-        calculosProprios.estabilidadeIndenizacao = (baseParaProporcionais / DIAS_MES) * dados.diasEstabilidadeIndenizar;
+    let estabilidadeTipo = '';
+    let mesesEstabilidade = 0;
+
+    if (dados.estabilidadeGestante) {
+        estabilidadeTipo = 'Gestante';
+        mesesEstabilidade = dados.mesesGestante;
+    } else if (dados.estabilidadeCipa) {
+        estabilidadeTipo = 'CIPA';
+        mesesEstabilidade = dados.mesesCipa;
+    } else if (dados.estabilidadeAcidente) {
+        estabilidadeTipo = 'Acidente de Trabalho';
+        mesesEstabilidade = dados.mesesAcidente;
+    }
+
+    if (mesesEstabilidade > 0) {
+        calculosProprios.estabilidadeIndenizacao = baseParaProporcionais * mesesEstabilidade;
     }
 
     // Multas 477, 479 e 480
@@ -717,7 +741,7 @@ function calcularRescisao() {
 
     // 6. TOTAIS E GERAÇÃO DE RUBRICAS
     const proventos = calculosProprios.saldoSalario + calculosProprios.avisoPrevio + calculosProprios.decimoTerceiro + calculosProprios.feriasVencidas + calculosProprios.feriasProporcionais + adicionaisMensaisProporcionais + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao + calculosProprios.multaArt479;
-    const deducoes = calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13 + calculosProprios.avisoPrevioDesconto + calculosProprios.multaArt480 + calculosProprios.descontoAdiantamentoSalario + calculosProprios.descontoOutros;
+    const deducoes = calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13 + calculosProprios.avisoPrevioDesconto + calculosProprios.multaArt480 + calculosProprios.descontoAdiantamentoSalario + dados.descontoAdiantamentoFerias + dados.descontoAdiantamento13 + dados.descontoValeTransporte + dados.descontoPensaoAlimenticia + calculosProprios.descontoOutros;
     calculosProprios.proventosBrutos = proventos;
     calculosProprios.deducoes = deducoes;
     calculosProprios.liquido = proventos - deducoes;
@@ -729,7 +753,7 @@ function calcularRescisao() {
         { nome: 'Férias Proporcionais (' + avosFeriasProp + '/12) + 1/3', valor: calculosProprios.feriasProporcionais, tipo: 'P' },
         { nome: 'Férias Vencidas (' + dados.feriasVencidasQtd + ' períodos) + 1/3', valor: calculosProprios.feriasVencidas, tipo: 'P' },
         { nome: '13º Salário Proporcional (' + avos13Prop + '/12)', valor: calculosProprios.decimoTerceiro, tipo: 'P' },
-        { nome: 'Adicional de Insalubridade Proporcional', valor: calculosProprios.adicionalInsalubridade, tipo: 'P' },
+        { nome: 'Adicional de Insalubridade (' + dados.grauInsalubridadePercentual + '%) Proporcional', valor: calculosProprios.adicionalInsalubridade, tipo: 'P' },
         { nome: 'Adicional de Periculosidade 30% - Proporcional', valor: calculosProprios.adicionalPericulosidade, tipo: 'P' },
         { nome: 'Adicional de Transferencia 25% - Proporcional', valor: calculosProprios.adicionalTransferencia, tipo: 'P' },
         { nome: 'Adicional Noturno 20% - Proporcional', valor: calculosProprios.adicionalNoturno, tipo: 'P' },
@@ -740,7 +764,7 @@ function calcularRescisao() {
         { nome: 'Gratificação por Produtividade - Proporcional', valor: calculosProprios.gratificacaoProdutividade, tipo: 'P' },
         { nome: 'Gratificação por Assiduidade - Proporcional', valor: calculosProprios.gratificacaoAssiduidade, tipo: 'P' },
         { nome: 'Gratificação Quebra de Caixa - Proporcional', valor: calculosProprios.gratificacaoQuebraCaixa, tipo: 'P' },
-        { nome: 'Indenização por Estabilidade', valor: calculosProprios.estabilidadeIndenizacao, tipo: 'P' },
+        { nome: 'Indenização por Estabilidade (' + estabilidadeTipo + ')', valor: calculosProprios.estabilidadeIndenizacao, tipo: 'P' },
         { nome: 'Multa do Art. 477 (Atraso na Rescisão)', valor: calculosProprios.multaArt477, tipo: 'P' },
         { nome: 'Multa do Art. 479 (Contrato a Termo - Empregador)', valor: calculosProprios.multaArt479, tipo: 'P' },
 
@@ -754,10 +778,14 @@ function calcularRescisao() {
         { nome: 'Desconto Aviso Prévio (30 dias)', valor: calculosProprios.avisoPrevioDesconto, tipo: 'D' },
         { nome: 'Multa do Art. 480 (Contrato a Termo - Empregado)', valor: calculosProprios.multaArt480, tipo: 'D' },
         { nome: 'Adiantamento Salarial', valor: calculosProprios.descontoAdiantamentoSalario, tipo: 'D' },
+        { nome: 'Adiantamento de Férias', valor: dados.descontoAdiantamentoFerias, tipo: 'D' },
+        { nome: 'Adiantamento de 13º', valor: dados.descontoAdiantamento13, tipo: 'D' },
+        { nome: 'Vale Transporte', valor: dados.descontoValeTransporte, tipo: 'D' },
+        { nome: 'Pensão Alimentícia', valor: dados.descontoPensaoAlimenticia, tipo: 'D' },
         { nome: 'Outros Descontos Informados', valor: calculosProprios.descontoOutros, tipo: 'D' },
-    ].filter(r => r && (r.valor > 0.0001 || r.valor < -0.0001 || r.tipo === 'S'));
+    ].filter(r => r && (r.valor !== 0 || r.tipo === 'S'));
 
-    exibirRelatorioRescisao(rubricas, dados.tipoRescisao, totalMesesTrabalhados);
+    exibirRelatorioRescisao(rubricas, dados.tipoRescisao, totalMesesTrabalhados, dados);
 }
 
 // Funções auxiliares usadas no cálculo, movidas para o bloco F/E
@@ -779,7 +807,7 @@ function calcularInsalubridade(grauInsalubridade, salarioMinimoRef) {
 //==============================================================================
 
 /** Gera a tabela HTML dos resultados da rescisão. */
-function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados) {
+function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, dados) {
     const resultadoDiv = document.getElementById('resultadoCalculo');
     let html = '';
 
@@ -951,7 +979,7 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados) 
 
     // Rodapé
     html += `<div class="flex justify-center gap-4 mt-8 print:hidden">`;
-    html += `<button onclick="window.print()" class="bg-[#007380] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#005a62] transition duration-150 ease-in-out font-semibold">
+    html += `<button onclick="window.print()" class="bg-[#007380] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#005a62] transition duration-150 ease-in-out font-semibold mr-4">
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2h-2m-4-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m0 0v1a2 2 0 002 2h2a2 2 0 002-2v-1m-8 0H4"></path></svg>
                 Imprimir Relatório
             </button>`;
