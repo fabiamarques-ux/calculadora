@@ -812,6 +812,60 @@
             // window.calcularRescisao = function() { ... exibirRelatorioRescisao(rubricas) ... }
         </script>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function resetFormOnLoad() {
+                console.log('resetFormOnLoad executado!');
+                // Resetar inputs de texto, número e date
+                document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"]').forEach(input => {
+                    if (input.id === 'dependentesIRRF' || input.id === 'mesesGestante' || input.id === 'mesesCipa' || input.id === 'mesesAcidente') {
+                        input.value = '0';
+                    } else if (input.classList.contains('monetary-input')) {
+                        input.value = '';
+                    }
+                    else {
+                        input.value = '';
+                    }
+                });
+
+                // Resetar selects
+                document.querySelectorAll('select').forEach(select => {
+                    select.selectedIndex = 0;
+                });
+
+                // Resetar checkboxes
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+
+                // Esconder containers de gratificações e estabilidades que são controlados por checkboxes
+                document.querySelectorAll('[id^="container-gratificacao"], [id^="container-meses"]').forEach(container => {
+                    container.classList.add('hidden');
+                });
+
+                // Resetar o aviso global
+                const avisoGlobal = document.getElementById('aviso-global');
+                if (avisoGlobal) {
+                    avisoGlobal.style.display = 'none';
+                }
+
+                // Resetar o resultado do cálculo
+                const resultadoCalculo = document.getElementById('resultadoCalculo');
+                if (resultadoCalculo) {
+                    resultadoCalculo.style.display = 'none';
+                    resultadoCalculo.innerHTML = '';
+                }
+
+                // Resetar o relatório de rescisão
+                const relatorioRescisao = document.getElementById('relatorioRescisao');
+                if (relatorioRescisao) {
+                    relatorioRescisao.innerHTML = '';
+                }
+            }
+
+            resetFormOnLoad();
+        });
+    </script>
     <script src="calculorescisao.js"></script>
 
 
