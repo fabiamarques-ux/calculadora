@@ -255,9 +255,12 @@ function atualizarCampos() {
             defaultValue = 'DESCONTO';
             break;
         case 'ACORDO':
-        case 'CULPA_RECIPROCA':
             permittedOptions = ['INDENIZADO', 'TRABALHADO'];
             defaultValue = 'TRABALHADO';
+            break;
+        case 'CULPA_RECIPROCA':
+            permittedOptions = ['INDENIZADO'];
+            defaultValue = 'INDENIZADO';
             break;
         case 'APOSENTADORIA':
             permittedOptions = ['TRABALHADO'];
@@ -294,15 +297,7 @@ function manipularCampoAvisoPrevio(elementId, permittedOptions, defaultValue = '
     if (!selectEl) return;
 
     selectEl.closest('.input-group').style.display = 'block';
-    selectEl.innerHTML = '';
-
-    if (!isRescisaoSelected) {
-        selectEl.disabled = true;
-        const opt = document.createElement('option');
-        opt.textContent = 'Selecione um tipo de rescisão...';
-        selectEl.appendChild(opt);
-        return;
-    }
+    selectEl.innerHTML = ''; // Limpa todas as opções existentes
 
     const allOptions = [
         { value: 'NA', label: 'Não Aplicável' },
@@ -311,26 +306,43 @@ function manipularCampoAvisoPrevio(elementId, permittedOptions, defaultValue = '
         { value: 'DESCONTO', label: 'Desconto do Aviso Prévio (Não Cumprido)' }
     ];
 
-    let hasValidOptions = false;
-    allOptions.forEach(option => {
-        if (permittedOptions.includes(option.value)) {
+    let validOptions = allOptions.filter(option => permittedOptions.includes(option.value));
+
+    if (!isRescisaoSelected || validOptions.length === 0) {
+        selectEl.disabled = true;
+        const opt = document.createElement('option');
+        opt.value = "";
+        opt.textContent = 'Selecione um tipo de rescisão...';
+        opt.selected = true;
+        opt.disabled = true;
+        selectEl.appendChild(opt);
+        return;
+    }
+
+    if (validOptions.length === 1) {
+        // Se houver apenas uma opção válida, exibi-la e selecioná-la automaticamente
+        selectEl.disabled = false;
+        const opt = document.createElement('option');
+        opt.value = validOptions[0].value;
+        opt.textContent = validOptions[0].label;
+        opt.selected = true;
+        selectEl.appendChild(opt);
+    } else {
+        // Se houver mais de uma opção válida, adicionar "Selecione..." e as opções
+        selectEl.disabled = false;
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = 'Selecione...';
+        defaultOption.selected = true;
+        defaultOption.disabled = true;
+        selectEl.appendChild(defaultOption);
+
+        validOptions.forEach(option => {
             const opt = document.createElement('option');
             opt.value = option.value;
             opt.textContent = option.label;
             selectEl.appendChild(opt);
-            hasValidOptions = true;
-        }
-    });
-
-    if (hasValidOptions) {
-        selectEl.disabled = false;
-        selectEl.value = permittedOptions.includes(defaultValue) ? defaultValue : permittedOptions[0];
-    } else {
-        selectEl.disabled = true;
-        const opt = document.createElement('option');
-        opt.value = 'NA';
-        opt.textContent = 'Não Aplicável';
-        selectEl.appendChild(opt);
+        });
     }
 }
 
