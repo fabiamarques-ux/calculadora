@@ -924,7 +924,7 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
             const isDeducao = r.tipo === 'D';
             const valorFormatado = formatarMoeda(r.valor);
             const corValor = isDeducao ? 'text-red-600' : 'text-green-600';
-            const valorDisplay = isDeducao ? `(- ${valorFormatado})` : valorFormatado;
+            const valorDisplay = isDeducao ? `- ${valorFormatado}` : valorFormatado;
 
             html += `
                 <tr class="hover:bg-gray-50 border-t">
