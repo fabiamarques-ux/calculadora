@@ -700,13 +700,24 @@ function calcularRescisao() {
     }
 
     // Férias Proporcionais e Vencidas (+ 1/3)
-    const avosFeriasProp = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, true);
+    let avosFeriasProp = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, true);
     calculosProprios.feriasProporcionais = (baseParaProporcionais / 12) * avosFeriasProp * (1 + TERCO_CONSTITUCIONAL);
     calculosProprios.feriasVencidas = baseParaProporcionais * dados.feriasVencidasQtd * (1 + TERCO_CONSTITUCIONAL);
 
     // 13º Salário Proporcional
-    const avos13Prop = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, false);
+    let avos13Prop = calcularAvos(dados.dataAdmissao, dataProjetada, dados.faltasInjustificadas, false);
     calculosProprios.decimoTerceiro = (baseParaProporcionais / 12) * avos13Prop;
+
+    // TRATAMENTO EXCLUSIVO PARA RESCISÃO POR JUSTA CAUSA
+    if (dados.tipoRescisao === 'CJC') {
+        // 1. Zera Férias Proporcionais
+        calculosProprios.feriasProporcionais = 0.00;
+        avosFeriasProp = 0; // Zera os avos para o relatório exibir 0/12
+
+        // 2. Zera 13º Salário Proporcional
+        calculosProprios.decimoTerceiro = 0.00;
+        avos13Prop = 0; // Zera os avos para o relatório exibir 0/12
+    }
 
     // Multas e Indenizações
     let estabilidadeTipo = '';
