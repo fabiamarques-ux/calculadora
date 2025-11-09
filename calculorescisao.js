@@ -592,6 +592,7 @@ function obterDadosDeEntrada() {
         outrosAdicionais: parseInput('outrosAdicionais'),
         auxilioAlimentacao: parseInput('auxilioAlimentacao'),
         gueltasMedia: parseInput('gueltasMedia'),
+        salarioFamilia: parseInput('salarioFamilia'),
         fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
         numDependentes: parseInputInt('numeroDependentes'),
         feriasVencidasQtd: parseInputInt('feriasVencidasNew'),
@@ -650,7 +651,7 @@ function calcularRescisao() {
     const dataProjetada = isAPIndenizado ? calcularDataProjetada(dados.dataDemissaoStr, diasAvisoPrevioTotal) : dados.dataDemissao;
 
     // Cálculo da Remuneração Base
-    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia;
+    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia + dados.salarioFamilia;
     const valInsalubridadeMensal = dados.grauInsalubridade > 0 ? calcularInsalubridade(dados.grauInsalubridade, SALARIO_MINIMO_REF) : 0.0;
     const valPericulosidadeMensal = dados.temPericulosidade ? dados.salarioBase * 0.30 : 0.0;
     const valTransferenciaMensal = dados.temTransferencia ? dados.salarioBase * 0.25 : 0.0;
@@ -814,6 +815,7 @@ function calcularRescisao() {
         { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
         { nome: 'Auxílio Alimentação (em dinheiro)', valor: dados.auxilioAlimentacao, tipo: 'P' },
         { nome: 'Média Mensal de Gueltas', valor: dados.gueltasMedia, tipo: 'P' },
+        { nome: 'Salário Família', valor: dados.salarioFamilia, tipo: 'P' },
         { nome: 'Gratificação de Função - Proporcional', valor: calculosProprios.gratificacaoFuncao, tipo: 'P' },
         { nome: 'Gratificação por Tempo de Serviço - Proporcional', valor: calculosProprios.gratificacaoTempoServico, tipo: 'P' },
         { nome: 'Gratificação por Produtividade - Proporcional', valor: calculosProprios.gratificacaoProdutividade, tipo: 'P' },
