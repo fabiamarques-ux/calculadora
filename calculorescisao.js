@@ -746,6 +746,25 @@ function calcularRescisao() {
         if (diasRestantes > 0) calculosProprios.multaArt480 = (baseParaProporcionais / DIAS_MES) * diasRestantes * 0.5;
     }
 
+    // --- Multa Art. 477, § 8º (Atraso no Pagamento) ---
+    const tipoRescisao = dados.tipoRescisao;
+    // A multa é elegível se NÃO for Justa Causa (CJC) ou Falecimento (FALECIMENTO)
+    const isElegivelMulta477 = !['CJC', 'FALECIMENTO'].includes(tipoRescisao);
+
+    if (isElegivelMulta477 && dados.dataDemissao && dados.dataPagamento) {
+        // 1. Calcula a data limite para pagamento (10 dias corridos após a demissão, Art. 477, § 6º da CLT)
+        let dataLimitePagamento = new Date(dados.dataDemissao.getTime());
+        dataLimitePagamento.setDate(dados.dataDemissao.getDate() + 10);
+
+        // 2. Verifica se o pagamento ocorreu após a data limite
+        if (dados.dataPagamento.getTime() > dataLimitePagamento.getTime()) {
+            calculosProprios.multaArt477 = dados.salarioBase; // Valor = Salário Base
+        } else {
+            calculosProprios.multaArt477 = 0.00;
+        }
+    } else {
+        calculosProprios.multaArt477 = 0.00;
+    }
 
     // 4. CÁLCULO DE DEDUÇÕES
 
@@ -838,7 +857,7 @@ function calcularRescisao() {
         { nome: 'Gratificação por Assiduidade - Proporcional', valor: calculosProprios.gratificacaoAssiduidade, tipo: 'P' },
         { nome: 'Gratificação Quebra de Caixa - Proporcional', valor: calculosProprios.gratificacaoQuebraCaixa, tipo: 'P' },
         { nome: 'Indenização por Estabilidade (' + estabilidadeTipo + ')', valor: calculosProprios.estabilidadeIndenizacao, tipo: 'P' },
-        { nome: 'Multa do Art. 477 (Atraso na Rescisão)', valor: calculosProprios.multaArt477, tipo: 'P' },
+        { nome: 'Multa Art. 477, § 8º (Atraso Pagamento)', valor: calculosProprios.multaArt477, tipo: 'P' },
         { nome: 'Multa do Art. 479 (Contrato a Termo - Empregador)', valor: calculosProprios.multaArt479, tipo: 'P' },
 
         { nome: '--- DEDUÇÕES OBRIGATÓRIAS ---', valor: 0.00, tipo: 'S' },
