@@ -216,7 +216,7 @@ function handleCheckboxAndInput(checkbox) {
         else {
             container.style.display = 'none';
             // Zera o valor ao desmarcar, garantindo que não entre no cálculo
-            input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '0.00';
+            input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '';
         }
         atualizarAlturaAccordionAberto(); // Adicionado para corrigir altura
     }
