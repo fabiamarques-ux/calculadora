@@ -248,14 +248,14 @@
                                         <div class="input-group mb-4">
                                             <label for="dataDemissao"
                                                 class="block text-sm font-medium text-gray-700">Data de
-                                                Demissão (Afastamento):</label>
+                                                Demissão:</label>
                                             <input type="date" id="dataDemissao" value=""
                                                 class="mt-1 block w-full modern-input">
                                         </div>
                                         <div class="input-group mb-4">
                                             <label for="dataPagamento"
                                                 class="block text-sm font-medium text-gray-700">Data de
-                                                Pagamento da Rescisão (Homologação):</label>
+                                                Pagamento da Rescisão:</label>
                                             <input type="date" id="dataPagamento" value=""
                                                 class="mt-1 block w-full modern-input">
                                         </div>
@@ -313,7 +313,7 @@
                         <div id="content-2"
                             class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                             <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">Informe abaixo os valores da sua Remuneração:</p>
+                                <p class="text-sm text-gray-600 mb-4">Informe abaixo os valores Médios Mensais da sua Remuneração:</p>
                                 <div class="flex flex-col lg:flex-row gap-6 mb-8">
 
                                     <!-- Grupo Salários -->
@@ -324,24 +324,22 @@
                                         <div id="container-salarios">
                                             <div class="input-group mb-4">
                                                 <label for="salarioBruto"
-                                                    class="block text-sm font-medium text-gray-700">Salário Base Mensal
-                                                    Bruto (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Salário Base Bruto:</label>
                                                 <input type="text" id="salarioBruto" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="auxilioAlimentacao"
-                                                    class="block text-sm font-medium text-gray-700">Auxílio Alimentação
-                                                    (em dinheiro) (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Alimentação
+                                                    (em dinheiro):</label>
                                                 <input type="text" id="auxilioAlimentacao" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="salarioFamilia"
-                                                    class="block text-sm font-medium text-gray-700">Salário Família
-                                                    (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Salário Família:</label>
                                                 <input type="text" id="salarioFamilia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -357,8 +355,7 @@
                                         <div id="container-horas-extras">
                                             <div class="input-group mb-4">
                                                 <label for="horasExtrasMedia"
-                                                    class="block text-sm font-medium text-gray-700">Média Mensal de
-                                                    Horas Extras (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Horas Extras:</label>
                                                 <input type="text" id="horasExtrasMedia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -374,24 +371,21 @@
                                         <div id="container-variaveis">
                                             <div class="input-group mb-4">
                                                 <label for="comissoesMedia"
-                                                    class="block text-sm font-medium text-gray-700">Média Mensal de
-                                                    Comissões (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Comissões:</label>
                                                 <input type="text" id="comissoesMedia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="outrosAdicionais"
-                                                    class="block text-sm font-medium text-gray-700">Média Mensal de
-                                                    Gorjetas (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Gorjetas:</label>
                                                 <input type="text" id="outrosAdicionais" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="gueltasMedia"
-                                                    class="block text-sm font-medium text-gray-700">Média Mensal de
-                                                    Gueltas (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Gueltas:</label>
                                                 <input type="text" id="gueltasMedia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -686,8 +680,7 @@
                                             <div class="input-group mb-4">
                                                 <label for="descontoAdiantamentoSalario"
                                                     class="block text-sm font-medium text-gray-700">Adiantamento de
-                                                    Salário
-                                                    (R$):</label>
+                                                    Salário:</label>
                                                 <input type="text" id="descontoAdiantamentoSalario"
                                                     placeholder="R$ 0,00" oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -695,16 +688,14 @@
                                             <div class="input-group mb-4">
                                                 <label for="descontoAdiantamentoFerias"
                                                     class="block text-sm font-medium text-gray-700">Adiantamento de
-                                                    Férias
-                                                    (R$):</label>
+                                                    Férias:</label>
                                                 <input type="text" id="descontoAdiantamentoFerias" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="descontoAdiantamento13"
-                                                    class="block text-sm font-medium text-gray-700">Adiantamento de 13º
-                                                    (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Adiantamento de 13º:</label>
                                                 <input type="text" id="descontoAdiantamento13" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -718,24 +709,21 @@
                                         <div id="container-descontos">
                                             <div class="input-group mb-4">
                                                 <label for="descontoValeTransporte"
-                                                    class="block text-sm font-medium text-gray-700">Vale Transporte
-                                                    (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Vale Transporte:</label>
                                                 <input type="text" id="descontoValeTransporte" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="descontoPensaoAlimenticia"
-                                                    class="block text-sm font-medium text-gray-700">Pensão Alimentícia
-                                                    (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Pensão Alimentícia:</label>
                                                 <input type="text" id="descontoPensaoAlimenticia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="descontoOutros"
-                                                    class="block text-sm font-medium text-gray-700">Outros Descontos
-                                                    (R$):</label>
+                                                    class="block text-sm font-medium text-gray-700">Outros Descontos:</label>
                                                 <input type="text" id="descontoOutros" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input">
@@ -767,7 +755,7 @@
                                 <div class="border border-blue-300 bg-blue-50 rounded-lg p-3 mt-2 mb-2">
                                     <div class="input-group mb-0">
                                         <label for="fgtsSaldoTotal"
-                                            class="block text-sm font-medium text-gray-700">Saldo do FGTS (R$):</label>
+                                            class="block text-sm font-medium text-gray-700">Saldo do FGTS:</label>
                                         <input type="text" id="fgtsSaldoTotal" placeholder="R$ 0,00"
                                             oninput="formatarInputComoMoeda(this)"
                                             class="mt-1 block w-full modern-input">
@@ -776,6 +764,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <br>
                         </div>
                     </div>
 
