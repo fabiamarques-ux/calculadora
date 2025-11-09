@@ -803,7 +803,7 @@
                 html += '<th class="px-4 py-2 border-b text-right">Valor (R$)</th>';
                 html += '</tr></thead><tbody>';
                 rubricas.forEach(r => {
-                    html += `<tr><td class="px-4 py-2 border-b">${r.nome}</td><td class="px-4 py-2 border-b text-right">${r.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>`;
+                    html += `<tr><td class="px-4 py-2 border-b">${r.nome}</td><td class="px-4 py-2 border-b text-right">${r.valor.toLocaleString('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>`;
                 });
                 html += '</tbody></table>';
                 document.getElementById('relatorioRescisao').innerHTML = html;

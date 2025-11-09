@@ -98,9 +98,13 @@ let calculosProprios = {
 //==============================================================================
 
 /** Formata um valor numérico para moeda brasileira (R$). */
-function formatarMoeda(valor) {
-    if (isNaN(valor) || valor === null) return 'R$ 0,00';
-    return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+function formatarMoeda(valor, incluirSimbolo = true) {
+    if (isNaN(valor) || valor === null) return '0,00'; // Retorna apenas o valor formatado como decimal
+    if (incluirSimbolo) {
+        return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    } else {
+        return parseFloat(valor).toLocaleString('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 }
 
 /** Formata um objeto Date para exibição em português. */
@@ -922,7 +926,7 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
             html += `<tr class="bg-gray-200"><td colspan="2" class="px-4 py-2 font-bold text-sm text-gray-700">${r.nome}</td></tr>`;
         } else {
             const isDeducao = r.tipo === 'D';
-            const valorFormatado = formatarMoeda(r.valor);
+            const valorFormatado = formatarMoeda(r.valor, false);
             const corValor = isDeducao ? 'text-red-600' : 'text-green-600';
             const valorDisplay = isDeducao ? `- ${valorFormatado}` : valorFormatado;
 
