@@ -590,6 +590,8 @@ function obterDadosDeEntrada() {
         comissoesMedia: parseInput('comissoesMedia'),
         horasExtrasMedia: parseInput('horasExtrasMedia'),
         outrosAdicionais: parseInput('outrosAdicionais'),
+        auxilioAlimentacao: parseInput('auxilioAlimentacao'),
+        gueltasMedia: parseInput('gueltasMedia'),
         fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
         numDependentes: parseInputInt('numeroDependentes'),
         feriasVencidasQtd: parseInputInt('feriasVencidasNew'),
@@ -648,7 +650,7 @@ function calcularRescisao() {
     const dataProjetada = isAPIndenizado ? calcularDataProjetada(dados.dataDemissaoStr, diasAvisoPrevioTotal) : dados.dataDemissao;
 
     // Cálculo da Remuneração Base
-    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais;
+    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia;
     const valInsalubridadeMensal = dados.grauInsalubridade > 0 ? calcularInsalubridade(dados.grauInsalubridade, SALARIO_MINIMO_REF) : 0.0;
     const valPericulosidadeMensal = dados.temPericulosidade ? dados.salarioBase * 0.30 : 0.0;
     const valTransferenciaMensal = dados.temTransferencia ? dados.salarioBase * 0.25 : 0.0;
@@ -792,7 +794,7 @@ function calcularRescisao() {
 
 
     // 6. TOTAIS E GERAÇÃO DE RUBRICAS
-    const proventos = calculosProprios.saldoSalario + calculosProprios.avisoPrevio + calculosProprios.decimoTerceiro + calculosProprios.feriasVencidas + calculosProprios.feriasProporcionais + adicionaisMensaisProporcionais + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao + calculosProprios.multaArt479;
+    const proventos = calculosProprios.saldoSalario + calculosProprios.avisoPrevio + calculosProprios.decimoTerceiro + calculosProprios.feriasVencidas + calculosProprios.feriasProporcionais + adicionaisMensaisProporcionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao + calculosProprios.multaArt479;
     const deducoes = calculosProprios.inss + calculosProprios.inss13 + calculosProprios.irrf + calculosProprios.irrf13 + calculosProprios.avisoPrevioDesconto + calculosProprios.multaArt480 + calculosProprios.descontoAdiantamentoSalario + dados.descontoAdiantamentoFerias + dados.descontoAdiantamento13 + dados.descontoValeTransporte + dados.descontoPensaoAlimenticia + calculosProprios.descontoOutros;
     calculosProprios.proventosBrutos = proventos;
     calculosProprios.deducoes = deducoes;
@@ -810,7 +812,8 @@ function calcularRescisao() {
         { nome: 'Adicional de Transferencia 25% - Proporcional', valor: calculosProprios.adicionalTransferencia, tipo: 'P' },
         { nome: 'Adicional Noturno 20% - Proporcional', valor: calculosProprios.adicionalNoturno, tipo: 'P' },
         { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
-        { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Auxílio Alimentação (em dinheiro)', valor: dados.auxilioAlimentacao, tipo: 'P' },
+        { nome: 'Média Mensal de Gueltas', valor: dados.gueltasMedia, tipo: 'P' },
         { nome: 'Gratificação de Função - Proporcional', valor: calculosProprios.gratificacaoFuncao, tipo: 'P' },
         { nome: 'Gratificação por Tempo de Serviço - Proporcional', valor: calculosProprios.gratificacaoTempoServico, tipo: 'P' },
         { nome: 'Gratificação por Produtividade - Proporcional', valor: calculosProprios.gratificacaoProdutividade, tipo: 'P' },
