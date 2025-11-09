@@ -278,7 +278,7 @@
                                         <div class="flex-1 input-group mb-4 md:mb-0">
                                             <label for="feriasVencidasNew"
                                                 class="block text-sm font-medium text-gray-700">Períodos
-                                                de Férias Vencidas (Qtd):</label>
+                                                de Férias Vencidas:</label>
                                             <input type="text" id="feriasVencidasNew" value="0" placeholder="0"
                                                 oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                                 class="mt-1 block w-full modern-input">
@@ -289,18 +289,18 @@
                                         <div class="flex-1 input-group mb-0">
                                             <label for="faltasInjustificadas"
                                                 class="block text-sm font-medium text-gray-700">Faltas
-                                                Injustificadas no Período (Qtd):</label>
+                                                Injustificadas no Período:</label>
                                             <input type="text" id="faltasInjustificadas" value="0" placeholder="0"
                                                 oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                                 class="mt-1 block w-full modern-input">
-                                            <small class="text-xs text-gray-500">Inclua as faltas de todo o último período.</small>
+                                            <small class="text-xs text-gray-500">Inclua as faltas de todo o último
+                                                período.</small>
                                         </div>
                                     </div>
                                 </div>
                                 <br>
                             </div>
                         </div>
-                        <br>
                     </div>
                     <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
                         <button id="header-2"
@@ -406,7 +406,6 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
                     </div>
                     <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
                         <button id="header-3"
@@ -659,7 +658,6 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
                     </div>
 
                     <div class="accordion-item mb-6 border border-gray-200 rounded-lg shadow-md">
@@ -778,12 +776,11 @@
                                             oninput="formatarInputComoMoeda(this)"
                                             class="mt-1 block w-full modern-input">
                                         <small class="text-xs text-gray-500">Informe o valor do saldo da conta
-                                            vinculada (sem a multa e sem o depósito rescisório).</small>
+                                            vinculada (sem a multa e depósito rescisório).</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <br>
                     </div>
 
                     <button id="btnCalcular" type="button"
