@@ -748,8 +748,8 @@ function calcularRescisao() {
 
     // --- Multa Art. 477, § 8º (Atraso no Pagamento) ---
     const tipoRescisao = dados.tipoRescisao;
-    // A multa é elegível se NÃO for Justa Causa (CJC) ou Falecimento (FALECIMENTO)
-    const isElegivelMulta477 = !['CJC', 'FALECIMENTO'].includes(tipoRescisao);
+    // A multa é elegível se NÃO for Falecimento (FALECIMENTO)
+    const isElegivelMulta477 = !['FALECIMENTO'].includes(tipoRescisao);
 
     if (isElegivelMulta477 && dados.dataDemissao && dados.dataPagamento) {
         // 1. Calcula a data limite para pagamento (10 dias corridos após a demissão, Art. 477, § 6º da CLT)
