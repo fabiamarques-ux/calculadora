@@ -295,8 +295,8 @@
                                             <label for="salarioBruto"
                                                 class="block text-sm font-medium text-gray-700">Salário Base
                                                 Mensal Bruto (R$):</label>
-                                            <input type="text" id="salarioBruto" value="" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input">
+                                            <input type="text" id="salarioBruto" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input monetary-input">
                                         </div>
                                     </div>
                                     <div class="flex-1">
@@ -304,8 +304,8 @@
                                             <label for="comissoesMedia"
                                                 class="block text-sm font-medium text-gray-700">Média Mensal
                                                 de Comissões (R$):</label>
-                                            <input type="text" id="comissoesMedia" value="0.00" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input">
+                                            <input type="text" id="comissoesMedia" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input monetary-input">
                                         </div>
                                     </div>
                                     <div class="flex-1">
@@ -313,9 +313,9 @@
                                             <label for="outrosAdicionais"
                                                 class="block text-sm font-medium text-gray-700">Média Mensal de Gorjetas
                                                 (R$):</label>
-                                            <input type="text" id="outrosAdicionais" value="0.00"
-                                                placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                                class="mt-1 block w-full modern-input">
+                                            <input type="text" id="outrosAdicionais" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)"
+                                                class="mt-1 block w-full modern-input monetary-input">
                                         </div>
                                     </div>
                                     <div class="flex-1">
@@ -323,9 +323,9 @@
                                             <label for="horasExtrasMedia"
                                                 class="block text-sm font-medium text-gray-700">Média Mensal
                                                 de Horas Extras (R$):</label>
-                                            <input type="text" id="horasExtrasMedia" value="0.00"
-                                                placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                                class="mt-1 block w-full modern-input">
+                                            <input type="text" id="horasExtrasMedia" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)"
+                                                class="mt-1 block w-full modern-input monetary-input">
 
                                         </div>
                                     </div>
@@ -430,8 +430,8 @@
                                             <label for="gratificacaoFuncao"
                                                 class="block text-xs font-medium text-gray-500">Valor
                                                 Mensal (R$):</label>
-                                            <input type="text" id="gratificacaoFuncao" value="0.00" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input bg-white">
+                                            <input type="text" id="gratificacaoFuncao" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input bg-white monetary-input">
                                         </div>
 
                                         <div class="input-group mb-2 flex items-center">
@@ -447,9 +447,9 @@
                                             <label for="gratificacaoTempoServico"
                                                 class="block text-xs font-medium text-gray-500">Valor
                                                 Mensal (R$):</label>
-                                            <input type="text" id="gratificacaoTempoServico" value="0.00"
-                                                placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                                class="mt-1 block w-full modern-input bg-white">
+                                            <input type="text" id="gratificacaoTempoServico" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)"
+                                                class="mt-1 block w-full modern-input bg-white monetary-input">
                                         </div>
 
                                         <div class="input-group mb-2 flex items-center">
@@ -463,8 +463,8 @@
                                             <label for="gratificacaoProdutividade"
                                                 class="block text-xs font-medium text-gray-500">Valor Médio
                                                 Mensal (R$):</label>
-                                            <input type="text" id="gratificacaoProdutividade" value="0.00" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input bg-white">
+                                            <input type="text" id="gratificacaoProdutividade" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input bg-white monetary-input">
                                         </div>
 
                                         <div class="input-group mb-2 flex items-center">
@@ -478,8 +478,8 @@
                                             <label for="gratificacaoAssiduidade"
                                                 class="block text-xs font-medium text-gray-500">Valor Médio
                                                 Mensal (R$):</label>
-                                            <input type="text" id="gratificacaoAssiduidade" value="0.00" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input bg-white">
+                                            <input type="text" id="gratificacaoAssiduidade" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input bg-white monetary-input">
                                         </div>
 
                                         <div class="input-group mb-2 flex items-center">
@@ -493,8 +493,8 @@
                                             <label for="gratificacaoQuebraCaixa"
                                                 class="block text-xs font-medium text-gray-500">Valor Médio
                                                 Mensal (R$):</label>
-                                            <input type="text" id="gratificacaoQuebraCaixa" value="0.00" placeholder="0,00"
-                                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input bg-white">
+                                            <input type="text" id="gratificacaoQuebraCaixa" placeholder="R$ 0,00"
+                                                oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input bg-white monetary-input">
                                         </div>
                                     </div>
 
@@ -579,7 +579,7 @@
                         <button id="header-4"
                             class="accordion-header w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out"
                             data-target="content-4" aria-expanded="false">
-                            <h3 class="text-xl font-semibold text-gray-800">4. Descontos e Adiantamentos
+                            <h3 class="text-xl font-semibold text-gray-800">4. Adiantamentos e Descontos
                             </h3>
                             <svg class="w-5 h-5 transition-transform duration-300 transform rotate-0" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -591,7 +591,7 @@
                         <div id="content-4"
                             class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                             <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">*Informe abaixo os valores de descontos a serem
+                                <p class="text-sm text-gray-600 mb-4">Informe abaixo os valores de descontos a serem
                                     abatidos do total líquido:</p>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -599,48 +599,48 @@
                                         <label for="descontoAdiantamentoSalario"
                                             class="block text-sm font-medium text-gray-700">Adiantamento de Salário
                                             (R$):</label>
-                                        <input type="text" id="descontoAdiantamentoSalario" value="0.00"
-                                            placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                            class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoAdiantamentoSalario" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)"
+                                            class="mt-1 block w-full modern-input monetary-input">
                                     </div>
                                     <div class="input-group mb-4">
                                         <label for="descontoAdiantamentoFerias"
                                             class="block text-sm font-medium text-gray-700">Adiantamento de Férias
                                             (R$):</label>
-                                        <input type="text" id="descontoAdiantamentoFerias" value="0.00"
-                                            placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                            class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoAdiantamentoFerias" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)"
+                                            class="mt-1 block w-full modern-input monetary-input">
                                     </div>
                                     <div class="input-group mb-4">
                                         <label for="descontoAdiantamento13"
                                             class="block text-sm font-medium text-gray-700">Adiantamento de 13º
                                             (R$):</label>
-                                        <input type="text" id="descontoAdiantamento13" value="0.00"
-                                            placeholder="0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                            class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoAdiantamento13" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)"
+                                            class="mt-1 block w-full modern-input monetary-input">
                                     </div>
                                     <div class="input-group mb-4">
                                         <label for="descontoValeTransporte"
                                             class="block text-sm font-medium text-gray-700">Vale Transporte
                                             (R$):</label>
-                                        <input type="text" id="descontoValeTransporte" value="0.00"
-                                            placeholder="R$ 0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                            class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoValeTransporte" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)"
+                                            class="mt-1 block w-full modern-input monetary-input">
                                     </div>
                                     <div class="input-group mb-4">
                                         <label for="descontoPensaoAlimenticia"
                                             class="block text-sm font-medium text-gray-700">Pensão Alimentícia
                                             (R$):</label>
-                                        <input type="text" id="descontoPensaoAlimenticia" value="0.00"
-                                            placeholder="R$ 0,00" oninput="this.value = this.value.replace(/[^0-9.,]/g, '');"
-                                            class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoPensaoAlimenticia" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)"
+                                            class="mt-1 block w-full modern-input monetary-input">
                                     </div>
                                     <div class="input-group mb-4">
                                         <label for="descontoOutros"
                                             class="block text-sm font-medium text-gray-700">Outros Descontos
                                             (R$):</label>
-                                        <input type="text" id="descontoOutros" value="0.00" placeholder="R$ 0,00"
-                                            oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input">
+                                        <input type="text" id="descontoOutros" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input">
                                     </div>
                                 </div>
                             </div>
@@ -662,16 +662,16 @@
                         <div id="content-5"
                             class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                             <div class="p-4 pt-0">
-                                <p class="text-sm text-gray-600 mb-4">*Informe o saldo total depositado para que a multa
-                                    rescisória seja calculada e o saldo seja informado no relatório:</p>
+                                <p class="text-sm text-gray-600 mb-4">Informe o saldo total depositado para que a multa
+                                    rescisória seja calculada e o saldo seja informado no relatório:
                                 <div class="border border-blue-300 bg-blue-50 rounded-lg p-3 mt-6 mb-2">
                                     <div class="input-group mb-0">
                                         <label for="fgtsSaldoTotal"
                                             class="block text-sm font-medium text-gray-700">Saldo Total do FGTS para
                                             Cálculo da Multa (R$):</label>
-                                        <input type="text" id="fgtsSaldoTotal" value="0.00" placeholder="R$ 0,00"
-                                            oninput="this.value = this.value.replace(/[^0-9.,]/g, '');" class="mt-1 block w-full modern-input">
-                                        <small class="text-xs text-gray-500">*Informe o valor do saldo da conta
+                                        <input type="text" id="fgtsSaldoTotal" placeholder="R$ 0,00"
+                                            oninput="formatarInputComoMoeda(this)" class="mt-1 block w-full modern-input">
+                                        <small class="text-xs text-gray-500">Informe o valor do saldo da conta
                                             vinculada (sem a multa e sem o depósito rescisório) para cálculo da multa de
                                             40%.</small>
                                     </div>
@@ -690,12 +690,14 @@
 
                     
                 </section>
-                <div class="text-center font-bold mb-8 p-4 border-2 border-red-600 rounded-lg bg-red-100 text-red-700 aviso-importante-global mt-8">
+                <div id="aviso-global" style="display: none;"
+                        class="text-center font-bold mb-8 p-4 border-2 border-red-600 rounded-lg bg-red-100 text-red-700 aviso-importante-global mt-8">
                         AVISO IMPORTANTE: Este cálculo gera apenas uma ESTIMATIVA. O valor final pode ser alterado por
                         variáveis específicas não consideradas nesta ferramenta, como: verbas reflexas, médias,
                         descontos específicos, ou outras particularidades do seu caso. <p></p>
                         Para cálculos mais precisos utilize o PJe-Calc Cidadão. <p></p>
-                        Reforçamos que a consulta a um ADVOGADO é indispensável para a apuração do valor exato e para melhor compreensão dos seus direitos.
+                        Reforçamos que a consulta a um ADVOGADO é indispensável para a apuração do valor exato e para
+                        melhor compreensão dos seus direitos.
                     </div>
             </div>
         </main>

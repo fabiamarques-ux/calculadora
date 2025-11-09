@@ -113,12 +113,34 @@ function formatarData(data) {
     return d.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/** Converte o valor de um input (string) para float. */
+/** Formata o input do usuário para o padrão de moeda brasileira (ex: 1.234,56) */
+function formatarInputComoMoeda(input) {
+    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+    if (valor === '') {
+        input.value = '';
+        return;
+    }
+    // Converte para número, divide por 100 e formata
+    valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    if (valor === 'NaN') {
+        input.value = '';
+    } else {
+        input.value = valor;
+    }
+}
+
+/** Converte o valor de um input monetário (string formatada) para float. */
 function parseInput(id) {
     const element = document.getElementById(id);
-    if (!element) return 0.00;
-    return parseFloat(String(element.value).replace(',', '.')) || 0.00;
+    if (!element || element.value.trim() === '') return 0.00;
+    // Remove separadores de milhar e substitui a vírgula decimal por ponto
+    const valorLimpo = element.value.replace(/\./g, '').replace(',', '.');
+    return parseFloat(valorLimpo) || 0.00;
 }
+
 
 /** Converte o valor de um input (string) para inteiro. */
 function parseInputInt(id) {
@@ -142,23 +164,42 @@ function toggleAccordion(header) {
     const content = header.nextElementSibling;
     const icon = header.querySelector('svg');
 
-    // Fechar todos os outros
+    // Fechar todos os outros accordions
     document.querySelectorAll('.accordion-content').forEach(c => {
         if (c !== content) {
             c.style.maxHeight = null;
             c.classList.remove('p-4');
-            c.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+            if (c.previousElementSibling.querySelector('svg')) {
+                c.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+            }
         }
     });
 
+    // Abrir ou fechar o accordion atual
     if (content.style.maxHeight) {
         content.style.maxHeight = null;
         content.classList.remove('p-4');
         icon.classList.remove('rotate-180');
     } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
         content.classList.add('p-4');
         icon.classList.add('rotate-180');
+        // Força o navegador a recalcular o layout antes de obter o scrollHeight
+        // para garantir que a altura do padding seja incluída.
+        requestAnimationFrame(() => {
+            content.style.maxHeight = content.scrollHeight + 'px';
+        });
+    }
+}
+
+/** Atualiza a altura do accordion que estiver aberto para acomodar novo conteúdo. */
+function atualizarAlturaAccordionAberto() {
+    const openAccordionContent = document.querySelector('.accordion-content[style*="max-height"]');
+    if (openAccordionContent && openAccordionContent.style.maxHeight) {
+        // Usamos requestAnimationFrame para garantir que o DOM foi atualizado (display: block)
+        // antes de recalcularmos o scrollHeight.
+        requestAnimationFrame(() => {
+            openAccordionContent.style.maxHeight = openAccordionContent.scrollHeight + 'px';
+        });
     }
 }
 
@@ -171,11 +212,13 @@ function handleCheckboxAndInput(checkbox) {
     if (input && container) {
         if (checkbox.checked) {
             container.style.display = 'block';
-        } else {
+        }
+        else {
             container.style.display = 'none';
             // Zera o valor ao desmarcar, garantindo que não entre no cálculo
             input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '0.00';
         }
+        atualizarAlturaAccordionAberto(); // Adicionado para corrigir altura
     }
 }
 
@@ -242,6 +285,7 @@ function atualizarCampos() {
     const elDataTermino = document.getElementById('grupoDataTerminoContrato');
     if (elDataTermino) {
         elDataTermino.style.display = isContratoExperiencia ? 'block' : 'none';
+        atualizarAlturaAccordionAberto(); // Adicionado para corrigir altura
     }
 }
 
@@ -297,10 +341,12 @@ function limparCampos() {
             input.value = 'NA';
         } else if (input.tagName === 'SELECT') {
             input.value = '';
-        } else if (input.id === 'salarioBruto') {
+        } else if (input.type === 'date') {
             input.value = '';
+        } else if (input.oninput && input.oninput.toString().includes('formatarInputComoMoeda')) {
+            input.value = ''; // Limpa campos monetários
         } else {
-            input.value = '0.00'; // Define valores numéricos para 0.00
+            input.value = '0'; // Para campos numéricos como 'feriasVencidasNew'
         }
     });
 
@@ -318,6 +364,12 @@ function limparCampos() {
     // 4. Oculta e limpa o resultado
     document.getElementById('resultadoCalculo').style.display = 'none';
     document.getElementById('resultadoCalculo').innerHTML = '';
+
+    // Oculta o aviso global novamente
+    const aviso = document.getElementById('aviso-global');
+    if (aviso) {
+        aviso.style.display = 'none';
+    }
 }
 
 
@@ -992,6 +1044,11 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
     resultadoDiv.innerHTML = html;
     resultadoDiv.style.display = 'block';
     resultadoDiv.scrollIntoView({ behavior: 'smooth' });
+
+    const aviso = document.getElementById('aviso-global');
+    if (aviso) {
+        aviso.style.display = 'block';
+    }
 }
 
 
