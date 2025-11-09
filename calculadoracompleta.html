@@ -20,7 +20,6 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
-            overflow-x: hidden;
         }
 
         .section-header {
@@ -69,6 +68,11 @@
             border-color: #0284c7;
             /* Azul ciano */
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+        }
+
+        .input-group label {
+            word-wrap: break-word;
+            white-space: normal;
         }
 
         /* -------------------------------------------------------------------------- */
@@ -265,12 +269,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="border border-yellow-300 bg-yellow-50 rounded-lg p-3 mt-6">
+                                <div class="border border-yellow-300 bg-yellow-50 rounded-lg p-2 mt-6">
                                     <h4
                                         class="font-semibold text-sm text-gray-700 mb-3 border-b border-yellow-200 pb-1">
                                         Contagem Proporcional</h4>
 
-                                    <div class="flex flex-col lg:flex-row gap-4">
+                                    <div class="flex flex-col lg:flex-row gap-2">
                                         <div class="flex-1 input-group mb-4 md:mb-0">
                                             <label for="feriasVencidasNew"
                                                 class="block text-sm font-medium text-gray-700">Períodos
