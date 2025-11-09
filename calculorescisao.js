@@ -594,7 +594,7 @@ function obterDadosDeEntrada() {
         gueltasMedia: parseInput('gueltasMedia'),
         salarioFamilia: parseInput('salarioFamilia'),
         fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
-        numDependentes: parseInputInt('numeroDependentes'),
+        numDependentes: parseInputInt('dependentesIRRF'),
         feriasVencidasQtd: parseInputInt('feriasVencidasNew'),
         faltasInjustificadas: parseInputInt('faltasInjustificadas'),
         grauInsalubridade: document.querySelector('input[name="insalubridade_nivel"]:checked') ? parseFloat(document.querySelector('input[name="insalubridade_nivel"]:checked').value) : 0.0,
