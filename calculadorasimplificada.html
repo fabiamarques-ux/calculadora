@@ -171,7 +171,7 @@
                                         <option value="INDENIZADO">Indenizado (pela Empresa)</option>
                                         <option value="TRABALHADO">Trabalhado</option>
                                         <option value="NAO_CUMPRIDO">Não Cumprido (Desconto)</option>
-                                        <option value="NAO_APLICAVEL">Não Aplicável / Multa Contratual</option>
+                                        <option value="NAO_APLICAVEL">Não Aplicável</option>
                                     </select>
                                 </div>
                             </div>
@@ -214,14 +214,14 @@
                                 <div class="input-group">
                                     <label for="salarioBruto" class="block text-sm font-medium text-gray-700">Salário
                                         Base Mensal Bruto (R$):</label>
-                                    <input type="text" id="salarioBruto" value="0.00" placeholder="R$ 0,00"
+                                    <input type="text" id="salarioBruto" value="" placeholder="0,00"
                                         class="mt-1 block w-full modern-input">
                                 </div>
                                 <div class="input-group">
                                     <label for="feriasVencidasNew"
                                         class="block text-sm font-medium text-gray-700">Períodos
                                         de Férias Vencidas (Qtd):</label>
-                                    <input type="number" id="feriasVencidasNew" value="0" placeholder="0" min="0"
+                                    <input type="number" id="feriasVencidasNew" value="" placeholder="0" min="0"
                                         step="1" class="mt-1 block w-full modern-input">
                                     <small class="text-xs text-gray-500">*Cada período é 12 meses
                                         completos.</small>
@@ -229,7 +229,7 @@
                                 <div class="input-group">
                                     <label for="numDependentes" class="block text-sm font-medium text-gray-700">Número
                                         de Dependentes (IRRF):</label>
-                                    <input type="number" id="numDependentes" value="0" placeholder="0" min="0" step="1"
+                                    <input type="number" id="numDependentes" value="" placeholder="0" min="0" step="1"
                                         class="mt-1 block w-full modern-input">
                                     <small class="text-xs text-gray-500">*Para fins de dedução do Imposto de Renda (R$
                                         189,59/mês).</small>
@@ -337,12 +337,12 @@
         /* -------------------------------------------------------------------------- */
 
         function formatarMoeda(valor) {
-            if (isNaN(valor) || valor === null) return 'R$ 0,00';
+            if (isNaN(valor) || valor === null) return '0,00';
             // Usa Math.abs para remover o sinal de menos se o valor for negativo, já que a formatação é feita na exibição.
             const valorAbsoluto = Math.abs(parseFloat(valor));
             let formatado = valorAbsoluto.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             });
             // Adiciona o sinal de menos antes do R$ se o valor original for negativo
             if (valor < 0) {
@@ -1076,7 +1076,7 @@
                     input.selectedIndex = 0;
                 } else if (input.type === 'number' || ['salarioBruto'].includes(input.id)) {
                     // Define 0.00 para Salário Base. 0 para Férias Vencidas
-                    input.value = (input.type === 'number' ? '0' : '0.00');
+                    input.value = '';
                 } else if (input.type === 'date') {
                     input.value = '';
                 }
@@ -1128,8 +1128,7 @@
         /* INICIALIZAÇÃO */
         /* -------------------------------------------------------------------------- */
         document.addEventListener('DOMContentLoaded', () => {
-            // Chama a função de atualização de campos para configurar o estado inicial de Aviso Prévio/Contrato a Termo
-            atualizarCampos();
+            resetFormAndHideResult();
         });
     </script>
 </body>
