@@ -72,7 +72,7 @@ let calculosProprios = {
     fgtsDeposito: 0.00,
     multaFgts: 0.00,
     fgtsTotalEstimado: 0.00,
-    fgtsTotalRecolher: 0.00,
+    fgtsTotalReceber: 0.00,
     saqueFgtsElegivel: false,
 
     // Seguro Desemprego
@@ -814,14 +814,14 @@ function calcularRescisao() {
     const isFGTSMulta20 = ['ACORDO', 'CULPA_RECIPROCA'].includes(dados.tipoRescisao);
 
     if (dados.fgtsSaldoTotal > 0) {
-        if (isFGTSMulta40) calculosProprios.multaFgts = dados.fgtsSaldoTotal * 0.40;
-        else if (isFGTSMulta20) calculosProprios.multaFgts = dados.fgtsSaldoTotal * 0.20;
+        if (isFGTSMulta40) calculosProprios.multaFgts = (dados.fgtsSaldoTotal + calculosProprios.fgtsDeposito) * 0.40;
+        else if (isFGTSMulta20) calculosProprios.multaFgts = (dados.fgtsSaldoTotal + calculosProprios.fgtsDeposito) * 0.20;
     }
 
     // Detalhamento FGTS
     const totalMesesTrabalhados = getMesesTrabalhados(dados.dataAdmissao, dados.dataDemissao);
-    calculosProprios.fgtsTotalEstimado = dados.salarioBase * 0.08 * totalMesesTrabalhados;
-    calculosProprios.fgtsTotalRecolher = calculosProprios.fgtsDeposito + calculosProprios.multaFgts;
+    calculosProprios.fgtsTotalEstimado = dados.fgtsSaldoTotal;
+    calculosProprios.fgtsTotalReceber = dados.fgtsSaldoTotal + calculosProprios.fgtsDeposito + calculosProprios.multaFgts;
 
     // Saque FGTS
     const elegiveisSaque = ['SJC', 'RESCISAO_INDIRETA', 'ANTEC_EMPREGADOR', 'DISPENSA_COLETIVA', 'ACORDO', 'CULPA_RECIPROCA', 'APOSENTADORIA', 'TERMINO_CONTRATO', 'FALECIMENTO', 'PDV_PDI'];
@@ -1003,21 +1003,21 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
     let fgtsDetalhesHtml = `
         <div class="p-6 border border-gray-300 rounded-lg shadow-lg bg-gray-50 mb-6">
             <h5 class="text-lg font-bold text-[#007380] border-b pb-2 mb-3">Detalhamento FGTS e Multa Rescisória</h5>
-            <p class="text-sm font-medium">FGTS de Todo o Período Estimado (${totalMesesTrabalhados} meses x Salário Base):</p>
-            <p class="text-xl font-bold text-green-700">${formatarMoeda(calculosProprios.fgtsTotalEstimado)}</p>
+            <p class="text-sm font-medium">FGTS Depositado em Todo o Período do Contrato:</p>
+            <p class="text-lg font-semibold text-[#007380]">${formatarMoeda(calculosProprios.fgtsTotalEstimado)}</p>
 
-            <p class="text-sm font-medium mt-4">Depósito FGTS das Verbas Rescisórias (8%):</p>
+            <p class="text-sm font-medium mt-4">Depósito do FGTS das Verbas Rescisórias (8%):</p>
             <p class="text-lg font-semibold text-[#007380]">${formatarMoeda(calculosProprios.fgtsDeposito)}</p>
 
-            <p class="text-sm font-medium mt-4">Multa de ${percentualMultaFgts}% sobre o Saldo do FGTS (Valor da Indenização):</p>
-            <p class="text-lg font-bold text-green-700">${formatarMoeda(calculosProprios.multaFgts)}</p>
+            <p class="text-sm font-medium mt-4">Multa de ${percentualMultaFgts}% sobre o Saldo Total do FGTS:</p>
+            <p class="text-lg font-bold text-[#007380]">${formatarMoeda(calculosProprios.multaFgts)}</p>
 
-            <p class="text-sm font-medium mt-4 border-t pt-2">Total FGTS a Recolher (Depósito + Multa):</p>
-            <p class="text-xl font-extrabold text-[#005a62]">${formatarMoeda(calculosProprios.fgtsTotalRecolher)}</p>
+            <p class="text-sm font-medium mt-4 border-t pt-2">FGTS a Receber (Depósitos + Multa):</p>
+            <p class="text-xl font-extrabold text-[#007380]">${formatarMoeda(calculosProprios.fgtsTotalReceber)}</p>
             
             ${saqueFgtsStatusHtml}
 
-            <p class="text-xs text-gray-500 mt-4">* ATENÇÃO: O valor do FGTS Total e a Multa Rescisória são ESTIMATIVAS baseadas no último Salário Base. O valor real pode ser diferente.</p>
+            <p class="text-xs text-gray-500 mt-4"> ATENÇÃO: O valor do FGTS Total e a Multa Rescisória são ESTIMATIVAS baseadas no último Salário Base. O valor real pode ser diferente.</p>
         </div>
     `;
 
@@ -1032,7 +1032,7 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
                 <p class="text-lg font-semibold text-green-700">${calculosProprios.seguroDesempregoParcelas}</p>
                 <p class="text-sm font-medium mt-2">Valor Estimado por Parcela:</p>
                 <p class="text-lg font-semibold text-green-700">${formatarMoeda(calculosProprios.seguroDesempregoValorParcela)}</p>
-                <p class="text-xs text-gray-700 mt-4">* ATENÇÃO: A elegibilidade, o valor e o número de parcelas SÃO ESTIMATIVAS e dependem de verificação de tempo de serviço, solicitações anteriores e média salarial nos órgãos oficiais (CAIXA/MTE).</p>
+                <p class="text-xs text-gray-700 mt-4"> ATENÇÃO: A elegibilidade, o valor e o número de parcelas SÃO ESTIMATIVAS e dependem de verificação de tempo de serviço, solicitações anteriores e média salarial nos órgãos oficiais (CAIXA/MTE).</p>
             </div>
         `;
     } else {
@@ -1052,9 +1052,9 @@ function exibirRelatorioRescisao(rubricas, tipoRescisao, totalMesesTrabalhados, 
             <p class="text-sm font-medium text-red-600">O prazo máximo de 2 anos para ingressar com a Reclamação Trabalhista se encerra em:</p>
             <p class="text-3xl font-extrabold text-red-900 mt-2">${formatarData(calculosProprios.dataLimiteAcaoTrabalhista)}</p>
             <p class="text-xs text-gray-700 mt-3">
-                * A lei estabelece 2 anos após a data de demissão para entrar com a ação.
+                A lei estabelece 2 anos após a data de demissão para entrar com a ação.
                 <br>
-                * Você só pode cobrar verbas referentes aos 5 anos anteriores à data de entrada da ação.
+                Você só pode cobrar verbas referentes aos 5 anos anteriores à data de entrada da ação.
             </p>
         </div>
     `;
