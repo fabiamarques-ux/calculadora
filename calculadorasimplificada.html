@@ -364,8 +364,12 @@
             if (!element) {
                 return 0.00;
             }
-            // Converte vírgula para ponto (permite R$ 1.500,50 ou 1500.50)
-            return parseFloat(String(element.value).replace('.', '').replace(',', '.')) || 0.00;
+            // Remove "R$ ", pontos e converte vírgula para ponto
+            const valorLimpo = String(element.value)
+                .replace('R$ ', '')
+                .replace(/\./g, '')
+                .replace(',', '.');
+            return parseFloat(valorLimpo) || 0.00;
         }
 
         function parseInputInt(id) {
@@ -374,6 +378,41 @@
                 return 0;
             }
             return parseInt(element.value) || 0;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* FUNÇÃO PARA FORMATAR CAMPO MONETÁRIO */
+        /* -------------------------------------------------------------------------- */
+        function formatarCampoMonetario(event) {
+            const input = event.target;
+            let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+            if (valor.length === 0) {
+                input.value = '';
+                return;
+            }
+
+            // Adiciona zeros à esquerda se necessário
+            if (valor.length < 3) {
+                valor = valor.padStart(3, '0');
+            }
+
+            // Formata para R$ 0,00
+            let valorFormatado = 'R$ ' + valor.slice(0, -2).replace(/^0+/, '') + ',' + valor.slice(-2);
+
+            // Lida com o caso de o valor ser "R$ ,00"
+            if (valorFormatado === 'R$ ,') {
+                valorFormatado = 'R$ 0,';
+            }
+            if (valorFormatado === 'R$ ,00') {
+                valorFormatado = 'R$ 0,00';
+            }
+            if (valor.slice(0, -2).length === 0) {
+                valorFormatado = 'R$ 0,' + valor.slice(-2);
+            }
+
+
+            input.value = valorFormatado;
         }
 
         /* -------------------------------------------------------------------------- */
@@ -470,6 +509,23 @@
             let totalDeducoes = 0;
             let baseAP = 0; // Base de cálculo do Aviso Prévio Indenizado (para FGTS/INSS/IRRF)
 
+            // --- PROJEÇÃO DO AVISO PRÉVIO PARA CÁLCULO DE AVOS ---
+            let dataFinalCalculo = new Date(dataDemissao);
+            const isContratoIndeterminado = !['ANTEC_EMPREGADOR', 'ANTEC_EMPREGADO'].includes(tipoRescisao);
+            let diasTotaisAP = 0;
+
+            if (isContratoIndeterminado) {
+                const anosServico = (dataDemissao.getTime() - dataAdmissao.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+                const diasAdicionais = Math.floor(anosServico) * DIAS_ADICIONAIS_AP;
+                diasTotaisAP = 30 + diasAdicionais;
+
+                if (avisoPrevioTipo === 'INDENIZADO') {
+                    dataFinalCalculo.setDate(dataFinalCalculo.getDate() + diasTotaisAP);
+                    calculosProprios.avisoPrevioDias = diasTotaisAP;
+                }
+            }
+            // --- FIM DA PROJEÇÃO ---
+
             // NOVO: Cálculo dos Meses Totais para a estimativa do FGTS de todo o período
             const totalMesesTrabalhados = calcularTotalMesesParaFGTS(dataAdmissao, dataDemissao);
 
@@ -536,9 +592,33 @@
             }
             avos13 = Math.max(0, avos13);
 
-            let avosFerias = dataDemissao.getMonth();
-            if (diaDemissao >= 15) {
-                avosFerias += 1;
+            // --- CÁLCULO CORRETO DE AVOS DE FÉRIAS ---
+            // O período aquisitivo de férias é contado a partir da data de admissão.
+            
+            // 1. Encontrar o início do período aquisitivo atual.
+            let inicioPeriodoAquisitivo = new Date(dataDemissao.getFullYear(), dataAdmissao.getMonth(), dataAdmissao.getDate());
+            if (dataDemissao < inicioPeriodoAquisitivo) {
+                inicioPeriodoAquisitivo.setFullYear(inicioPeriodoAquisitivo.getFullYear() - 1);
+            }
+
+            // 2. Calcular os meses completos trabalhados dentro deste período.
+            let mesesCompletos = (dataDemissao.getFullYear() - inicioPeriodoAquisitivo.getFullYear()) * 12 + (dataDemissao.getMonth() - inicioPeriodoAquisitivo.getMonth());
+            if (dataDemissao.getDate() < inicioPeriodoAquisitivo.getDate()) {
+                mesesCompletos--;
+            }
+            
+            // 3. Verificar a fração do último mês (se superior a 14 dias, conta como 1 avo).
+            let diasNaFracao = 0;
+            if (dataDemissao.getDate() >= inicioPeriodoAquisitivo.getDate()) {
+                diasNaFracao = dataDemissao.getDate() - inicioPeriodoAquisitivo.getDate();
+            } else {
+                const ultimoDiaMesAnterior = new Date(dataDemissao.getFullYear(), dataDemissao.getMonth(), 0).getDate();
+                diasNaFracao = ultimoDiaMesAnterior - inicioPeriodoAquisitivo.getDate() + dataDemissao.getDate();
+            }
+            
+            let avosFerias = mesesCompletos;
+            if (diasNaFracao > 14) {
+                avosFerias++;
             }
             avosFerias = Math.max(0, avosFerias);
 
@@ -1129,6 +1209,8 @@
         /* -------------------------------------------------------------------------- */
         document.addEventListener('DOMContentLoaded', () => {
             resetFormAndHideResult();
+            const salarioBrutoInput = document.getElementById('salarioBruto');
+            salarioBrutoInput.addEventListener('input', formatarCampoMonetario);
         });
     </script>
 </body>
