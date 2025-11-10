@@ -67,6 +67,7 @@ let calculosProprios = {
     gratificacaoProdutividade: 0.00,
     gratificacaoAssiduidade: 0.00,
     gratificacaoQuebraCaixa: 0.00,
+    gorjetasMedia: 0.00,
 
     // FGTS e Saque
     fgtsDeposito: 0.00,
@@ -607,6 +608,7 @@ function obterDadosDeEntrada() {
         horasExtrasMedia: parseInput('horasExtrasMedia'),
         outrosAdicionais: parseInput('outrosAdicionais'),
         auxilioAlimentacao: parseInput('auxilioAlimentacao'),
+        gorjetasMedia: parseInput('gorjetasMedia'),
         gueltasMedia: parseInput('gueltasMedia'),
         salarioFamilia: parseInput('salarioFamilia'),
         fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
@@ -667,14 +669,14 @@ function calcularRescisao() {
     const dataProjetada = isAPIndenizado ? calcularDataProjetada(dados.dataDemissaoStr, diasAvisoPrevioTotal) : dados.dataDemissao;
 
     // Cálculo da Remuneração Base
-    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia + dados.salarioFamilia;
+    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia + dados.salarioFamilia + dados.gorjetasMedia;
     const valInsalubridadeMensal = dados.grauInsalubridade > 0 ? calcularInsalubridade(dados.grauInsalubridade, SALARIO_MINIMO_REF) : 0.0;
     const valPericulosidadeMensal = dados.temPericulosidade ? dados.salarioBase * 0.30 : 0.0;
     const valTransferenciaMensal = dados.temTransferencia ? dados.salarioBase * 0.25 : 0.0;
     const valNoturnoMensal = dados.temNoturno ? dados.salarioBase * 0.20 : 0.0;
 
     // Base para cálculo de AP/13º/Férias (inclui adicionais integrais habituais)
-    const baseParaProporcionais = remuneracaoBase + valInsalubridadeMensal + valPericulosidadeMensal + valTransferenciaMensal + valNoturnoMensal;
+    const baseParaProporcionais = remuneracaoBase + valInsalubridadeMensal + valPericulosidadeMensal + valTransferenciaMensal + valNoturnoMensal + dados.gorjetasMedia;
 
 
     // 3. CÁLCULO DE PROVENTOS (VERBAS RESCISÓRIAS)
@@ -785,13 +787,13 @@ function calcularRescisao() {
     }
 
     // INSS
-    const baseInssMensal = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0);
+    const baseInssMensal = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0) + dados.gorjetasMedia;
     calculosProprios.inss = calcularInss(baseInssMensal);
     calculosProprios.inss13 = calcularInss(calculosProprios.decimoTerceiro);
 
     // IRRF
     // Base IRRF (exceto 13º e Férias/AP indenizados)
-    const baseIRRFTributavel = calculosProprios.saldoSalario + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0) + adicionaisMensaisProporcionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao;
+    const baseIRRFTributavel = calculosProprios.saldoSalario + (isAPTrabalhado ? calculosProprios.avisoPrevio : 0.0) + adicionaisMensaisProporcionais + calculosProprios.multaArt477 + calculosProprios.estabilidadeIndenizacao + dados.gorjetasMedia;
     calculosProprios.irrf = calcularIrrf(baseIRRFTributavel, calculosProprios.inss, dados.numDependentes);
 
     // IRRF 13º (Tributação Exclusiva)
@@ -806,7 +808,7 @@ function calcularRescisao() {
 
     // FGTS Depósito (8% sobre Saldo Salário, 13º, AP Indenizado)
     const baseAP = isAPIndenizado ? calculosProprios.avisoPrevio : 0.0;
-    const fgtsBaseDepositada = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + calculosProprios.decimoTerceiro + baseAP;
+    const fgtsBaseDepositada = calculosProprios.saldoSalario + adicionaisMensaisProporcionais + calculosProprios.decimoTerceiro + baseAP + dados.gorjetasMedia;
     calculosProprios.fgtsDeposito = fgtsBaseDepositada * 0.08;
 
     // FGTS Multa Rescisória (40% ou 20%)
@@ -858,9 +860,12 @@ function calcularRescisao() {
         { nome: 'Adicional de Periculosidade 30% - Proporcional', valor: calculosProprios.adicionalPericulosidade, tipo: 'P' },
         { nome: 'Adicional de Transferencia 25% - Proporcional', valor: calculosProprios.adicionalTransferencia, tipo: 'P' },
         { nome: 'Adicional Noturno 20% - Proporcional', valor: calculosProprios.adicionalNoturno, tipo: 'P' },
-        { nome: 'Adicionais de Média (Comissões, Extras, Outros)', valor: dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Adicionais de Média (Outros)', valor: dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Média Mensal de Comissões', valor: dados.comissoesMedia, tipo: 'P' },
+        { nome: 'Média Mensal de Horas Extras', valor: dados.horasExtrasMedia, tipo: 'P' },
         { nome: 'Auxílio Alimentação (em dinheiro)', valor: dados.auxilioAlimentacao, tipo: 'P' },
         { nome: 'Média Mensal de Gueltas', valor: dados.gueltasMedia, tipo: 'P' },
+        { nome: 'Média Mensal de Gorjetas', valor: dados.gorjetasMedia, tipo: 'P' },
         { nome: 'Salário Família', valor: dados.salarioFamilia, tipo: 'P' },
         { nome: 'Gratificação de Função - Proporcional', valor: calculosProprios.gratificacaoFuncao, tipo: 'P' },
         { nome: 'Gratificação por Tempo de Serviço - Proporcional', valor: calculosProprios.gratificacaoTempoServico, tipo: 'P' },
