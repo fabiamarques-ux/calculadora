@@ -353,10 +353,24 @@
                                         <h4
                                             class="font-semibold text-sm text-gray-600 mb-3 border-b border-green-200 pb-1">
                                             HORAS EXTRAS</h4>
-                                        <div id="container-horas-extras">
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintHorasExtras"
+                                                data-container-id="container-horas-extras"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintHorasExtras"
+                                                class="text-sm font-medium text-gray-700">Horas Extras</label>
+                                        </div>
+                                        <div id="container-horas-extras" class="input-group mb-4 ml-5 hidden">
+                                            <div class="input-group mb-4">
+                                                <label for="horasExtrasRescisao"
+                                                    class="block text-sm font-medium text-gray-700">Horas Extras (mês da rescisão):</label>
+                                                <input type="text" id="horasExtrasRescisao" placeholder="R$ 0,00"
+                                                    oninput="formatarInputComoMoeda(this)"
+                                                    class="mt-1 block w-full modern-input monetary-input">
+                                            </div>
                                             <div class="input-group mb-4">
                                                 <label for="horasExtrasMedia"
-                                                    class="block text-sm font-medium text-gray-700">Horas Extras:</label>
+                                                    class="block text-sm font-medium text-gray-700">Horas Extras (média 12 meses):</label>
                                                 <input type="text" id="horasExtrasMedia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
@@ -369,24 +383,70 @@
                                         <h4
                                             class="font-semibold text-sm text-gray-600 mb-3 border-b border-yellow-200 pb-1">
                                             VARIÁVEIS</h4>
-                                        <div id="container-variaveis">
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintComissoes"
+                                                data-container-id="container-comissoes"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintComissoes"
+                                                class="text-sm font-medium text-gray-700">Comissões</label>
+                                        </div>
+                                        <div id="container-comissoes" class="input-group mb-4 ml-5 hidden">
                                             <div class="input-group mb-4">
-                                                <label for="comissoesMedia"
-                                                    class="block text-sm font-medium text-gray-700">Comissões:</label>
-                                                <input type="text" id="comissoesMedia" placeholder="R$ 0,00"
+                                                <label for="comissoesRescisao"
+                                                    class="block text-sm font-medium text-gray-700">Comissões (mês da rescisão):</label>
+                                                <input type="text" id="comissoesRescisao" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
-                                                <label for="outrosAdicionais"
-                                                    class="block text-sm font-medium text-gray-700">Gorjetas:</label>
+                                                <label for="comissoesMedia"
+                                                    class="block text-sm font-medium text-gray-700">Comissões (média 12 meses):</label>
+                                                <input type="text" id="comissoesMedia" placeholder="R$ 0,00"
+                                                    oninput="formatarInputComoMoeda(this)"
+                                                    class="mt-1 block w-full modern-input monetary-input">
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintGorjetas"
+                                                data-container-id="container-gorjetas"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintGorjetas"
+                                                class="text-sm font-medium text-gray-700">Gorjetas</label>
+                                        </div>
+                                        <div id="container-gorjetas" class="input-group mb-4 ml-5 hidden">
+                                            <div class="input-group mb-4">
+                                                <label for="gorjetasRescisao"
+                                                    class="block text-sm font-medium text-gray-700">Gorjetas (mês da rescisão):</label>
+                                                <input type="text" id="gorjetasRescisao" placeholder="R$ 0,00"
+                                                    oninput="formatarInputComoMoeda(this)"
+                                                    class="mt-1 block w-full modern-input monetary-input">
+                                            </div>
+                                            <div class="input-group mb-4">
+                                                <label for="gorjetasMedia"
+                                                    class="block text-sm font-medium text-gray-700">Gorjetas (média 12 meses):</label>
                                                 <input type="text" id="gorjetasMedia" placeholder="R$ 0,00"
+                                                    oninput="formatarInputComoMoeda(this)"
+                                                    class="mt-1 block w-full modern-input monetary-input">
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-2 flex items-center">
+                                            <input type="checkbox" id="reintGueltas"
+                                                data-container-id="container-gueltas"
+                                                class="h-4 w-4 text-[#007380] border-gray-300 rounded mr-2">
+                                            <label for="reintGueltas"
+                                                class="text-sm font-medium text-gray-700">Gueltas</label>
+                                        </div>
+                                        <div id="container-gueltas" class="input-group mb-4 ml-5 hidden">
+                                            <div class="input-group mb-4">
+                                                <label for="gueltasRescisao"
+                                                    class="block text-sm font-medium text-gray-700">Gueltas (mês da rescisão):</label>
+                                                <input type="text" id="gueltasRescisao" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">
                                             </div>
                                             <div class="input-group mb-4">
                                                 <label for="gueltasMedia"
-                                                    class="block text-sm font-medium text-gray-700">Gueltas:</label>
+                                                    class="block text-sm font-medium text-gray-700">Gueltas (média 12 meses):</label>
                                                 <input type="text" id="gueltasMedia" placeholder="R$ 0,00"
                                                     oninput="formatarInputComoMoeda(this)"
                                                     class="mt-1 block w-full modern-input monetary-input">

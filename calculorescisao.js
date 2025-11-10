@@ -211,17 +211,20 @@ function atualizarAlturaAccordionAberto() {
 function handleCheckboxAndInput(checkbox) {
     const inputId = checkbox.getAttribute('data-input-id');
     const containerId = checkbox.getAttribute('data-container-id');
-    const input = document.getElementById(inputId);
     const container = document.getElementById(containerId);
 
-    if (input && container) {
+    if (container) {
         if (checkbox.checked) {
             container.style.display = 'block';
-        }
-        else {
+        } else {
             container.style.display = 'none';
             // Zera o valor ao desmarcar, garantindo que não entre no cálculo
-            input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '';
+            if (inputId) {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.value = checkbox.classList.contains('estabilidade-checkbox') ? '0' : '';
+                }
+            }
         }
         atualizarAlturaAccordionAberto(); // Adicionado para corrigir altura
     }
@@ -370,7 +373,7 @@ function limparCampos() {
     // 2. Limpa todos os checkboxes e oculta campos relacionados
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.checked = false;
-        if (checkbox.hasAttribute('data-input-id')) {
+        if (checkbox.hasAttribute('data-input-id') || checkbox.hasAttribute('data-container-id')) {
             handleCheckboxAndInput(checkbox);
         }
     });
@@ -606,10 +609,16 @@ function obterDadosDeEntrada() {
         salarioBase: parseInput('salarioBruto'),
         comissoesMedia: parseInput('comissoesMedia'),
         horasExtrasMedia: parseInput('horasExtrasMedia'),
-        outrosAdicionais: parseInput('outrosAdicionais'),
-        auxilioAlimentacao: parseInput('auxilioAlimentacao'),
         gorjetasMedia: parseInput('gorjetasMedia'),
         gueltasMedia: parseInput('gueltasMedia'),
+        
+        horasExtrasRescisao: parseInput('horasExtrasRescisao'),
+        comissoesRescisao: parseInput('comissoesRescisao'),
+        gorjetasRescisao: parseInput('gorjetasRescisao'),
+        gueltasRescisao: parseInput('gueltasRescisao'),
+
+        outrosAdicionais: parseInput('outrosAdicionais'),
+        auxilioAlimentacao: parseInput('auxilioAlimentacao'),
         salarioFamilia: parseInput('salarioFamilia'),
         fgtsSaldoTotal: parseInput('fgtsSaldoTotal'),
         numDependentes: parseInputInt('dependentesIRRF'),
@@ -669,21 +678,23 @@ function calcularRescisao() {
     const dataProjetada = isAPIndenizado ? calcularDataProjetada(dados.dataDemissaoStr, diasAvisoPrevioTotal) : dados.dataDemissao;
 
     // Cálculo da Remuneração Base
-    const remuneracaoBase = dados.salarioBase + dados.comissoesMedia + dados.horasExtrasMedia + dados.outrosAdicionais + dados.auxilioAlimentacao + dados.gueltasMedia + dados.salarioFamilia + dados.gorjetasMedia;
+    const remuneracaoRescisao = dados.salarioBase + dados.horasExtrasRescisao + dados.comissoesRescisao + dados.gorjetasRescisao + dados.gueltasRescisao + dados.auxilioAlimentacao + dados.salarioFamilia;
+    const remuneracaoMedia = dados.salarioBase + dados.horasExtrasMedia + dados.comissoesMedia + dados.gorjetasMedia + dados.gueltasMedia + dados.auxilioAlimentacao + dados.salarioFamilia;
+    
     const valInsalubridadeMensal = dados.grauInsalubridade > 0 ? calcularInsalubridade(dados.grauInsalubridade, SALARIO_MINIMO_REF) : 0.0;
     const valPericulosidadeMensal = dados.temPericulosidade ? dados.salarioBase * 0.30 : 0.0;
     const valTransferenciaMensal = dados.temTransferencia ? dados.salarioBase * 0.25 : 0.0;
     const valNoturnoMensal = dados.temNoturno ? dados.salarioBase * 0.20 : 0.0;
 
     // Base para cálculo de AP/13º/Férias (inclui adicionais integrais habituais)
-    const baseParaProporcionais = remuneracaoBase + valInsalubridadeMensal + valPericulosidadeMensal + valTransferenciaMensal + valNoturnoMensal + dados.gorjetasMedia;
+    const baseParaProporcionais = remuneracaoMedia + valInsalubridadeMensal + valPericulosidadeMensal + valTransferenciaMensal + valNoturnoMensal;
 
 
     // 3. CÁLCULO DE PROVENTOS (VERBAS RESCISÓRIAS)
 
     // Saldo de Salário e Adicionais Proporcionais
     const diasTrabalhadosMes = dados.dataDemissao.getDate();
-    calculosProprios.saldoSalario = (remuneracaoBase / DIAS_MES) * diasTrabalhadosMes;
+    calculosProprios.saldoSalario = (remuneracaoRescisao / DIAS_MES) * diasTrabalhadosMes;
     calculosProprios.adicionalInsalubridade = (valInsalubridadeMensal / DIAS_MES) * diasTrabalhadosMes;
     calculosProprios.adicionalPericulosidade = (valPericulosidadeMensal / DIAS_MES) * diasTrabalhadosMes;
     calculosProprios.adicionalTransferencia = (valTransferenciaMensal / DIAS_MES) * diasTrabalhadosMes;
@@ -748,7 +759,7 @@ function calcularRescisao() {
         dataLimitePagamento.setHours(0, 0, 0, 0);
 
         if (dados.dataPagamento.getTime() > dataLimitePagamento.getTime()) {
-            calculosProprios.multaArt477 = remuneracaoBase;
+            calculosProprios.multaArt477 = dados.salarioBase;
         }
     }
     if (dados.tipoRescisao === 'ANTEC_EMPREGADOR' && dados.dataTerminoContratoStr) {
@@ -831,7 +842,7 @@ function calcularRescisao() {
 
     // Seguro Desemprego
     const mesesVinculoSD = getMesesTrabalhados(dados.dataAdmissao, dados.dataDemissao);
-    const resultadoSD = calcularSeguroDesemprego(dados.tipoRescisao, remuneracaoBase, mesesVinculoSD);
+    const resultadoSD = calcularSeguroDesemprego(dados.tipoRescisao, remuneracaoMedia, mesesVinculoSD);
     calculosProprios.seguroDesempregoParcelas = resultadoSD.parcelas;
     calculosProprios.seguroDesempregoValorParcela = resultadoSD.valorParcela;
     calculosProprios.seguroDesempregoElegivel = resultadoSD.seguroDesempregoElegivel;
@@ -861,6 +872,10 @@ function calcularRescisao() {
         { nome: 'Adicional de Transferencia 25% - Proporcional', valor: calculosProprios.adicionalTransferencia, tipo: 'P' },
         { nome: 'Adicional Noturno 20% - Proporcional', valor: calculosProprios.adicionalNoturno, tipo: 'P' },
         { nome: 'Adicionais de Média (Outros)', valor: dados.outrosAdicionais, tipo: 'P' },
+        { nome: 'Horas Extras (mês da rescisão)', valor: dados.horasExtrasRescisao, tipo: 'P' },
+        { nome: 'Comissões (mês da rescisão)', valor: dados.comissoesRescisao, tipo: 'P' },
+        { nome: 'Gorjetas (mês da rescisão)', valor: dados.gorjetasRescisao, tipo: 'P' },
+        { nome: 'Gueltas (mês da rescisão)', valor: dados.gueltasRescisao, tipo: 'P' },
         { nome: 'Média Mensal de Comissões', valor: dados.comissoesMedia, tipo: 'P' },
         { nome: 'Média Mensal de Horas Extras', valor: dados.horasExtrasMedia, tipo: 'P' },
         { nome: 'Auxílio Alimentação (em dinheiro)', valor: dados.auxilioAlimentacao, tipo: 'P' },
@@ -1121,7 +1136,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnCalcular.addEventListener('click', calcularRescisao);
     }
 
-    document.querySelectorAll('[data-input-id]').forEach(checkbox => {
+    document.querySelectorAll('[data-input-id], [data-container-id]').forEach(checkbox => {
         checkbox.addEventListener('change', () => handleCheckboxAndInput(checkbox));
     });
 
